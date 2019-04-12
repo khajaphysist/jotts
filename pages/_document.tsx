@@ -87,6 +87,9 @@ class MyDocument extends Document<{ pageContext: PageContext }> {
                         rel="stylesheet"
                         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
                     />
+
+                    <link rel="shortcut icon"
+                        href="/static/favicon.ico" />
                 </Head>
                 <body>
                     <Main />

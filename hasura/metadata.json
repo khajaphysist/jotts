@@ -1,0 +1,206 @@
+{
+    "functions": [],
+    "remote_schemas": [],
+    "tables": [
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "collection"
+            },
+            "object_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "author_id"
+                    },
+                    "name": "profile",
+                    "comment": null
+                }
+            ],
+            "array_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "collection_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "collection_post"
+                            }
+                        }
+                    },
+                    "name": "posts",
+                    "comment": null
+                }
+            ],
+            "insert_permissions": [],
+            "select_permissions": [],
+            "update_permissions": [],
+            "delete_permissions": [],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "post"
+            },
+            "object_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "author_id"
+                    },
+                    "name": "profile",
+                    "comment": null
+                }
+            ],
+            "array_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "post_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "collection_post"
+                            }
+                        }
+                    },
+                    "name": "collections",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "post_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "post_tag"
+                            }
+                        }
+                    },
+                    "name": "tags",
+                    "comment": null
+                }
+            ],
+            "insert_permissions": [],
+            "select_permissions": [],
+            "update_permissions": [],
+            "delete_permissions": [],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "tag"
+            },
+            "object_relationships": [],
+            "array_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "tag",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "post_tag"
+                            }
+                        }
+                    },
+                    "name": "posts",
+                    "comment": null
+                }
+            ],
+            "insert_permissions": [],
+            "select_permissions": [],
+            "update_permissions": [],
+            "delete_permissions": [],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "collection_post"
+            },
+            "object_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "collection_id"
+                    },
+                    "name": "collection",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "post_id"
+                    },
+                    "name": "post",
+                    "comment": null
+                }
+            ],
+            "array_relationships": [],
+            "insert_permissions": [],
+            "select_permissions": [],
+            "update_permissions": [],
+            "delete_permissions": [],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "profile"
+            },
+            "object_relationships": [],
+            "array_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "author_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "collection"
+                            }
+                        }
+                    },
+                    "name": "collections",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "author_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "post"
+                            }
+                        }
+                    },
+                    "name": "posts",
+                    "comment": null
+                }
+            ],
+            "insert_permissions": [],
+            "select_permissions": [],
+            "update_permissions": [],
+            "delete_permissions": [],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "post_tag"
+            },
+            "object_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "post_id"
+                    },
+                    "name": "post",
+                    "comment": null
+                }
+            ],
+            "array_relationships": [],
+            "insert_permissions": [],
+            "select_permissions": [],
+            "update_permissions": [],
+            "delete_permissions": [],
+            "event_triggers": []
+        }
+    ],
+    "query_templates": []
+}

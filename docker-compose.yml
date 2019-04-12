@@ -8,6 +8,8 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4
@@ -20,7 +22,7 @@ services:
       - "5050:80"
     restart: unless-stopped
   graphql-engine:
-    image: hasura/graphql-engine
+    image: hasura/graphql-engine:v1.0.0-alpha42
     ports:
     - "8080:8080"
     depends_on:

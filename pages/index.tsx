@@ -9,17 +9,8 @@ import { GetAllUsers } from '../types/GetAllUsers';
 
 export const getAllUsers = gql`
 query GetAllUsers {
-  user {
-    id
-    username
+  jotts_user {
     email
-    posts {
-      tags {
-        tag {
-          slug
-        }
-      }
-    }
   }
 }
 `
@@ -58,8 +49,8 @@ class Index extends React.Component<{ [key: string]: any }> {
               return <div>Loading...</div>
             }
             return data ? (
-              data.user.map(e => (
-                <li>{e.username} {e.posts.map(p => p.tags.map(t => t.tag.slug))}</li>
+              data.jotts_user.map(e => (
+                <li>{e.email}</li>
               ))
             ) : null
           }}

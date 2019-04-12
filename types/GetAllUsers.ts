@@ -6,41 +6,14 @@
 // GraphQL query operation: GetAllUsers
 // ====================================================
 
-export interface GetAllUsers_user_posts_tags_tag {
-  __typename: "tags";
-  slug: string;
-}
-
-export interface GetAllUsers_user_posts_tags {
-  __typename: "post_tags";
-  /**
-   * An object relationship
-   */
-  tag: GetAllUsers_user_posts_tags_tag;
-}
-
-export interface GetAllUsers_user_posts {
-  __typename: "post";
-  /**
-   * An array relationship
-   */
-  tags: GetAllUsers_user_posts_tags[];
-}
-
-export interface GetAllUsers_user {
-  __typename: "user";
-  id: any;
-  username: string;
+export interface GetAllUsers_jotts_user {
+  __typename: "jotts_user";
   email: string;
-  /**
-   * An array relationship
-   */
-  posts: GetAllUsers_user_posts[];
 }
 
 export interface GetAllUsers {
   /**
-   * fetch data from the table: "user"
+   * fetch data from the table: "jotts.user"
    */
-  user: GetAllUsers_user[];
+  jotts_user: GetAllUsers_jotts_user[];
 }
