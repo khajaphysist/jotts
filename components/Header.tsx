@@ -5,7 +5,10 @@ import { AppBar, Button, createStyles, Toolbar, WithStyles, withStyles } from '@
 
 const styles = () => createStyles({
   loginButton: {
-    float: "right"
+    marginLeft: "auto"
+  },
+  toolbar: {
+    display: "flex"
   }
 })
 

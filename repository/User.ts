@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 
-import initApollo from '../src/initApollo';
 import { RegisterUser, RegisterUserVariables } from '../types/RegisterUser';
+import ApolloClient from './ApolloClient';
 
-const client = initApollo(undefined);
+const client = ApolloClient;
 
 class User {
     public async registerUser(data: RegisterUserVariables): Promise<RegisterUser> {
