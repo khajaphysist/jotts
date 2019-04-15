@@ -6,28 +6,28 @@
 // GraphQL mutation operation: RegisterUser
 // ====================================================
 
-export interface RegisterUser_insert_jotts_profile_returning {
-  __typename: "jotts_profile";
+export interface RegisterUser_insert_jotts_user_returning {
+  __typename: "jotts_user";
   id: any;
 }
 
-export interface RegisterUser_insert_jotts_profile {
-  __typename: "jotts_profile_mutation_response";
+export interface RegisterUser_insert_jotts_user {
+  __typename: "jotts_user_mutation_response";
   /**
    * data of the affected rows by the mutation
    */
-  returning: RegisterUser_insert_jotts_profile_returning[];
+  returning: RegisterUser_insert_jotts_user_returning[];
 }
 
 export interface RegisterUser {
   /**
-   * insert data into the table: "jotts.profile"
+   * insert data into the table: "jotts.user"
    */
-  insert_jotts_profile: RegisterUser_insert_jotts_profile | null;
+  insert_jotts_user: RegisterUser_insert_jotts_user | null;
 }
 
 export interface RegisterUserVariables {
-  username: string;
+  handle: string;
   email: string;
   password_hash: string;
   password_salt: string;

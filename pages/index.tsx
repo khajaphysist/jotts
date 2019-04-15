@@ -1,6 +1,4 @@
 import gql from 'graphql-tag';
-import fetch from 'isomorphic-unfetch';
-import Link from 'next/link';
 import React from 'react';
 import { Query } from 'react-apollo';
 
@@ -17,29 +15,14 @@ query GetAllUsers {
 
 class Index extends React.Component<{ [key: string]: any }> {
   public static async getInitialProps() {
-    const res = await fetch('https://api.tvmaze.com/search/shows?q=batman')
-    const data = await res.json()
-
-    console.log(`Show data fetched. Count: ${data.length}`)
 
     return {
-      shows: data.map((entry: { show: any; }) => entry.show)
     }
   }
 
   public render() {
     return (
       <Layout>
-        <h1>Batman TV Show</h1>
-        <ul>
-          {this.props.shows.map((show: any) => (
-            <li key={show.id}>
-              <Link as={`/p/${show.id}`} href={`/post?id=${show.id}`}>
-                <a>{show.name}</a>
-              </Link>
-            </li>
-          ))}
-        </ul>
         <Query<GetAllUsers> query={getAllUsers}>
           {({ loading, error, data }) => {
             if (error) {

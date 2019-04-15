@@ -1,12 +1,14 @@
+import Router from 'next/router';
 import React from 'react';
 
 import {
-  AppBar, Avatar, Button, Checkbox, createStyles, CssBaseline, FormControl, FormControlLabel, Input,
-  InputLabel, Paper, Tab, Tabs, Theme, Typography, WithStyles, withStyles
+  AppBar, Avatar, Button, createStyles, FormControl, Input, InputLabel, Paper, Tab, Tabs, Theme,
+  Typography, WithStyles, withStyles
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import Layout from '../components/Layout';
+import { User } from '../src/uiClient';
 
 const styles = (theme: Theme) => createStyles({
     main: {
@@ -45,19 +47,24 @@ interface StyleProps extends WithStyles<typeof styles> { };
 type Props = StyleProps;
 
 interface State {
-    tab: 'login' | 'signup'
+    tab: 'login' | 'signup';
+    email: string;
+    password: string;
+    confirm_password?: string;
+    handle?: string;
 }
+
 class Login extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.state = { tab: 'login' }
+        this.state = { tab: 'login', email: '', password: '' }
     }
     render() {
         return (
             <Layout>
                 <main className={this.props.classes.main}>
                     <AppBar position="static">
-                        <Tabs value={this.state.tab} onChange={(e, v) => { this.setState({ ...this.state, tab: v }) }} variant="fullWidth">
+                        <Tabs value={this.state.tab} onChange={(_e, v) => { this.setState({ ...this.state, tab: v }) }} variant="fullWidth">
                             <Tab label="Login" value='login' />
                             <Tab label="Sign Up" value='signup' />
                         </Tabs>
@@ -73,11 +80,11 @@ class Login extends React.Component<Props, State> {
                             <form className={this.props.classes.form}>
                                 <FormControl margin="normal" required fullWidth>
                                     <InputLabel htmlFor="email">Email Address</InputLabel>
-                                    <Input id="email" name="email" autoComplete="email" autoFocus />
+                                    <Input id="email" name="email" autoComplete="email" autoFocus onChange={(e) => { this.setState({ ...this.state, email: e.target.value }) }} required={true} />
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth>
                                     <InputLabel htmlFor="password">Password</InputLabel>
-                                    <Input name="password" type="password" id="password" autoComplete="current-password" />
+                                    <Input name="password" type="password" id="password" autoComplete="current-password" onChange={(e) => { this.setState({ ...this.state, password: e.target.value }) }} required={true} />
                                 </FormControl>
                                 <Button
                                     type="submit"
@@ -85,6 +92,10 @@ class Login extends React.Component<Props, State> {
                                     variant="contained"
                                     color="primary"
                                     className={this.props.classes.submit}
+                                    onClick={(e)=>{
+                                        e.preventDefault();
+                                        User.login(this.state.email, this.state.password).then(v=>{Router.push('/')});
+                                    }}
                                 >
                                     Sign in
                 </Button>
@@ -101,19 +112,19 @@ class Login extends React.Component<Props, State> {
                             <form className={this.props.classes.form}>
                                 <FormControl margin="normal" required fullWidth>
                                     <InputLabel htmlFor="email">Email Address</InputLabel>
-                                    <Input id="email" name="email" autoComplete="email" autoFocus />
+                                    <Input id="email" name="email" autoComplete="email" autoFocus onChange={(e) => { this.setState({ ...this.state, email: e.target.value }) }} required={true} />
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth>
-                                    <InputLabel >Username</InputLabel>
-                                    <Input id="handle" name="handle" />
+                                    <InputLabel >Handle</InputLabel>
+                                    <Input id="handle" name="handle" onChange={(e) => { this.setState({ ...this.state, handle: e.target.value }) }} required={true} />
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth>
                                     <InputLabel htmlFor="password">Password</InputLabel>
-                                    <Input name="password" type="password" id="password" autoComplete="current-password" />
+                                    <Input name="password" type="password" id="password" autoComplete="current-password" onChange={(e) => { this.setState({ ...this.state, password: e.target.value }) }} required={true} />
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth>
                                     <InputLabel htmlFor="password">Confirm Password</InputLabel>
-                                    <Input name="confirm_password" type="password" id="confirm_password" autoComplete="current-password" />
+                                    <Input name="confirm_password" type="password" id="confirm_password" autoComplete="current-password" onChange={(e) => { this.setState({ ...this.state, confirm_password: e.target.value }) }} required={true} />
                                 </FormControl>
                                 <Button
                                     type="submit"
@@ -121,6 +132,16 @@ class Login extends React.Component<Props, State> {
                                     variant="contained"
                                     color="primary"
                                     className={this.props.classes.submit}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (this.state.password !== this.state.confirm_password) {
+                                            window.alert("Passwords do not match");
+                                        } else if (!this.state.handle) {
+                                            window.alert("handle cannot be empty");
+                                        } else {
+                                            User.register(this.state.email, this.state.handle, this.state.password);
+                                        }
+                                    }}
                                 >
                                     Sign up
             </Button>
