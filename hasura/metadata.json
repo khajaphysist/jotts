@@ -12,7 +12,7 @@
                     "using": {
                         "foreign_key_constraint_on": "author_id"
                     },
-                    "name": "user",
+                    "name": "author",
                     "comment": null
                 }
             ],
@@ -47,7 +47,7 @@
                     "using": {
                         "foreign_key_constraint_on": "author_id"
                     },
-                    "name": "user",
+                    "name": "author",
                     "comment": null
                 }
             ],
@@ -186,6 +186,13 @@
                 "name": "post_tag"
             },
             "object_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "tag"
+                    },
+                    "name": "tagByTag",
+                    "comment": null
+                },
                 {
                     "using": {
                         "foreign_key_constraint_on": "post_id"

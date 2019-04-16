@@ -46,7 +46,7 @@ app
 
         server.post('/login',
             passport.authenticate('local', { session: false, }),
-            (req, res)=>{
+            (req, res) => {
                 res.send(req.user)
             })
 
@@ -57,10 +57,11 @@ app
             crypto.pbkdf2(password, password_salt, password_iterations, 64, 'sha512', (err, key) => {
                 if (err) {
                     res.status(500).send(err)
+                    return
                 };
                 const user = { email, password_hash: key.toString('hex'), password_iterations, password_salt, handle };
                 User.registerUser(user)
-                    .then(d => res.status(200).send(d), e => res.status(500).send(e));
+                    .then(d => {res.status(200).send(d) }, e => res.status(500).send(e));
             })
         })
 
