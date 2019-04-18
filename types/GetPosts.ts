@@ -33,14 +33,9 @@ export interface GetPosts_jotts_post {
   tags: GetPosts_jotts_post_tags[];
 }
 
-export interface GetPosts_jotts_post_aggregate_aggregate {
-  __typename: "jotts_post_aggregate_fields";
-  count: number | null;
-}
-
-export interface GetPosts_jotts_post_aggregate {
-  __typename: "jotts_post_aggregate";
-  aggregate: GetPosts_jotts_post_aggregate_aggregate | null;
+export interface GetPosts_jotts_tag_post_count_view {
+  __typename: "jotts_tag_post_count_view";
+  tag: string | null;
 }
 
 export interface GetPosts {
@@ -49,12 +44,13 @@ export interface GetPosts {
    */
   jotts_post: GetPosts_jotts_post[];
   /**
-   * fetch aggregated fields from the table: "jotts.post"
+   * fetch data from the table: "jotts.tag_post_count_view"
    */
-  jotts_post_aggregate: GetPosts_jotts_post_aggregate;
+  jotts_tag_post_count_view: GetPosts_jotts_tag_post_count_view[];
 }
 
 export interface GetPostsVariables {
   skip: number;
   size: number;
+  tags: string[];
 }

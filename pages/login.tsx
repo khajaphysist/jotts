@@ -94,7 +94,13 @@ class Login extends React.Component<Props, State> {
                                     className={this.props.classes.submit}
                                     onClick={(e)=>{
                                         e.preventDefault();
-                                        User.login(this.state.email, this.state.password).then(v=>{Router.push('/')});
+                                        User.login(this.state.email, this.state.password).then(v=>{
+                                            if(v.status===200){
+                                                Router.push('/')
+                                            } else {
+                                                window.alert("invalid email or password")
+                                            }
+                                        });
                                     }}
                                 >
                                     Sign in
