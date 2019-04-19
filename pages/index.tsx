@@ -3,22 +3,23 @@ import gql from 'graphql-tag';
 import { debounce } from 'lodash';
 import Pagination from 'material-ui-flat-pagination';
 import { GetInitialProps, NextContext } from 'next';
+import Link from 'next/link';
 import Router from 'next/router';
 import React from 'react';
 import { ApolloConsumer, Query } from 'react-apollo';
 
 import {
-  Button, Card, Chip, createStyles, Divider, Theme, Typography, WithStyles, withStyles
+  Card, Chip, createStyles, Divider, Theme, Typography, WithStyles, withStyles
 } from '@material-ui/core';
 
 import Layout from '../components/Layout';
 import MaterialReactSelect from '../components/MaterialReactSelect';
-import { GetPosts, GetPostsVariables } from '../types/GetPosts';
+import { GetPostsWithTags, GetPostsWithTagsVariables } from '../types/GetPostsWithTags';
 import { GetTagSuggestions, GetTagSuggestionsVariables } from '../types/GetTagSuggestions';
 
-const getPosts = gql`
-query GetPosts($skip: Int!, $size: Int!, $tags: [String!]!) {
-  jotts_post(limit: $size, offset: $skip, where: {tags:{tag:{_in: $tags}}}) {
+const getPostsWithTags = gql`
+query GetPostsWithTags($skip: Int!, $size: Int!, $tags: String!) {
+  jotts_post_by_tag(limit: $size, offset: $skip, args:{arg_1: $tags}) {
     author {
       id
       handle
@@ -27,12 +28,19 @@ query GetPosts($skip: Int!, $size: Int!, $tags: [String!]!) {
     id
     title
     content
+    slug
     tags {
       tag
     }
   }
+  jotts_post_by_tag_aggregate(args:{arg_1: $tags}) {
+    aggregate {
+      count
+    }
+  }
   jotts_tag_post_count_view(limit:100, order_by:{post_count:desc_nulls_last}) {
     tag
+    post_count
   }
 }
 `
@@ -133,7 +141,7 @@ class Index extends React.Component<Props> {
         <div>
           <ApolloConsumer>
             {client => (
-              <Query<GetPosts, GetPostsVariables> query={getPosts} variables={{ size: this.props.size, skip: (this.props.page - 1) * this.props.size, tags: this.props.tags }}>
+              <Query<GetPostsWithTags, GetPostsWithTagsVariables> query={getPostsWithTags} variables={{ size: this.props.size, skip: (this.props.page - 1) * this.props.size, tags: this.props.tags.join(',') }}>
                 {({ loading, error, data }) => {
                   if (error) {
                     return <div>{error.message}</div>
@@ -156,11 +164,15 @@ class Index extends React.Component<Props> {
                         />
                       </div>
                       <div className={this.props.classes.itemContainer}>
-                        {data.jotts_post.map(e => (
+                        {data.jotts_post_by_tag.map(e => (
                           <Card className={this.props.classes.item} key={e.id}>
-                            <Typography variant="h6" className={this.props.classes.itemTitle}>
-                              {e.title}
-                            </Typography>
+                            <Link href={"/post?slug=" + e.slug} as={"/post/" + e.slug}>
+                              <a>
+                                <Typography variant="h6" className={this.props.classes.itemTitle}>
+                                  {e.title}
+                                </Typography>
+                              </a>
+                            </Link>
                             <div className={this.props.classes.itemAuthor}>
                               <Typography color="secondary" className={this.props.classes.itemAuthorName}>
                                 {e.author.name}
@@ -188,9 +200,12 @@ class Index extends React.Component<Props> {
                       <Pagination className={this.props.classes.pagination}
                         limit={this.props.size}
                         offset={(this.props.page - 1) * this.props.size}
-                        total={data.jotts_post.length}
+                        total={data.jotts_post_by_tag_aggregate.aggregate && data.jotts_post_by_tag_aggregate.aggregate.count ? data.jotts_post_by_tag_aggregate.aggregate.count : 0}
                         onClick={(_e, _offset, page) => {
-                          Router.push("/?page=" + (page))
+                          const tagsQuery = this.props.tags.length > 0 ? "tags=" + this.props.tags.join(',') : undefined;
+                          const pageQuery = page > 1 ? "page=" + page.toString() : undefined;
+                          const queryString = tagsQuery || pageQuery ? "?" + [tagsQuery, pageQuery].filter(s => s).join('&') : '';
+                          Router.push("/" + queryString)
                         }}
                         size="large"
                       />

@@ -1,5 +1,10 @@
 {
-    "functions": [],
+    "functions": [
+        {
+            "schema": "jotts",
+            "name": "post_by_tag"
+        }
+    ],
     "remote_schemas": [],
     "tables": [
         {

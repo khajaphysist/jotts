@@ -1,25 +1,68 @@
-import fetch from 'isomorphic-unfetch';
+import gql from 'graphql-tag';
 import { NextContext } from 'next';
 import React from 'react';
+import { Query } from 'react-apollo';
 
 import Layout from '../components/Layout';
+import { GetPost, GetPostVariables } from '../types/GetPost';
 
-class Post extends React.Component<{ [key: string]: any }> {
-    public static getInitialProps = async (context: NextContext) => {
-        const { id } = context.query
-        const res = await fetch(`https://api.tvmaze.com/shows/${id}`)
-        const show = await res.json()
+const getPost = gql`
+query GetPost($slug: String!) {
+    jotts_post(where:{slug: {_eq: $slug}}) {
+        id
+        title
+        author {
+            id
+            name
+            handle
+            profile_picture
+        }
+        slug
+        tags {
+            tag
+        }
+        content
+    }
+}
+`;
 
-        console.log(`Fetched show: ${show.name}`)
+interface InitialProps {
+    slug: string
+}
 
-        return { show }
+interface Props extends InitialProps { }
+
+class Post extends React.Component<Props> {
+    public static getInitialProps = async (context: NextContext<{ slug: string }>) => {
+        const { slug } = context.query
+        return { slug }
     }
     public render = () =>
         (
             <Layout>
-                <h1>{this.props.show.name}</h1>
-                <p>{this.props.show.summary.replace(/<[/]?p>/g, '')}</p>
-                <img src={this.props.show.image.medium} />
+                <Query<GetPost, GetPostVariables> query={getPost} variables={{ slug: this.props.slug }}>
+                    {
+                        ({ loading, error, data }) => {
+                            if (error) {
+                                return <div>{error.message}</div>
+                            }
+                            if (loading) {
+                                return <div>Loading...</div>
+                            }
+                            if (data && data.jotts_post.length > 0) {
+                                const postData = data.jotts_post[0];
+                                return (
+                                    <div>
+                                        <p>Title: {postData.title}</p>
+                                        <p>Author: {postData.author.name}, @{postData.author.handle},</p>
+                                        <p>Content: {postData.content}</p>
+                                        <p>Tags: {postData.tags.map(t=>t.tag).join(", ")}</p>
+                                    </div>
+                                )
+                            }
+                        }
+                    }
+                </Query>
             </Layout>
         )
 

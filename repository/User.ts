@@ -8,7 +8,7 @@ const client = ApolloClient;
 
 class User {
     public async registerUser(data: RegisterUserVariables): Promise<string> {
-        const resp: {data: RegisterUser} = await client.mutate<RegisterUser, RegisterUserVariables>({
+        const resp: { data: RegisterUser } = await client.mutate<RegisterUser, RegisterUserVariables>({
             mutation: gql`
             mutation RegisterUser($handle: String!, $email: String!, $password_hash: String!, $password_salt: String!, $password_iterations: Int) {
                 insert_jotts_user(
@@ -27,12 +27,10 @@ class User {
             `,
             variables: data
         });
-        console.log(JSON.stringify(resp))
         return resp.data.insert_jotts_user && resp.data.insert_jotts_user.returning.length > 0 ? resp.data.insert_jotts_user.returning[0].id : ''
     }
 
     public async getOne(data: GetUserVariables) {
-        console.log(data);
         const res = (await client.query<GetUser, GetUserVariables>({
             query: gql`
             query GetUser($email: String!) {
@@ -50,9 +48,7 @@ class User {
             `,
             variables: data
         }));
-        console.log(JSON.stringify(res));
-        return res.data.jotts_user[0];
-
+        return res.data.jotts_user[0] ? res.data.jotts_user[0] : undefined;
     }
 }
 

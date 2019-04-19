@@ -25,7 +25,11 @@ app
             function (email, password, done) {
                 User.getOne({ email })
                     .then(
-                        function ({ __typename, password_hash, password_iterations, password_salt, ...rest }) {
+                        function (user) {
+                            if(!user){
+                                return done(null, false);
+                            }
+                            const { __typename, password_hash, password_iterations, password_salt, ...rest } = user
                             crypto.pbkdf2(password, password_salt, password_iterations, 64, 'sha512', (err, key) => {
                                 const hash = key.toString('hex');
                                 if (err || hash !== password_hash) {
@@ -45,7 +49,7 @@ app
         ));
 
         server.post('/login',
-            passport.authenticate('local', { session: false, }),
+            passport.authenticate('local', { session: false}),
             (req, res) => {
                 res.send(req.user)
             })
@@ -65,9 +69,9 @@ app
             })
         })
 
-        server.get('/p/:id', (req, res) => {
+        server.get('/post/:slug', (req, res) => {
             const page = '/post';
-            const queryParams = { id: req.params.id };
+            const queryParams = { slug: req.params.slug };
             app.render(req, res, page, queryParams);
         })
 

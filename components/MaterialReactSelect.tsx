@@ -102,6 +102,7 @@ class IntegrationReactSelect extends React.Component<Props,State> {
                     defaultOptions={this.props.options.map(o => ({ value: o, label: o }))}
                     onChange={(v, _a) => {
                         if(v && v instanceof Array){
+                            this.setState({...this.state, selected: v.map(o=>o.value)})
                             this.props.onChange(v.map(o=>o.value))
                         }
                     }}
