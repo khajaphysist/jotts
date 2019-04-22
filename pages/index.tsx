@@ -9,7 +9,7 @@ import React from 'react';
 import { ApolloConsumer, Query } from 'react-apollo';
 
 import {
-  Card, Chip, createStyles, Divider, Theme, Typography, WithStyles, withStyles
+  Card, Chip, createStyles, Divider, NoSsr, Theme, Typography, WithStyles, withStyles
 } from '@material-ui/core';
 
 import Layout from '../components/Layout';
@@ -152,16 +152,18 @@ class Index extends React.Component<Props> {
                   return data ? (
                     <div>
                       <div>
-                        <MaterialReactSelect
-                          options={data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t)}
-                          loadOptions={(input, callback) => {
-                            debouncedFetch(input, callback, client)
-                          }}
-                          onChange={(selected) => {
-                            selected.length > 0 ? Router.push("/?tags=" + selected.join(",")) : Router.push("/")
-                          }}
-                          defaultSelected={this.props.tags}
-                        />
+                        <NoSsr>
+                          <MaterialReactSelect
+                            options={data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t)}
+                            loadOptions={(input, callback) => {
+                              debouncedFetch(input, callback, client)
+                            }}
+                            onChange={(selected) => {
+                              selected.length > 0 ? Router.push("/?tags=" + selected.join(",")) : Router.push("/")
+                            }}
+                            defaultSelected={this.props.tags}
+                          />
+                        </NoSsr>
                       </div>
                       <div className={this.props.classes.itemContainer}>
                         {data.jotts_post_by_tag.map(e => (

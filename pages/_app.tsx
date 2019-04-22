@@ -1,11 +1,15 @@
 import { ApolloClient, NormalizedCacheObject } from 'apollo-boost';
-import App, { Container } from 'next/app';
+import fetch from 'isomorphic-unfetch';
+import cookies from 'next-cookies';
+import App, { Container, NextAppContext } from 'next/app';
 import Head from 'next/head';
 import { ApolloProvider } from 'react-apollo';
 import JssProvider from 'react-jss/lib/JssProvider';
 
 import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 
+import redirectTo from '../components/redirectTo';
+import { LOGIN_TOKEN_COOKIE_NAME, USER_INFO_COOKIE_NAME } from '../front-vars';
 import getPageContext, { PageContext } from '../src/getPageContext';
 import withApolloClient from '../src/withApolloClient';
 
@@ -14,6 +18,25 @@ class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
     constructor(props: any) {
         super(props);
         this.pageContext = getPageContext();
+    }
+
+    static async getInitialProps({ Component, ctx }: NextAppContext) {
+        const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
+        const c = cookies(ctx);
+        console.log(c[USER_INFO_COOKIE_NAME])
+
+        if (["/login", "/"].includes(ctx.pathname)) {
+            return { pageProps };
+        } else if (typeof c[USER_INFO_COOKIE_NAME] !== 'undefined') {
+            const headers = { "Cookie": typeof c[LOGIN_TOKEN_COOKIE_NAME] !== 'undefined' ? `${LOGIN_TOKEN_COOKIE_NAME}=${c[LOGIN_TOKEN_COOKIE_NAME]}` : "" };
+            const response = await fetch("http://localhost:3000/check-auth", { method: "POST", credentials: "include", headers }).then(data => data.text());
+            console.log("Response: ", response)
+            if (response === "OK") return { pageProps };
+            else redirectTo('/login', { res: ctx.res, status: 301 });
+        } else {
+            redirectTo('/login', { res: ctx.res, status: 301 })
+        }
+        return { pageProps }
     }
 
     componentDidMount() {
