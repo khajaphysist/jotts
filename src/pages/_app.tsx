@@ -8,10 +8,10 @@ import JssProvider from 'react-jss/lib/JssProvider';
 
 import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 
-import redirectTo from '../components/redirectTo';
-import { LOGIN_TOKEN_COOKIE_NAME, USER_INFO_COOKIE_NAME } from '../front-vars';
-import getPageContext, { PageContext } from '../src/getPageContext';
-import withApolloClient from '../src/withApolloClient';
+import redirectTo from '../common/components/redirectTo';
+import { LOGIN_TOKEN_COOKIE_NAME, USER_INFO_COOKIE_NAME } from '../common/vars';
+import getPageContext, { PageContext } from '../page-config/getPageContext';
+import withApolloClient from '../page-config/withApolloClient';
 
 class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
     private pageContext: PageContext;
@@ -23,7 +23,6 @@ class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
     static async getInitialProps({ Component, ctx }: NextAppContext) {
         const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
         const c = cookies(ctx);
-        console.log(c[USER_INFO_COOKIE_NAME])
 
         if (["/login", "/"].includes(ctx.pathname)) {
             return { pageProps };

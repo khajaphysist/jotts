@@ -3,8 +3,8 @@ import { NextContext } from 'next';
 import React from 'react';
 import { Query } from 'react-apollo';
 
-import Layout from '../components/Layout';
-import { GetPost, GetPostVariables } from '../types/GetPost';
+import { GetPost, GetPostVariables } from '../common/apollo-types/GetPost';
+import Layout from '../common/components/Layout';
 
 const getPost = gql`
 query GetPost($slug: String!) {

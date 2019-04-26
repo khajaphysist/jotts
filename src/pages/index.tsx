@@ -9,11 +9,15 @@ import { ApolloConsumer, Query } from 'react-apollo';
 
 import { createStyles, NoSsr, WithStyles, withStyles } from '@material-ui/core';
 
-import Layout from '../components/Layout';
-import MaterialReactSelect from '../components/MaterialReactSelect';
-import PostCard from '../components/PostCard';
-import { GetPostsWithTags, GetPostsWithTagsVariables } from '../types/GetPostsWithTags';
-import { GetTagSuggestions, GetTagSuggestionsVariables } from '../types/GetTagSuggestions';
+import {
+  GetPostsWithTags, GetPostsWithTagsVariables
+} from '../common/apollo-types/GetPostsWithTags';
+import {
+  GetTagSuggestions, GetTagSuggestionsVariables
+} from '../common/apollo-types/GetTagSuggestions';
+import Layout from '../common/components/Layout';
+import MaterialReactSelect from '../common/components/MaterialReactSelect';
+import PostCard from '../common/components/PostCard';
 
 const getPostsWithTags = gql`
 query GetPostsWithTags($skip: Int!, $size: Int!, $tags: String!) {
@@ -89,7 +93,6 @@ const getInitialProps: GetInitialProps<InitialProps, NextContext> = async (conte
   const p = context.query['page'];
   const s = context.query['size'];
   const t = context.query['tags'];
-  console.log(t)
   const page = p && !(p instanceof Array) ? parseInt(p, 10) : 1;
   const size = s && !(s instanceof Array) ? parseInt(s, 10) : defaultPageSize;
   const tags = t && !(t instanceof Array) ? t.split(",") : []
@@ -135,7 +138,7 @@ class Index extends React.Component<Props> {
                       </div>
                       <div className={this.props.classes.itemContainer}>
                         {data.jotts_post_by_tag.map(e => (
-                          <PostCard data={e}/>
+                          <PostCard data={e} key={e.id}/>
                         ))}
                       </div>
                       <Pagination className={this.props.classes.pagination}

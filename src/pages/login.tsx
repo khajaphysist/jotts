@@ -7,8 +7,8 @@ import {
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
-import Layout from '../components/Layout';
-import { User } from '../src/uiClient';
+import Layout from '../common/components/Layout';
+import { User } from '../common/utils/agent';
 
 const styles = (theme: Theme) => createStyles({
     main: {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import flush from 'styled-jsx/server';
 
-import { PageContext } from '../src/getPageContext';
+import { PageContext } from '../page-config/getPageContext';
 
 class MyDocument extends Document<{ pageContext: PageContext }> {
     static async getInitialProps(ctx: NextDocumentContext) {

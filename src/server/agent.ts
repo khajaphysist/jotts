@@ -1,10 +1,14 @@
+import ApolloClient from 'apollo-boost';
 import gql from 'graphql-tag';
+import fetch from 'isomorphic-unfetch';
 
-import { GetUser, GetUserVariables } from '../types/GetUser';
-import { RegisterUser, RegisterUserVariables } from '../types/RegisterUser';
-import ApolloClient from './ApolloClient';
+import { GetUser, GetUserVariables } from '../common/apollo-types/GetUser';
+import { RegisterUser, RegisterUserVariables } from '../common/apollo-types/RegisterUser';
 
-const client = ApolloClient;
+const client = new ApolloClient({
+    uri: 'http://localhost:8080/v1alpha1/graphql',
+    fetch
+});
 
 class User {
     public async registerUser(data: RegisterUserVariables): Promise<string> {

@@ -2,7 +2,8 @@ import Link from 'next/link';
 import React from 'react';
 
 import {
-  Button, Card, CardActions, CardContent, createStyles, Theme, Typography, withStyles, WithStyles
+  Button, ButtonBase, Card, CardActions, CardContent, createStyles, Theme, Typography, withStyles,
+  WithStyles
 } from '@material-ui/core';
 
 const styles = (theme: Theme) => createStyles({
@@ -74,14 +75,16 @@ class PostCard extends React.Component<Props, State> {
     render() {
         const { classes } = this.props;
         return (
-            <Card className={this.props.classes.item} draggable={true} key={this.props.data.id}
+            <Card className={this.props.classes.item} key={this.props.data.id}
                 onMouseEnter={() => this.setState({ raised: true })} onMouseLeave={() => this.setState({ raised: false })}
                 raised={this.state.raised}>
                 <div className={classes.itemHeader}>
-                    <Link href={"/post?slug=" + this.props.data.slug} as={"/post/" + this.props.data.slug}>
-                        <Typography variant="h6">
-                            {this.props.data.title.substr(0, 40)}
-                        </Typography>
+                    <Link href={"/post?slug=" + this.props.data.slug} as={"/post/" + this.props.data.slug} passHref>
+                        <ButtonBase style={{ textAlign: 'start' }}>
+                            <Typography variant="h6">
+                                {this.props.data.title.substr(0, 40)}
+                            </Typography>
+                        </ButtonBase>
                     </Link>
                 </div>
                 <div className={this.props.classes.itemAuthor}>

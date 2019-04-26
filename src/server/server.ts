@@ -9,13 +9,13 @@ import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import * as localStrategy from 'passport-local';
 import * as uuidv4 from 'uuid/v4';
 
-import { LOGIN_TOKEN_COOKIE_NAME, USER_INFO_COOKIE_NAME } from './front-vars';
-import User from './repository/User';
-import { PRIVATE_KEY, PUBLIC_KEY } from './server-vars';
+import { LOGIN_TOKEN_COOKIE_NAME, USER_INFO_COOKIE_NAME } from '../common/vars';
+import User from './agent';
+import { PRIVATE_KEY, PUBLIC_KEY } from './vars';
 
 const dev = process.env.NODE_ENV !== 'production';
 
-const app = next({ dev });
+const app = next({ dev, dir: './src' });
 const handle = app.getRequestHandler();
 const LocalStrategy = localStrategy.Strategy;
 
@@ -35,7 +35,7 @@ app
                             if (!user) {
                                 return done(null, false);
                             }
-                            const { __typename, password_hash, password_iterations, password_salt, ...rest } = user
+                            const { __typename, password_hash, password_iterations, password_salt, email, ...rest } = user
                             crypto.pbkdf2(password, password_salt, password_iterations, 64, 'sha512', (err, key) => {
                                 const hash = key.toString('hex');
                                 if (err || hash !== password_hash) {
@@ -67,8 +67,8 @@ app
             passport.authenticate('local', { session: false }),
             (req, res) => {
                 const token = jwt.sign(req.user, PRIVATE_KEY, { algorithm: "RS256" });
-                res.cookie(LOGIN_TOKEN_COOKIE_NAME, token, {domain:"localhost", path: "/", httpOnly: true, maxAge: 24*60*60*1000})
-                res.cookie(USER_INFO_COOKIE_NAME, encodeURI(JSON.stringify(req.user)), {domain:"localhost", path:"/", maxAge: 24*60*60*1000})
+                res.cookie(LOGIN_TOKEN_COOKIE_NAME, token, { domain: "localhost", path: "/", httpOnly: true, maxAge: 24 * 60 * 60 * 1000 })
+                res.cookie(USER_INFO_COOKIE_NAME, encodeURI(JSON.stringify(req.user)), { domain: "localhost", path: "/", maxAge: 24 * 60 * 60 * 1000 })
                 res.send(req.user)
             });
 
@@ -101,6 +101,11 @@ app
                 const queryParams = { slug: req.params.slug };
                 app.render(req, res, page, queryParams);
             })
+        server.post('/logout', (_req, res) => {
+            res.cookie(LOGIN_TOKEN_COOKIE_NAME, '', { domain: "localhost", path: "/", httpOnly: true, expires: new Date(0) })
+            res.cookie(USER_INFO_COOKIE_NAME, '', { domain: "localhost", path: "/", expires: new Date(0) })
+            res.send('')
+        })
 
         server.get('*', (req, res) => {
             return handle(req, res);

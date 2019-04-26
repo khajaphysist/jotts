@@ -20,5 +20,8 @@ export const User = {
                 "Content-Type": "application/json"
             }
         })
+    },
+    logout: async () => {
+        return await fetch('/logout', { method: 'POST' });
     }
 }
