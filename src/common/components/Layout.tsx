@@ -10,7 +10,9 @@ const styles = () => createStyles({
         padding: 20,
     },
     main: {
-        height: "auto"
+        height: "auto",
+        display: 'flex',
+        flexDirection: 'column',
     }
 })
 
