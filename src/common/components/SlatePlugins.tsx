@@ -1,6 +1,6 @@
 import { isKeyHotkey } from 'is-hotkey';
 import { Editor, Value } from 'slate';
-import { Plugin } from 'slate-react';
+import { getEventTransfer, Plugin } from 'slate-react';
 
 import { Divider, IconButton, Paper, Theme } from '@material-ui/core';
 import FormatCodeIcon from '@material-ui/icons/Code';
@@ -25,6 +25,8 @@ const getMarkToggleFromHotKey = (event: any): MarkType | undefined => {
             return undefined
     }
 }
+
+const isHotKey = (event: any, key: string) => isKeyHotkey(key)(event);
 
 const DEFAULT_NODE = 'paragraph'
 
@@ -130,12 +132,15 @@ export const rtePlugin = ({ theme }: { theme: Theme }): Plugin => {
                 case 'underline':
                     return <u {...attributes}>{children}</u>
                 case 'code':
-                    return <code {...attributes}
-                        style={{
-                            backgroundColor: '#eeeeee',
-                            color: theme.palette.secondary.dark,
-                        }}
-                    >{children}</code>
+                    return (
+                        <code
+                            {...attributes}
+                            style={{
+                                backgroundColor: '#eeeeee',
+                                color: theme.palette.secondary.dark,
+                            }}
+                        >{children}</code>
+                    )
                 default:
                     return next()
             }
@@ -157,7 +162,13 @@ export const rtePlugin = ({ theme }: { theme: Theme }): Plugin => {
                 case 'heading-two':
                     return <h2 {...attributes}>{children}</h2>
                 case 'code-block':
-                    return <pre {...attributes}><code>{children}</code></pre>
+                    return (
+                        <pre {...attributes} style={{ backgroundColor: '#f0f0f0' }}>
+                            <code>
+                                {children}
+                            </code>
+                        </pre>
+                    )
                 default:
                     return next()
             }
@@ -168,9 +179,23 @@ export const rtePlugin = ({ theme }: { theme: Theme }): Plugin => {
             if (mark) {
                 event.preventDefault()
                 editor.toggleMark(mark)
-            } else {
-                return next()
+                return;
             }
+
+            console.log(editor.value.startBlock.key)
+
+            if (editor.value.startBlock.type === 'code-block' && isHotKey(event, 'enter')) {
+                editor.insertText('\n');
+                return;
+            }
+
+            if (editor.value.startBlock.type === 'code-block' && isHotKey(event, 'shift+enter')) {
+                next()
+                editor.setBlocks(DEFAULT_NODE)
+                return;
+            }
+
+            return next()
         }
     }
 }
