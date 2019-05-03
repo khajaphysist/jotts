@@ -1,6 +1,7 @@
 import { isKeyHotkey } from 'is-hotkey';
+import Prism from 'prismjs';
 import { Editor, Value } from 'slate';
-import { getEventTransfer, Plugin } from 'slate-react';
+import { Plugin } from 'slate-react';
 
 import { Divider, IconButton, Paper, Theme } from '@material-ui/core';
 import FormatCodeIcon from '@material-ui/icons/Code';
@@ -99,22 +100,28 @@ const getFormatNodeBtn = (type: NodeType, editor: Editor) => {
 }
 
 export const rtePlugin = ({ theme }: { theme: Theme }): Plugin => {
+    const languages = Object.keys(Prism.languages).sort();
     return {
         renderEditor: (props, editor, next) => {
             const children = next();
             return (
                 <Paper>
-                    <div style={{ display: 'flex' }}>
-                        {getFormatNodeBtn('heading-one', editor)}
-                        {getFormatNodeBtn('heading-two', editor)}
-                        {getFormatMarkBtn('bold', editor)}
-                        {getFormatMarkBtn('italic', editor)}
-                        {getFormatMarkBtn('underline', editor)}
-                        {getFormatNodeBtn('block-quote', editor)}
-                        {getFormatMarkBtn('code', editor)}
-                        {getFormatNodeBtn('code-block', editor)}
-                    </div>
-                    <Divider />
+                    {
+                        editor.readOnly ? null :
+                            <div>
+                                <div style={{ display: 'flex' }}>
+                                    {getFormatNodeBtn('heading-one', editor)}
+                                    {getFormatNodeBtn('heading-two', editor)}
+                                    {getFormatMarkBtn('bold', editor)}
+                                    {getFormatMarkBtn('italic', editor)}
+                                    {getFormatMarkBtn('underline', editor)}
+                                    {getFormatNodeBtn('block-quote', editor)}
+                                    {getFormatMarkBtn('code', editor)}
+                                    {getFormatNodeBtn('code-block', editor)}
+                                </div>
+                                <Divider />
+                            </div>
+                    }
                     <div style={{ padding: theme.spacing.unit }}>
                         {children}
                     </div>
@@ -162,12 +169,30 @@ export const rtePlugin = ({ theme }: { theme: Theme }): Plugin => {
                 case 'heading-two':
                     return <h2 {...attributes}>{children}</h2>
                 case 'code-block':
+                    let language = node.data.get('language');
+                    console.log(language)
+                    // if (!language) {
+                    //     language = 'javascript';
+                    //     editor.setNodeByKey(node.key, { data: { language }, type: node.type })
+                    // }
                     return (
-                        <pre {...attributes} style={{ backgroundColor: '#f0f0f0' }}>
-                            <code>
-                                {children}
-                            </code>
-                        </pre>
+                        <div>
+                            <select
+                                defaultValue={language}
+                                onChange={(event) => {
+                                    event.preventDefault()
+                                    editor.setNodeByKey(node.key, { data: { language: event.target.value }, type: node.type })
+                                }}>
+                                {languages.map(l => (
+                                    <option key={l}>{l}</option>
+                                ))}
+                            </select>
+                            <pre className={'language-' + language}>
+                                <code className={'language-' + language} {...attributes}>
+                                    {children}
+                                </code>
+                            </pre>
+                        </div>
                     )
                 default:
                     return next()
@@ -181,8 +206,6 @@ export const rtePlugin = ({ theme }: { theme: Theme }): Plugin => {
                 editor.toggleMark(mark)
                 return;
             }
-
-            console.log(editor.value.startBlock.key)
 
             if (editor.value.startBlock.type === 'code-block' && isHotKey(event, 'enter')) {
                 editor.insertText('\n');
