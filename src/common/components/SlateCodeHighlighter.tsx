@@ -28,16 +28,20 @@ const processTokens = (tokens: TokenStream, offset: number, baseClass: string) =
     return result;
 }
 
-export const getCodeHighlighter = (
+const getCodeHighlighter = (
     { nodeType }:
         { nodeType: string}
 ): Plugin => {
     return {
         decorateNode: (node, editor, next) => {
-            if (node instanceof Text || node.type !== nodeType || node.object !== 'block' || !Prism.languages[node.data.get('language')]) {
+            if (node instanceof Text || node.type !== nodeType || node.object !== 'block') {
                 return next();
             }
             const language = node.data.get('language')
+
+            if(!Prism.languages[language]){
+                return next()
+            }
             const { text } = node;
             const tokens = Prism.tokenize(text, Prism.languages[language]);
             const { key } = node.getTexts().get(0);
@@ -69,3 +73,5 @@ export const getCodeHighlighter = (
         }
     }
 }
+
+export default getCodeHighlighter;

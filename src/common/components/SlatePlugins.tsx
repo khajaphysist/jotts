@@ -170,11 +170,10 @@ export const rtePlugin = ({ theme }: { theme: Theme }): Plugin => {
                     return <h2 {...attributes}>{children}</h2>
                 case 'code-block':
                     let language = node.data.get('language');
-                    console.log(language)
-                    // if (!language) {
-                    //     language = 'javascript';
-                    //     editor.setNodeByKey(node.key, { data: { language }, type: node.type })
-                    // }
+                    if (!language) {
+                        language = 'javascript';
+                        editor.setNodeByKey(node.key, { data: { language }, type: node.type })
+                    }
                     return (
                         <div>
                             <select
