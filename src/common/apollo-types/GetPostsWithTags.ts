@@ -13,7 +13,7 @@ export interface GetPostsWithTags_jotts_post_by_tag_author {
   name: string | null;
 }
 
-export interface GetPostsWithTags_jotts_post_by_tag_tags {
+export interface GetPostsWithTags_jotts_post_by_tag_post_tags {
   __typename: "jotts_post_tag";
   tag: string;
 }
@@ -31,7 +31,7 @@ export interface GetPostsWithTags_jotts_post_by_tag {
   /**
    * An array relationship
    */
-  tags: GetPostsWithTags_jotts_post_by_tag_tags[];
+  post_tags: GetPostsWithTags_jotts_post_by_tag_post_tags[];
 }
 
 export interface GetPostsWithTags_jotts_post_by_tag_aggregate_aggregate {

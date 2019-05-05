@@ -6,7 +6,7 @@
 // GraphQL query operation: GetUserPosts
 // ====================================================
 
-export interface GetUserPosts_jotts_post_tags {
+export interface GetUserPosts_jotts_post_post_tags {
   __typename: "jotts_post_tag";
   tag: string;
 }
@@ -20,7 +20,7 @@ export interface GetUserPosts_jotts_post {
   /**
    * An array relationship
    */
-  tags: GetUserPosts_jotts_post_tags[];
+  post_tags: GetUserPosts_jotts_post_post_tags[];
 }
 
 export interface GetUserPosts {

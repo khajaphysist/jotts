@@ -3,13 +3,18 @@ CREATE SCHEMA jotts;
 CREATE TABLE jotts."user" (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     handle text NOT NULL UNIQUE,
+    name text,
+    profile_picture text,
+    country text
+);
+
+CREATE TABLE jotts.login_details (
+    id uuid NOT NULL REFERENCES jotts."user",
     email text NOT NULL UNIQUE,
     password_hash text NOT NULL,
     password_salt text NOT NULL,
     password_iterations int NOT NULL CHECK (password_iterations>0),
-    name text,
-    profile_picture text,
-    country text
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE jotts.post (

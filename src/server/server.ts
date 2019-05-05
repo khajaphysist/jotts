@@ -29,13 +29,13 @@ app
 
         passport.use(new LocalStrategy(
             function (email, password, done) {
-                User.getOne({ email })
+                User.getOne(email)
                     .then(
                         function (user) {
                             if (!user) {
                                 return done(null, false);
                             }
-                            const { __typename, password_hash, password_iterations, password_salt, email, ...rest } = user
+                            const { password_hash, password_iterations, password_salt, email, ...rest } = user
                             crypto.pbkdf2(password, password_salt, password_iterations, 64, 'sha512', (err, key) => {
                                 const hash = key.toString('hex');
                                 if (err || hash !== password_hash) {

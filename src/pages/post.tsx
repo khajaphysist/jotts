@@ -18,7 +18,7 @@ query GetPost($slug: String!) {
             profile_picture
         }
         slug
-        tags {
+        post_tags {
             tag
         }
         content
@@ -56,7 +56,7 @@ class Post extends React.Component<Props> {
                                         <p>Title: {postData.title}</p>
                                         <p>Author: {postData.author.name}, @{postData.author.handle},</p>
                                         <p>Content: {postData.content}</p>
-                                        <p>Tags: {postData.tags.map(t=>t.tag).join(", ")}</p>
+                                        <p>Tags: {postData.post_tags.map(t=>t.tag).join(", ")}</p>
                                     </div>
                                 )
                             }

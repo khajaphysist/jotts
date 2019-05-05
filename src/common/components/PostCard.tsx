@@ -57,7 +57,7 @@ interface ComponentProps {
             handle: string
         }
         content: string | null
-        tags: Array<{ tag: string }>
+        post_tags: Array<{ tag: string }>
     }
 }
 
@@ -102,7 +102,7 @@ class PostCard extends React.Component<Props, State> {
                 </CardContent>
                 <div className={classes.itemsTags}>
                     <Typography variant="subtitle2" color="textSecondary">
-                        {this.props.data.tags.map(t => t.tag).join(", ")}
+                        {this.props.data.post_tags.map(t => t.tag).join(", ")}
                     </Typography>
                 </div>
                 <CardActions className={classes.itemActions}>

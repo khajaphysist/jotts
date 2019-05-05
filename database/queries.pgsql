@@ -19,10 +19,3 @@ OR
     HAVING count(*) = array_length(string_to_array($1,','),1)
   )
 $$ LANGUAGE SQL STABLE;
-
-
-SELECT jotts.tag.tag, levenshtein('ui'::TEXT, jotts.tag.tag), jotts.tag_post_count_view.post_count
-FROM jotts.tag JOIN jotts.tag_post_count_view
-ON jotts.tag.tag = jotts.tag_post_count_view.tag
-WHERE jotts.tag.tag LIKE '%ui%'
-ORDER BY jotts.tag_post_count_view.post_count DESC;

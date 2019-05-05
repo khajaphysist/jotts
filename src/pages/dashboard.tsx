@@ -29,7 +29,7 @@ query GetUserPosts($authorId: uuid!, $skip: Int!, $size: Int!) {
         slug
         title
         content
-        tags {
+        post_tags {
             tag
         }
     }

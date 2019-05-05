@@ -22,7 +22,7 @@ services:
       - "5050:80"
     restart: unless-stopped
   graphql-engine:
-    image: hasura/graphql-engine:v1.0.0-alpha42
+    image: hasura/graphql-engine:v1.0.0-alpha44
     ports:
     - "8080:8080"
     depends_on:

@@ -14,7 +14,7 @@ export interface GetPost_jotts_post_author {
   profile_picture: string | null;
 }
 
-export interface GetPost_jotts_post_tags {
+export interface GetPost_jotts_post_post_tags {
   __typename: "jotts_post_tag";
   tag: string;
 }
@@ -31,7 +31,7 @@ export interface GetPost_jotts_post {
   /**
    * An array relationship
    */
-  tags: GetPost_jotts_post_tags[];
+  post_tags: GetPost_jotts_post_post_tags[];
   content: string | null;
 }
 
