@@ -98,7 +98,7 @@ class Login extends React.Component<Props, State> {
                                             if(v.status===200){
                                                 Router.push('/')
                                             } else {
-                                                // window.alert("invalid email or password")
+                                                window.alert("invalid email or password")
                                             }
                                         });
                                     }}

@@ -6,42 +6,30 @@
 // GraphQL query operation: GetPost
 // ====================================================
 
-export interface GetPost_jotts_post_author {
-  __typename: "jotts_user";
-  id: any;
-  name: string | null;
-  handle: string;
-  profile_picture: string | null;
-}
-
-export interface GetPost_jotts_post_post_tags {
+export interface GetPost_jotts_post_by_pk_post_tags {
   __typename: "jotts_post_tag";
   tag: string;
 }
 
-export interface GetPost_jotts_post {
+export interface GetPost_jotts_post_by_pk {
   __typename: "jotts_post";
   id: any;
   title: string;
-  /**
-   * An object relationship
-   */
-  author: GetPost_jotts_post_author;
   slug: string;
+  content: string | null;
   /**
    * An array relationship
    */
-  post_tags: GetPost_jotts_post_post_tags[];
-  content: string | null;
+  post_tags: GetPost_jotts_post_by_pk_post_tags[];
 }
 
 export interface GetPost {
   /**
-   * fetch data from the table: "jotts.post"
+   * fetch data from the table: "jotts.post" using primary key columns
    */
-  jotts_post: GetPost_jotts_post[];
+  jotts_post_by_pk: GetPost_jotts_post_by_pk | null;
 }
 
 export interface GetPostVariables {
-  slug: string;
+  id: any;
 }

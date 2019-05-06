@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node -O '{\"module\": \"commonjs\"}' src/server/server.ts",
-    "build": "next build",
+    "build": "next build ./src",
     "start": "next start",
     "codegen": "apollo client:codegen --target typescript --outputFlat src/common/apollo-types"
   },
@@ -47,6 +47,7 @@
     "react-select": "^2.4.3",
     "slate": "^0.45.1",
     "slate-react": "^0.21.22",
+    "slug": "^1.1.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -71,6 +72,7 @@
     "@types/react-jss": "^8.6.3",
     "@types/react-select": "^2.0.17",
     "@types/slate-react": "^0.21.2",
+    "@types/slug": "^0.9.1",
     "@types/styled-jsx": "^2.2.8",
     "@types/uuid": "^3.4.4",
     "typescript": "^3.4.3",

@@ -6,8 +6,7 @@ import { emphasize } from '@material-ui/core/styles/colorManipulator';
 
 const styles = (theme: Theme) => createStyles({
     root: {
-        flexGrow: 1,
-        margin: 2 * theme.spacing.unit
+        flexGrow: 1
     },
     input: {
         display: 'flex',

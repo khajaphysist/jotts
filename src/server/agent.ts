@@ -1,4 +1,9 @@
+import ApolloClient from 'apollo-boost';
+import gql from 'graphql-tag';
+import fetch from 'isomorphic-unfetch';
 import * as Knex from 'knex';
+
+import { GetUser, GetUserVariables } from '../common/apollo-types/GetUser';
 
 const knex = Knex({
     client: 'pg',
@@ -10,6 +15,11 @@ const knex = Knex({
     }
 });
 
+const client = new ApolloClient({
+    uri: 'http://localhost:8080/v1alpha1/graphql',
+    fetch
+});
+
 interface RegisterUserVariables {
     handle: string
     email: string
@@ -18,12 +28,16 @@ interface RegisterUserVariables {
     password_iterations: number
 }
 
-interface UserLoginDetails {
+interface UserDetails {
     id: string
     email: string
     password_hash: string
     password_salt: string
     password_iterations: number
+    name: string,
+    handle: string,
+    country: string,
+    profile_picture: string,
 }
 
 class User {
@@ -48,9 +62,29 @@ class User {
         return newId;
     }
 
-    public async getOne(email: string): Promise<UserLoginDetails> {
-        const res = await knex('jotts.login_details').where('email', email).select();
-        return res[0];
+    public async getOne(email: string): Promise<UserDetails | undefined> {
+        const user = (await knex('jotts.login_details').where('email', email).select())[0];
+        if (user) {
+            const res = await client.query<GetUser, GetUserVariables>({
+                query: gql`
+                query GetUser($id: uuid!){
+                    jotts_user_by_pk(id: $id) {
+                        name,
+                        handle,
+                        country,
+                        profile_picture
+                    }
+                }
+                `,
+                variables: { id: user.id }
+            });
+            if (!res.data.jotts_user_by_pk) {
+                return undefined;
+            };
+            const { __typename, ...rest } = res.data.jotts_user_by_pk;
+            return { ...rest, ...user }
+        }
+        return undefined;
     }
 }
 

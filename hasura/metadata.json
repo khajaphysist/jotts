@@ -1,10 +1,5 @@
 {
-    "functions": [
-        {
-            "schema": "jotts",
-            "name": "post_by_tag"
-        }
-    ],
+    "functions": [],
     "remote_schemas": [],
     "tables": [
         {
@@ -32,7 +27,7 @@
                             }
                         }
                     },
-                    "name": "posts",
+                    "name": "collection_posts",
                     "comment": null
                 }
             ],
@@ -67,7 +62,7 @@
                             }
                         }
                     },
-                    "name": "collections",
+                    "name": "collection_posts",
                     "comment": null
                 },
                 {
@@ -80,7 +75,7 @@
                             }
                         }
                     },
-                    "name": "tags",
+                    "name": "post_tags",
                     "comment": null
                 }
             ],
@@ -95,23 +90,7 @@
                 "schema": "jotts",
                 "name": "tag"
             },
-            "object_relationships": [
-                {
-                    "using": {
-                        "manual_configuration": {
-                            "remote_table": {
-                                "schema": "jotts",
-                                "name": "tag_post_count_view"
-                            },
-                            "column_mapping": {
-                                "tag": "tag"
-                            }
-                        }
-                    },
-                    "name": "post_count",
-                    "comment": null
-                }
-            ],
+            "object_relationships": [],
             "array_relationships": [
                 {
                     "using": {
@@ -123,7 +102,7 @@
                             }
                         }
                     },
-                    "name": "posts",
+                    "name": "post_tags",
                     "comment": null
                 }
             ],
@@ -220,13 +199,6 @@
                 "name": "post_tag"
             },
             "object_relationships": [
-                {
-                    "using": {
-                        "foreign_key_constraint_on": "tag"
-                    },
-                    "name": "tagByTag",
-                    "comment": null
-                },
                 {
                     "using": {
                         "foreign_key_constraint_on": "post_id"

@@ -44,12 +44,6 @@ export interface GetPostsWithTags_jotts_post_by_tag_aggregate {
   aggregate: GetPostsWithTags_jotts_post_by_tag_aggregate_aggregate | null;
 }
 
-export interface GetPostsWithTags_jotts_tag_post_count_view {
-  __typename: "jotts_tag_post_count_view";
-  tag: string | null;
-  post_count: any | null;
-}
-
 export interface GetPostsWithTags {
   /**
    * execute function "jotts.post_by_tag" which returns "jotts.post"
@@ -59,10 +53,6 @@ export interface GetPostsWithTags {
    * execute function "jotts.post_by_tag" and query aggregates on result of table type "jotts.post"
    */
   jotts_post_by_tag_aggregate: GetPostsWithTags_jotts_post_by_tag_aggregate;
-  /**
-   * fetch data from the table: "jotts.tag_post_count_view"
-   */
-  jotts_tag_post_count_view: GetPostsWithTags_jotts_tag_post_count_view[];
 }
 
 export interface GetPostsWithTagsVariables {

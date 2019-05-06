@@ -6,8 +6,22 @@ import {
   AppBar, Button, createStyles, NoSsr, Toolbar, WithStyles, withStyles
 } from '@material-ui/core';
 
+import { CookieUser } from '../types';
 import { User } from '../utils/agent';
-import { isLoggedIn } from '../utils/loginStateProvider';
+import { isLoggedIn, loggedInUser } from '../utils/loginStateProvider';
+
+const getDashboardLink = (user: CookieUser | undefined) => {
+  if (user) {
+    return {
+      href: `/dashboard?handle=${user.handle}`,
+      as: `/${user.handle}/dashboard`
+    }
+  } else {
+    return {
+      href: '/login'
+    }
+  }
+}
 
 const styles = () => createStyles({
   loginButton: {
@@ -32,7 +46,7 @@ class Header extends React.Component<StyleProps> {
             <NoSsr>
               {
                 isLoggedIn() ?
-                  <Link href="/dashboard" passHref>
+                  <Link {...getDashboardLink(loggedInUser())} passHref>
                     <Button>Dashboard</Button>
                   </Link>
                   :

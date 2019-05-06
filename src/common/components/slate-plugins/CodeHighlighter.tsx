@@ -28,7 +28,7 @@ const processTokens = (tokens: TokenStream, offset: number, baseClass: string) =
     return result;
 }
 
-const getCodeHighlighter = (
+const CodeHighlighter = (
     { nodeType }:
         { nodeType: string}
 ): Plugin => {
@@ -74,4 +74,4 @@ const getCodeHighlighter = (
     }
 }
 
-export default getCodeHighlighter;
+export default CodeHighlighter;

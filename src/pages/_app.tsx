@@ -24,7 +24,9 @@ class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
         const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
         const c = cookies(ctx);
 
-        if (["/login", "/","/preview"].includes(ctx.pathname)) {
+        console.log("Checking Here")
+
+        if (["/login", "/"].includes(ctx.pathname)) {
             return { pageProps };
         } else if (typeof c[USER_INFO_COOKIE_NAME] !== 'undefined') {
             const headers = { "Cookie": typeof c[LOGIN_TOKEN_COOKIE_NAME] !== 'undefined' ? `${LOGIN_TOKEN_COOKIE_NAME}=${c[LOGIN_TOKEN_COOKIE_NAME]}` : "" };

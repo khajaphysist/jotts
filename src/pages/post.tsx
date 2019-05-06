@@ -3,11 +3,11 @@ import { NextContext } from 'next';
 import React from 'react';
 import { Query } from 'react-apollo';
 
-import { GetPost, GetPostVariables } from '../common/apollo-types/GetPost';
+import { GetPostSummary, GetPostSummaryVariables } from '../common/apollo-types/GetPostSummary';
 import Layout from '../common/components/Layout';
 
-const getPost = gql`
-query GetPost($slug: String!) {
+const getPostSummary = gql`
+query GetPostSummary($slug: String!) {
     jotts_post(where:{slug: {_eq: $slug}}) {
         id
         title
@@ -40,7 +40,7 @@ class Post extends React.Component<Props> {
     public render = () =>
         (
             <Layout>
-                <Query<GetPost, GetPostVariables> query={getPost} variables={{ slug: this.props.slug }}>
+                <Query<GetPostSummary, GetPostSummaryVariables> query={getPostSummary} variables={{ slug: this.props.slug }}>
                     {
                         ({ loading, error, data }) => {
                             if (error) {

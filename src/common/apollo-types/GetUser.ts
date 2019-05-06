@@ -6,25 +6,21 @@
 // GraphQL query operation: GetUser
 // ====================================================
 
-export interface GetUser_jotts_user {
+export interface GetUser_jotts_user_by_pk {
   __typename: "jotts_user";
-  id: any;
   name: string | null;
-  password_hash: string;
-  password_salt: string;
-  password_iterations: number;
-  email: string;
-  profile_picture: string | null;
   handle: string;
+  country: string | null;
+  profile_picture: string | null;
 }
 
 export interface GetUser {
   /**
-   * fetch data from the table: "jotts.user"
+   * fetch data from the table: "jotts.user" using primary key columns
    */
-  jotts_user: GetUser_jotts_user[];
+  jotts_user_by_pk: GetUser_jotts_user_by_pk | null;
 }
 
 export interface GetUserVariables {
-  email: string;
+  id: any;
 }

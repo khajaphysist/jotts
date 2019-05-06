@@ -1,22 +1,17 @@
-import { ApolloClient } from 'apollo-boost';
 import gql from 'graphql-tag';
-import { debounce } from 'lodash';
 import Pagination from 'material-ui-flat-pagination';
 import { GetInitialProps, NextContext } from 'next';
 import Router from 'next/router';
 import React from 'react';
-import { ApolloConsumer, Query } from 'react-apollo';
+import { Query } from 'react-apollo';
 
 import { createStyles, NoSsr, WithStyles, withStyles } from '@material-ui/core';
 
 import {
   GetPostsWithTags, GetPostsWithTagsVariables
 } from '../common/apollo-types/GetPostsWithTags';
-import {
-  GetTagSuggestions, GetTagSuggestionsVariables
-} from '../common/apollo-types/GetTagSuggestions';
+import SelectTags from '../common/components/apollo/SelectTags';
 import Layout from '../common/components/Layout';
-import MaterialReactSelect from '../common/components/MaterialReactSelect';
 import PostCard from '../common/components/PostCard';
 
 const getPostsWithTags = gql`
@@ -39,18 +34,6 @@ query GetPostsWithTags($skip: Int!, $size: Int!, $tags: String!) {
     aggregate {
       count
     }
-  }
-  jotts_tag_post_count_view(limit:100, order_by:{post_count:desc_nulls_last}) {
-    tag
-    post_count
-  }
-}
-`
-
-const getTagSuggestions = gql`
-query GetTagSuggestions($query: String!){
-  jotts_tag_post_count_view(limit: 20, order_by:{post_count: desc_nulls_last}, where:{tag:{_similar:$query}}) {
-    tag
   }
 }
 `
@@ -78,17 +61,6 @@ type Props = StyleProps & InitialProps
 
 const defaultPageSize = 20;
 
-const debouncedFetch = debounce((input, callback, client: ApolloClient<any>) => {
-  client.query<GetTagSuggestions, GetTagSuggestionsVariables>({
-    query: getTagSuggestions,
-    variables: {
-      query: `%${input}%`
-    }
-  }).then(response => {
-    callback(response.data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t))
-  })
-}, 250)
-
 const getInitialProps: GetInitialProps<InitialProps, NextContext> = async (context) => {
   const p = context.query['page'];
   const s = context.query['size'];
@@ -110,8 +82,7 @@ class Index extends React.Component<Props> {
     return (
       <Layout>
         <div>
-          <ApolloConsumer>
-            {client => (
+
               <Query<GetPostsWithTags, GetPostsWithTagsVariables> query={getPostsWithTags} variables={{ size: this.props.size, skip: (this.props.page - 1) * this.props.size, tags: this.props.tags.join(',') }}>
                 {({ loading, error, data }) => {
                   if (error) {
@@ -124,11 +95,7 @@ class Index extends React.Component<Props> {
                     <div>
                       <div>
                         <NoSsr>
-                          <MaterialReactSelect
-                            options={data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t)}
-                            loadOptions={(input, callback) => {
-                              debouncedFetch(input, callback, client)
-                            }}
+                          <SelectTags
                             onChange={(selected) => {
                               selected.length > 0 ? Router.push("/?tags=" + selected.join(",")) : Router.push("/")
                             }}
@@ -157,8 +124,6 @@ class Index extends React.Component<Props> {
                   ) : null
                 }}
               </Query>
-            )}
-          </ApolloConsumer>
         </div>
       </Layout>
     )

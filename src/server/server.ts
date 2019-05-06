@@ -75,6 +75,7 @@ app
         server.post('/check-auth',
             passport.authenticate('jwt', { session: false }),
             (_req, res) => {
+                console.log("check auth called...")
                 res.statusCode = 200;
                 res.setHeader("Content-Type", "text/plain")
                 res.send("OK")
@@ -106,6 +107,13 @@ app
             res.cookie(USER_INFO_COOKIE_NAME, '', { domain: "localhost", path: "/", expires: new Date(0) })
             res.send('')
         })
+
+        server.get('/:handle/dashboard', passport.authenticate('jwt', { session: false, failureRedirect: '/login' })
+            , (req, res) => {
+                const page = '/dashboard';
+                const queryParams = { handle: req.params.handle };
+                app.render(req, res, page, queryParams);
+            })
 
         server.get('*', (req, res) => {
             return handle(req, res);

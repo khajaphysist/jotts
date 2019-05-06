@@ -99,7 +99,7 @@ const getFormatNodeBtn = (type: NodeType, editor: Editor) => {
     ) : null
 }
 
-export const rtePlugin = ({ theme }: { theme: Theme }): Plugin => {
+export default ({ theme }: { theme: Theme }): Plugin => {
     const languages = Object.keys(Prism.languages).sort();
     return {
         renderEditor: (props, editor, next) => {
