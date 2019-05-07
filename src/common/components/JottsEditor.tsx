@@ -1,5 +1,3 @@
-import '../../static/prism.css';
-
 import _ from 'lodash';
 import Prism from 'prismjs';
 import React from 'react';
@@ -79,7 +77,13 @@ class JottsEditor extends React.Component<Props, State> {
             display: true
         }
         this.plugins = [RichTextEditor({ theme: this.props.theme }), CodeHighlighter({ nodeType: 'code-block' })];
-        Prism.hooks.add('complete', this.forceRender);
+        Prism.hooks.add('complete', () => this.forceUpdate());
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps !== this.props) {
+            this.setState({ ...this.state, value: initialValue(this.props.initialValue) })
+        }
     }
 
     render() {
@@ -95,9 +99,9 @@ class JottsEditor extends React.Component<Props, State> {
 
     onChange = ({ value }: { operations: any, value: Value }) => {
         if (value.document != this.state.value.document) {
-            this.setState({ ...this.state, value });
             this.externalOnChange(value)
         }
+        this.setState({ ...this.state, value });
     }
 
     externalOnChange = _.debounce(async (value: Value) => {
@@ -107,11 +111,11 @@ class JottsEditor extends React.Component<Props, State> {
         }
     }, this.props.debounceInterval !== undefined ? this.props.debounceInterval : 200)
 
-    forceRender = () => {
-        this.setState({ ...this.state, display: false })
-        console.log("Force Rendering")
-        this.setState({ ...this.state, display: true })
-    }
+    // forceRender = () => {
+    //     this.setState({ ...this.state, display: false })
+    //     console.log("Force Rendering")
+    //     this.setState({ ...this.state, display: true })
+    // }
 }
 
 export default withStyles(styles, { withTheme: true })(JottsEditor)

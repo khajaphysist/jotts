@@ -3,17 +3,17 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: EditPost
+// GraphQL mutation operation: NewPost
 // ====================================================
 
-export interface EditPost_update_jotts_post_returning {
+export interface NewPost_insert_jotts_post_returning {
   __typename: "jotts_post";
   id: any;
   title: string;
   content: string | null;
 }
 
-export interface EditPost_update_jotts_post {
+export interface NewPost_insert_jotts_post {
   __typename: "jotts_post_mutation_response";
   /**
    * number of affected rows by the mutation
@@ -22,19 +22,20 @@ export interface EditPost_update_jotts_post {
   /**
    * data of the affected rows by the mutation
    */
-  returning: EditPost_update_jotts_post_returning[];
+  returning: NewPost_insert_jotts_post_returning[];
 }
 
-export interface EditPost {
+export interface NewPost {
   /**
-   * update data of the table: "jotts.post"
+   * insert data into the table: "jotts.post"
    */
-  update_jotts_post: EditPost_update_jotts_post | null;
+  insert_jotts_post: NewPost_insert_jotts_post | null;
 }
 
-export interface EditPostVariables {
-  id: any;
+export interface NewPostVariables {
+  authorId: any;
   title: string;
   slug: string;
-  content?: string | null;
+  content: string;
+  id: any;
 }

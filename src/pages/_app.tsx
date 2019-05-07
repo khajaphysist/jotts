@@ -1,3 +1,5 @@
+import '../static/prism.css';
+
 import { ApolloClient, NormalizedCacheObject } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
 import cookies from 'next-cookies';

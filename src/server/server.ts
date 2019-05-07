@@ -115,6 +115,13 @@ app
                 app.render(req, res, page, queryParams);
             })
 
+        server.get('/:handle/dashboard/:post_id', passport.authenticate('jwt', { session: false, failureRedirect: '/login' })
+            , (req, res) => {
+                const page = '/dashboard';
+                const queryParams = { handle: req.params.handle, post_id: req.params.post_id };
+                app.render(req, res, page, queryParams);
+            })
+
         server.get('*', (req, res) => {
             return handle(req, res);
         });

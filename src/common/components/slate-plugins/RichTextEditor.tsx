@@ -3,7 +3,7 @@ import Prism from 'prismjs';
 import { Editor, Value } from 'slate';
 import { Plugin } from 'slate-react';
 
-import { Divider, IconButton, Paper, Theme } from '@material-ui/core';
+import { Divider, IconButton, Paper, Theme, Typography } from '@material-ui/core';
 import FormatCodeIcon from '@material-ui/icons/Code';
 import DvrIcon from '@material-ui/icons/Dvr';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
@@ -156,18 +156,20 @@ export default ({ theme }: { theme: Theme }): Plugin => {
             const { attributes, children, node } = props
 
             switch (node.type) {
+                case 'paragraph':
+                    return <Typography {...attributes} variant='body1'>{children}</Typography>
                 case 'block-quote':
-                    return <blockquote {...attributes}
+                    return <blockquote
                         style={{
                             color: theme.palette.text.secondary,
                             borderLeft: '0.2em solid ' + theme.palette.secondary.light,
                             paddingLeft: theme.spacing.unit,
                             margin: 0,
-                        }}>{children}</blockquote>
+                        }}><Typography {...attributes} variant="subtitle1">{children}</Typography></blockquote>
                 case 'heading-one':
-                    return <h1 {...attributes}>{children}</h1>
+                    return <Typography {...attributes} variant="h1">{children}</Typography>
                 case 'heading-two':
-                    return <h2 {...attributes}>{children}</h2>
+                    return <Typography {...attributes} variant="h2">{children}</Typography>
                 case 'code-block':
                     let language = node.data.get('language');
                     if (!language) {
@@ -211,7 +213,7 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                 return;
             }
 
-            if (editor.value.startBlock.type === 'code-block' && isHotKey(event, 'shift+enter')) {
+            if (isHotKey(event, 'shift+enter')) {
                 next()
                 editor.setBlocks(DEFAULT_NODE)
                 return;
