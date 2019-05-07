@@ -176,7 +176,7 @@ class EditPostComponent extends React.Component<Props, State> {
     }
 
     createNewPost() {
-        if (this.state.loading && this.props.action.type === 'new') {
+        if (this.props.action.type === 'new') {
             const { client } = this.props;
             const user = loggedInUser();
             if (user) {
