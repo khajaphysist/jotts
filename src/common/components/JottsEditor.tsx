@@ -1,38 +1,52 @@
-import _ from 'lodash';
 import Prism from 'prismjs';
 import React from 'react';
-import { Value } from 'slate';
-import { Editor, Plugin } from 'slate-react';
+import { Editor as EditorInstance, KeyUtils, Value } from 'slate';
+import { Editor, EditorProps, Plugin } from 'slate-react';
 
-import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import CodeHighlighter from './slate-plugins/CodeHighlighter';
 import RichTextEditor from './slate-plugins/RichTextEditor';
 
-const styles = (theme: Theme) => createStyles({
+const styles = () => createStyles({
 });
 
-type ComponentProps = {
-    onChange?: (value: string) => any,
-    debounceInterval?: number,
-    initialValue?: string | null
-}
+interface ComponentProps extends EditorProps { };
 
 type StyleProps = WithStyles<typeof styles, true>
 
 type Props = StyleProps & ComponentProps
 
-interface State {
-    value: Value,
-    display: boolean,
+export type EditorValue = Value;
+
+class JottsEditor extends React.Component<Props> {
+    private plugins: Plugin[]
+    constructor(props: Props) {
+        super(props)
+        this.plugins = [RichTextEditor({ theme: this.props.theme }), CodeHighlighter({ nodeType: 'code-block' })];
+        Prism.hooks.add('complete', () => this.forceUpdate());
+    }
+
+    render() {
+        return (<Editor {...this.props} plugins={this.plugins} />)
+    }
 }
 
-const START_VALUE = 'Start Jotting...';
+export function serializeValue(value: Value): string {
+    return JSON.stringify(value.toJSON())
+}
 
-export const generateInitialValue = (message?: string) => JSON.stringify(showMessageValue(message || START_VALUE).toJSON())
+export function deserializeValue(s: string): Value {
+    try {
+        return Value.fromJSON(JSON.parse(s))
+    } catch (error) {
+        console.log(error)
+        return createMessageValue("Some error occurred when deserializing")
+    }
+}
 
-const showMessageValue = (message: string) =>
-    Value.fromJSON(
+export function createMessageValue(message: string): Value {
+    return Value.fromJSON(
         {
             document: {
                 nodes: [
@@ -55,67 +69,6 @@ const showMessageValue = (message: string) =>
             },
         }
     )
-
-const initialValue = (value: string | null | undefined): Value => {
-    if (!value) {
-        return showMessageValue(START_VALUE)
-    }
-    try {
-        return Value.fromJSON(JSON.parse(value))
-    } catch (e) {
-        console.log(e)
-        return showMessageValue('Some error occurred when reading value...')
-    }
-};
-
-class JottsEditor extends React.Component<Props, State> {
-    private plugins: Plugin[]
-    constructor(props: Props) {
-        super(props)
-        this.state = {
-            value: initialValue(this.props.initialValue),
-            display: true
-        }
-        this.plugins = [RichTextEditor({ theme: this.props.theme }), CodeHighlighter({ nodeType: 'code-block' })];
-        Prism.hooks.add('complete', () => this.forceUpdate());
-    }
-
-    componentDidUpdate(prevProps: Props) {
-        if (prevProps !== this.props) {
-            this.setState({ ...this.state, value: initialValue(this.props.initialValue) })
-        }
-    }
-
-    render() {
-        const { classes } = this.props;
-        return this.state.display ? (
-            <Editor
-                value={this.state.value}
-                onChange={this.onChange}
-                plugins={this.plugins}
-            />
-        ) : null
-    }
-
-    onChange = ({ value }: { operations: any, value: Value }) => {
-        if (value.document != this.state.value.document) {
-            this.externalOnChange(value)
-        }
-        this.setState({ ...this.state, value });
-    }
-
-    externalOnChange = _.debounce(async (value: Value) => {
-        const serializedValue = JSON.stringify(value.toJSON());
-        if (this.props.onChange) {
-            await this.props.onChange(serializedValue)
-        }
-    }, this.props.debounceInterval !== undefined ? this.props.debounceInterval : 200)
-
-    // forceRender = () => {
-    //     this.setState({ ...this.state, display: false })
-    //     console.log("Force Rendering")
-    //     this.setState({ ...this.state, display: true })
-    // }
 }
 
 export default withStyles(styles, { withTheme: true })(JottsEditor)

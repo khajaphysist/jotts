@@ -4,6 +4,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 
 import { GetPostSummary, GetPostSummaryVariables } from '../common/apollo-types/GetPostSummary';
+import JottsEditor, { deserializeValue } from '../common/components/JottsEditor';
 import Layout from '../common/components/Layout';
 
 const getPostSummary = gql`
@@ -52,11 +53,14 @@ class Post extends React.Component<Props> {
                             if (data && data.jotts_post.length > 0) {
                                 const postData = data.jotts_post[0];
                                 return (
-                                    <div>
+                                    <div style={{width: 900}}>
                                         <p>Title: {postData.title}</p>
                                         <p>Author: {postData.author.name}, @{postData.author.handle},</p>
-                                        <p>Content: {postData.content}</p>
-                                        <p>Tags: {postData.post_tags.map(t=>t.tag).join(", ")}</p>
+                                        {
+                                            postData.content ?
+                                                (<JottsEditor value={deserializeValue(postData.content)} readOnly />) : null
+                                        }
+                                        <p>Tags: {postData.post_tags.map(t => t.tag).join(", ")}</p>
                                     </div>
                                 )
                             }

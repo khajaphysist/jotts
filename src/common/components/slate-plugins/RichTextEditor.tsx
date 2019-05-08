@@ -1,7 +1,7 @@
 import { isKeyHotkey } from 'is-hotkey';
 import Prism from 'prismjs';
 import { Editor, Value } from 'slate';
-import { Plugin } from 'slate-react';
+import { getEventTransfer, Plugin } from 'slate-react';
 
 import { Divider, IconButton, Paper, Theme, Typography } from '@material-ui/core';
 import FormatCodeIcon from '@material-ui/icons/Code';
@@ -122,7 +122,7 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                                 <Divider />
                             </div>
                     }
-                    <div style={{ padding: theme.spacing.unit }}>
+                    <div style={{ padding: 2 * theme.spacing.unit }}>
                         {children}
                     </div>
                 </Paper>
@@ -178,16 +178,21 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                     }
                     return (
                         <div>
-                            <select
-                                defaultValue={language}
-                                onChange={(event) => {
-                                    event.preventDefault()
-                                    editor.setNodeByKey(node.key, { data: { language: event.target.value }, type: node.type })
-                                }}>
-                                {languages.map(l => (
-                                    <option key={l}>{l}</option>
-                                ))}
-                            </select>
+                            {
+                                editor.readOnly ? null :
+                                    (
+                                        <select
+                                            defaultValue={language}
+                                            onChange={(event) => {
+                                                event.preventDefault()
+                                                editor.setNodeByKey(node.key, { data: { language: event.target.value }, type: node.type })
+                                            }}>
+                                            {languages.map(l => (
+                                                <option key={l}>{l}</option>
+                                            ))}
+                                        </select>
+                                    )
+                            }
                             <pre className={'language-' + language}>
                                 <code className={'language-' + language} {...attributes}>
                                     {children}
@@ -219,6 +224,14 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                 return;
             }
 
+            return next()
+        },
+        onPaste: (event, editor, next) => {
+            const transfer: any = getEventTransfer(event);
+            if (editor.value.startBlock.type === 'code-block') {
+                editor.insertText(transfer.text ? transfer.text : '');
+                return;
+            }
             return next()
         }
     }

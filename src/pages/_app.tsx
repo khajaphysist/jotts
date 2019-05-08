@@ -26,14 +26,11 @@ class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
         const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
         const c = cookies(ctx);
 
-        console.log("Checking Here")
-
         if (["/login", "/"].includes(ctx.pathname)) {
             return { pageProps };
         } else if (typeof c[USER_INFO_COOKIE_NAME] !== 'undefined') {
             const headers = { "Cookie": typeof c[LOGIN_TOKEN_COOKIE_NAME] !== 'undefined' ? `${LOGIN_TOKEN_COOKIE_NAME}=${c[LOGIN_TOKEN_COOKIE_NAME]}` : "" };
             const response = await fetch("http://localhost:3000/check-auth", { method: "POST", credentials: "include", headers }).then(data => data.text());
-            console.log("Response: ", response)
             if (response === "OK") return { pageProps };
             else redirectTo('/login', { res: ctx.res, status: 301 });
         } else {

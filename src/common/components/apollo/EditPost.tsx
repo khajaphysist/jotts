@@ -11,16 +11,21 @@ import uuidv4 from 'uuid/v4';
 import { InputBase, Paper } from '@material-ui/core';
 import { InputBaseProps } from '@material-ui/core/InputBase';
 
+import { getUserPosts } from '../../../pages/dashboard';
 import { EditPost, EditPostVariables } from '../../apollo-types/EditPost';
 import { GetPost, GetPostVariables } from '../../apollo-types/GetPost';
+import {
+  GetUserPosts, GetUserPosts_jotts_post, GetUserPostsVariables
+} from '../../apollo-types/GetUserPosts';
 import { NewPost, NewPostVariables } from '../../apollo-types/NewPost';
 import { loggedInUser } from '../../utils/loginStateProvider';
-import { generateInitialValue } from '../JottsEditor';
+import { createMessageValue, deserializeValue, EditorValue, serializeValue } from '../JottsEditor';
 
 const JottsEditor = dynamic(() => import('../JottsEditor'), { ssr: false })
 const SelectTags = dynamic(() => import('../apollo/SelectTags'), { ssr: false })
 
 const DEFAULT_TITLE = 'untitled';
+const DEFAULT_VALUE = createMessageValue("Start Jotting...");
 
 const generateSlug = (title: string, id: string) => slugify(title + '-' + id);
 export const getEditPostUrl = (handle: string, postId: string) => ({ href: `/dashboard?handle=${handle}&post_id=${postId}`, as: `/${handle}/dashboard/${postId}` })
@@ -78,6 +83,7 @@ mutation NewPost($authorId: uuid!, $title: String!, $slug: String!, $content: St
 `
 interface EditPostActionTypeProps {
     action: { type: "new" } | { type: "edit", postId: string },
+    variables: GetUserPostsVariables
 }
 
 interface ComponentProps extends EditPostActionTypeProps {
@@ -88,8 +94,8 @@ type Props = ComponentProps;
 interface State {
     id: string;
     title: string;
+    content: EditorValue
     slug: string;
-    content: string;
     tags: string[];
     loading: boolean;
     error: boolean;
@@ -103,10 +109,10 @@ class EditPostComponent extends React.Component<Props, State> {
             id: '',
             title: '',
             slug: '',
-            content: generateInitialValue(),
+            content: DEFAULT_VALUE,
             tags: [],
             loading: true,
-            message: '',
+            message: 'Loading...',
             error: false,
         }
     }
@@ -125,8 +131,13 @@ class EditPostComponent extends React.Component<Props, State> {
                                 () => this.updatePost(this.props.client))
                     } />
                 <SelectTags defaultSelected={this.state.tags} onChange={tags => this.setState({ ...this.state, tags })} />
-                <JottsEditor initialValue={this.state.content} onChange={value => {
-                    this.setState({ ...this.state, content: value }, () => this.updatePost(this.props.client))
+                <JottsEditor value={this.state.content} onChange={({ value }) => {
+                    const updateDB = this.state.content.document !== value.document
+                    this.setState({ ...this.state, content: value }, () => {
+                        if (updateDB) {
+                            this.updatePost(this.props.client)
+                        }
+                    })
                 }} />
             </div>
         )
@@ -137,12 +148,15 @@ class EditPostComponent extends React.Component<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        if (this.props.action !== prevProps.action) {
-            this.handleActions()
+        if ((this.props.action.type === 'edit' && prevProps.action.type === 'edit' && this.props.action.postId === prevProps.action.postId) ||
+            this.props.action.type === 'new' && prevProps.action.type === 'new') {
+            return
         }
+        this.handleActions()
     }
 
     handleActions() {
+        console.log("Handle actions called")
         switch (this.props.action.type) {
             case 'edit':
                 this.getEditPost()
@@ -165,11 +179,13 @@ class EditPostComponent extends React.Component<Props, State> {
             }).then(res => {
                 if (res.data.jotts_post_by_pk) {
                     const { content, post_tags, slug, title } = res.data.jotts_post_by_pk
-                    this.setState({ ...this.state, id: postId, title, slug, content: content || generateInitialValue(), tags: post_tags.map(t => t.tag), loading: false })
+                    const newValue = content ? deserializeValue(content) : DEFAULT_VALUE;
+                    this.setState({ ...this.state, id: postId, title, slug, content: newValue, tags: post_tags.map(t => t.tag), loading: false })
                 } else {
                     this.setState({ ...this.state, loading: false, message: res.errors ? res.errors.map(e => e.toString()).join('\n') : 'Unknown error occurred', error: true })
                 }
             }).catch(e => {
+                console.log(e)
                 this.setState({ ...this.state, loading: false, error: true, message: e.toString() })
             });
         }
@@ -177,19 +193,26 @@ class EditPostComponent extends React.Component<Props, State> {
 
     createNewPost() {
         if (this.props.action.type === 'new') {
-            const { client } = this.props;
+            const { client, variables } = this.props;
             const user = loggedInUser();
             if (user) {
                 const id = uuidv4();
                 const title = DEFAULT_TITLE;
                 const slug = generateSlug(title, id);
-                const content = generateInitialValue();
+                const content = serializeValue(DEFAULT_VALUE)
                 client.mutate<NewPost, NewPostVariables>({
                     mutation: newPostMutation,
-                    variables: { authorId: user.id, content, slug, title, id }
+                    variables: { authorId: user.id, id, content, slug, title }
                 }).then(res => {
-                    console.log(res)
-                    const { href, as } = getEditPostUrl(user.handle, id)
+                    this.setState({ ...this.state, id, title, slug, content: DEFAULT_VALUE, tags: [], loading: false })
+                    const { href, as } = getEditPostUrl(user.handle, id);
+                    const allPosts = client.cache.readQuery<GetUserPosts, GetUserPostsVariables>({ query: getUserPosts, variables })
+                    if(allPosts && allPosts.jotts_post.length >= variables.size){
+                        allPosts.jotts_post.shift()
+                    }
+                    const newPost: GetUserPosts_jotts_post = { __typename: 'jotts_post', content, id, post_tags: [], slug, title }
+                    const data: GetUserPosts = { jotts_post: allPosts ? [...allPosts.jotts_post, newPost] : [newPost] }
+                    client.cache.writeQuery<GetUserPosts, GetUserPostsVariables>({ query: getUserPosts, variables, data })
                     Router.replace(href, as)
                 })
                     .catch(e => console.log(e));
@@ -200,11 +223,11 @@ class EditPostComponent extends React.Component<Props, State> {
     updatePost = debounce(async (client: ApolloClient<any>) => {
         if (this.state.id) {
             const { id, title, slug, content } = this.state
+            const s = serializeValue(content);
             const res = await client.mutate<EditPost, EditPostVariables>({
                 mutation: editPostMutation,
-                variables: { id, title, slug, content }
+                variables: { id, title, slug, content: s }
             });
-            console.log(res)
         }
     }, 1000)
 }
