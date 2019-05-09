@@ -15,6 +15,7 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import NotesIcon from '@material-ui/icons/Notes';
 
+import { DeletePost, DeletePostVariables } from '../common/apollo-types/DeletePost';
 import {
   GetUserPosts, GetUserPosts_jotts_post, GetUserPostsVariables
 } from '../common/apollo-types/GetUserPosts';
@@ -48,6 +49,17 @@ mutation NewPost($authorId: uuid!, $title: String!, $slug: String!, $content: St
             id
             title
             content
+        }
+    }
+}
+`
+
+const deletePostMutation = gql`
+mutation DeletePost($postId: uuid!){
+    delete_jotts_post(where: {id:{_eq: $postId}}) {
+        affected_rows
+        returning{
+            id
         }
     }
 }
@@ -106,8 +118,11 @@ class DashBoard extends React.Component<Props> {
                                                             <ListItem button component="a" selected={this.props.postId && this.props.postId === p.id ? true : false}>
                                                                 <ListItemIcon><NotesIcon /></ListItemIcon>
                                                                 <ListItemText primary={p.title} />
-                                                                <ListItemSecondaryAction >
-                                                                    <IconButton>
+                                                                <ListItemSecondaryAction>
+                                                                    <IconButton onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        this.deletePost(client, p.id, variables)
+                                                                    }}>
                                                                         <DeleteIcon />
                                                                     </IconButton>
                                                                 </ListItemSecondaryAction>
@@ -179,6 +194,17 @@ class DashBoard extends React.Component<Props> {
             })
                 .catch(e => console.log(e));
         }
+    }
+    deletePost(client: ApolloClient<any>, postId: string, variables: GetUserPostsVariables) {
+        client.mutate<DeletePost, DeletePostVariables>({
+            mutation: deletePostMutation,
+            variables: { postId }
+        }).then(res => {
+            const allPosts = client.cache.readQuery<GetUserPosts, GetUserPostsVariables>({ query: getUserPosts, variables })
+            const data: GetUserPosts = { jotts_post: allPosts ? allPosts.jotts_post.filter(p => p.id !== postId) : [] }
+            client.cache.writeQuery<GetUserPosts, GetUserPostsVariables>({ query: getUserPosts, variables, data })
+            this.forceUpdate()
+        })
     }
 }
 
