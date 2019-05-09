@@ -33,7 +33,7 @@ function TitleInput(props: InputBaseProps) {
         <Paper style={{
             padding: 4
         }}>
-            <InputBase {...props} />
+            <InputBase {...props} fullWidth/>
         </Paper>
     )
 }
@@ -52,7 +52,7 @@ query GetPost($id: uuid!){
 }
 `
 const editPostMutation = gql`
-mutation Component($id: uuid!, $title: String!, $slug: String!, $content: String){
+mutation EditPost($id: uuid!, $title: String!, $slug: String!, $content: String){
     update_jotts_post(
         where: {id: {_eq: $id}},
         _set: {title: $title,slug:$slug,content:$content}

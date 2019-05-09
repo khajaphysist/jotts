@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
-import AsyncSelect from 'react-select/lib/Async';
+import CreatableAsyncSelect from 'react-select/lib/AsyncCreatable';
 import { ValueContainerProps } from 'react-select/lib/components/containers';
 import { ControlProps } from 'react-select/lib/components/Control';
 import { MenuProps } from 'react-select/lib/components/Menu';
@@ -160,6 +160,7 @@ interface ComponentProps {
     loadOptions: (input: string, callback: (options: OptionType[]) => void) => void | Promise<void>,
     onChange: (selected: OptionType[]) => void,
     value: OptionType[]
+    onCreateOption?: (newOption: string)=>void
 }
 type Props = StyleProps & ComponentProps;
 
@@ -170,7 +171,7 @@ class IntegrationReactSelect extends React.Component<Props> {
 
         return (
             <div className={classes.root}>
-                <AsyncSelect<OptionType>
+                <CreatableAsyncSelect<OptionType>
                     classes={classes}
                     styles={{
                         input: base => ({
@@ -210,6 +211,7 @@ class IntegrationReactSelect extends React.Component<Props> {
                     placeholder="Select tags"
                     isMulti
                     loadOptions={this.props.loadOptions}
+                    onCreateOption={this.props.onCreateOption}
                 />
             </div>
         );

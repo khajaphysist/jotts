@@ -8,20 +8,22 @@ import { ApolloConsumer, Query } from 'react-apollo';
 import uuidv4 from 'uuid/v4';
 
 import {
-  createStyles, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText,
-  Theme, withStyles, WithStyles
+    createStyles, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText,
+    Theme, withStyles, WithStyles, Collapse
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import NotesIcon from '@material-ui/icons/Notes';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ExpandLessIcon from '@material-ui/icons/ExpandLess'
 
 import { DeletePost, DeletePostVariables } from '../common/apollo-types/DeletePost';
 import {
-  GetUserPosts, GetUserPosts_jotts_post, GetUserPostsVariables
+    GetUserPosts, GetUserPosts_jotts_post, GetUserPostsVariables
 } from '../common/apollo-types/GetUserPosts';
 import { NewPost, NewPostVariables } from '../common/apollo-types/NewPost';
 import EditPost, {
-  DEFAULT_VALUE, generateSlug, getEditPostUrl
+    DEFAULT_VALUE, generateSlug, getEditPostUrl
 } from '../common/components/apollo/EditPost';
 import { serializeValue } from '../common/components/JottsEditor';
 import Layout from '../common/components/Layout';
@@ -87,7 +89,15 @@ const getInitialProps: GetInitialProps<InitialProps, NextContext> = context => {
     return { postId }
 }
 
-class DashBoard extends React.Component<Props> {
+interface State {
+    isAllOpen: boolean
+}
+
+class DashBoard extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props)
+        this.state = { isAllOpen: true }
+    }
     public static getInitialProps = getInitialProps
     render() {
         const user = loggedInUser();
@@ -111,26 +121,37 @@ class DashBoard extends React.Component<Props> {
                                     }
                                     return data ? (
                                         <div style={{ display: 'flex' }}>
-                                            <List component="nav">
-                                                {
-                                                    data.jotts_post.map(p => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
-                                                        <Link {...getEditPostUrl(user.handle, p.id)} key={p.id} passHref>
-                                                            <ListItem button component="a" selected={this.props.postId && this.props.postId === p.id ? true : false}>
-                                                                <ListItemIcon><NotesIcon /></ListItemIcon>
-                                                                <ListItemText primary={p.title} />
-                                                                <ListItemSecondaryAction>
-                                                                    <IconButton onClick={(e) => {
-                                                                        e.preventDefault();
-                                                                        this.deletePost(client, p.id, variables)
-                                                                    }}>
-                                                                        <DeleteIcon />
-                                                                    </IconButton>
-                                                                </ListItemSecondaryAction>
-                                                            </ListItem>
-                                                        </Link>
-                                                    ))
-                                                }
-                                                <ListItem button component="a" onClick={() => this.createNewPost(client, variables)}>
+                                            <List component="nav" style={{ width: 300, height: 500, overflowY: 'auto' }}>
+                                                <ListItem button onClick={() => { this.setState({ ...this.state, isAllOpen: !this.state.isAllOpen }) }}>
+                                                    <ListItemIcon>
+                                                        <NotesIcon />
+                                                    </ListItemIcon>
+                                                    <ListItemText inset primary="All Notes" />
+                                                    {this.state.isAllOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                                </ListItem>
+                                                <Collapse in={this.state.isAllOpen}>
+                                                    <List component="nav" disablePadding>
+                                                        {
+                                                            data.jotts_post.map(p => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
+                                                                <Link {...getEditPostUrl(user.handle, p.id)} key={p.id} passHref>
+                                                                    <ListItem button component="a" selected={this.props.postId && this.props.postId === p.id ? true : false}>
+                                                                        <ListItemIcon><NotesIcon /></ListItemIcon>
+                                                                        <ListItemText inset primary={p.title} />
+                                                                        <ListItemSecondaryAction>
+                                                                            <IconButton onClick={(e) => {
+                                                                                e.preventDefault();
+                                                                                this.deletePost(client, p.id, variables)
+                                                                            }}>
+                                                                                <DeleteIcon />
+                                                                            </IconButton>
+                                                                        </ListItemSecondaryAction>
+                                                                    </ListItem>
+                                                                </Link>
+                                                            ))
+                                                        }
+                                                    </List>
+                                                </Collapse>
+                                                <ListItem button component="a" onClick={() => this.createNewPost(client, variables)} style={{ bottom: 0 }}>
                                                     <ListItemIcon><AddIcon /></ListItemIcon>
                                                     <ListItemText primary={"Add"} />
                                                 </ListItem>
@@ -181,7 +202,6 @@ class DashBoard extends React.Component<Props> {
                 mutation: newPostMutation,
                 variables: { authorId: user.id, id, content, slug, title }
             }).then(res => {
-                this.setState({ ...this.state, id, title, slug, content: DEFAULT_VALUE, tags: [], loading: false })
                 const allPosts = client.cache.readQuery<GetUserPosts, GetUserPostsVariables>({ query: getUserPosts, variables })
                 if (allPosts && allPosts.jotts_post.length >= variables.size) {
                     allPosts.jotts_post.shift()

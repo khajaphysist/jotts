@@ -1,5 +1,10 @@
 {
-    "functions": [],
+    "functions": [
+        {
+            "schema": "jotts",
+            "name": "post_by_tag"
+        }
+    ],
     "remote_schemas": [],
     "tables": [
         {
@@ -58,11 +63,11 @@
                             "column": "post_id",
                             "table": {
                                 "schema": "jotts",
-                                "name": "collection_post"
+                                "name": "post_tag"
                             }
                         }
                     },
-                    "name": "collection_posts",
+                    "name": "post_tags",
                     "comment": null
                 },
                 {
@@ -71,11 +76,11 @@
                             "column": "post_id",
                             "table": {
                                 "schema": "jotts",
-                                "name": "post_tag"
+                                "name": "collection_post"
                             }
                         }
                     },
-                    "name": "post_tags",
+                    "name": "collection_posts",
                     "comment": null
                 }
             ],
@@ -204,6 +209,13 @@
                         "foreign_key_constraint_on": "post_id"
                     },
                     "name": "post",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "tag"
+                    },
+                    "name": "tagByTag",
                     "comment": null
                 }
             ],
