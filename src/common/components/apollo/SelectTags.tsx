@@ -34,13 +34,13 @@ const debouncedFetch = debounce((input, callback, client: ApolloClient<any>) => 
             query: `%${input}%`
         }
     }).then(response => {
-        callback(response.data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t))
+        callback(response.data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t).map(t => ({ label: t, value: t })))
     })
 }, 250)
 
 interface ComponentProps {
-    onChange?: (selected: string[]) => void,
-    defaultSelected?: string[]
+    onChange: (selected: string[]) => void,
+    value: string[]
 }
 type Props = ComponentProps
 
@@ -59,12 +59,14 @@ export default class SelectTags extends React.Component<Props> {
                             }
                             return data ? (
                                 <MaterialReactSelect
-                                    options={data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t)}
+                                    defaultOptions={data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t).map(t => ({ label: t, value: t }))}
                                     loadOptions={(input, callback) => {
                                         debouncedFetch(input, callback, client)
                                     }}
-                                    onChange={this.props.onChange || (() => void 0)}
-                                    defaultSelected={this.props.defaultSelected || []}
+                                    onChange={(selected) => {
+                                        this.props.onChange(selected.map(t => t.label))
+                                    }}
+                                    value={this.props.value.map(t => ({ label: t, value: t }))}
                                 />
                             ) : null
                         }}

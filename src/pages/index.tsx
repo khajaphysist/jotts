@@ -99,7 +99,7 @@ class Index extends React.Component<Props> {
                             onChange={(selected) => {
                               selected.length > 0 ? Router.push("/?tags=" + selected.join(",")) : Router.push("/")
                             }}
-                            defaultSelected={this.props.tags}
+                            value={this.props.tags}
                           />
                         </NoSsr>
                       </div>
