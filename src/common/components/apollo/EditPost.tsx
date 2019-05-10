@@ -1,5 +1,4 @@
-import { ApolloClient } from 'apollo-boost';
-import gql from 'graphql-tag';
+import { ApolloClient, gql } from 'apollo-boost';
 import { debounce, difference } from 'lodash';
 import dynamic from 'next/dynamic';
 import React from 'react';
@@ -26,7 +25,6 @@ const SelectTags = dynamic(() => import('../apollo/SelectTags'), { ssr: false })
 
 export const DEFAULT_VALUE = createMessageValue("Start Jotting...");
 export const generateSlug = (title: string, id: string) => slugify(title + '-' + id);
-export const getEditPostUrl = (handle: string, postId: string) => ({ href: `/dashboard?handle=${handle}&post_id=${postId}`, as: `/${handle}/dashboard/${postId}` })
 
 function TitleInput(props: InputBaseProps) {
     return (

@@ -1,5 +1,4 @@
-import { ApolloClient } from 'apollo-boost';
-import gql from 'graphql-tag';
+import { ApolloClient, gql } from 'apollo-boost';
 import { GetInitialProps, NextContext } from 'next';
 import Link from 'next/link';
 import Router from 'next/router';
@@ -8,43 +7,43 @@ import { Mutation, Query, withApollo } from 'react-apollo';
 import uuidv4 from 'uuid/v4';
 
 import {
-  createStyles, Divider, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction,
-  ListItemText, Menu, MenuItem, TextField, Theme, withStyles, WithStyles
+    createStyles, Divider, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction,
+    ListItemText, Theme, withStyles, WithStyles
 } from '@material-ui/core';
-import { ListItemProps } from '@material-ui/core/ListItem';
 import {
-  Check as CheckIcon, CreateNewFolder as FolderAddIcon, Delete as DeleteIcon, Folder as FolderIcon,
-  FolderOpen as FolderOpenIcon, LibraryBooks as LibraryBooksIcon, MoreVert as MoreIcon,
-  Note as NoteIcon, NoteAdd as NoteAddIcon
+    CreateNewFolder as FolderAddIcon, Delete as DeleteIcon,
+    LibraryBooks as LibraryBooksIcon,
+    Note as NoteIcon, NoteAdd as NoteAddIcon
 } from '@material-ui/icons';
 
 import {
-  DeleteCollectionMutation, DeleteCollectionMutationVariables
+    DeleteCollectionMutation, DeleteCollectionMutationVariables
 } from '../common/apollo-types/DeleteCollectionMutation';
 import { DeletePost, DeletePostVariables } from '../common/apollo-types/DeletePost';
 import {
-  EditCollectionMutation, EditCollectionMutationVariables
+    EditCollectionMutation, EditCollectionMutationVariables
 } from '../common/apollo-types/EditCollectionMutation';
 import {
-  GetCollectionPosts, GetCollectionPosts_jotts_collection_post, GetCollectionPostsVariables
+    GetCollectionPosts, GetCollectionPosts_jotts_collection_post, GetCollectionPostsVariables
 } from '../common/apollo-types/GetCollectionPosts';
 import {
-  GetUserCollections, GetUserCollections_jotts_collection, GetUserCollectionsVariables
+    GetUserCollections, GetUserCollections_jotts_collection, GetUserCollectionsVariables
 } from '../common/apollo-types/GetUserCollections';
 import {
-  GetUserPosts, GetUserPosts_jotts_post, GetUserPostsVariables
+    GetUserPosts, GetUserPosts_jotts_post, GetUserPostsVariables
 } from '../common/apollo-types/GetUserPosts';
 import {
-  NewCollectionMutation, NewCollectionMutationVariables
+    NewCollectionMutation, NewCollectionMutationVariables
 } from '../common/apollo-types/NewCollectionMutation';
 import { NewPost, NewPostVariables } from '../common/apollo-types/NewPost';
 import EditPost, {
-  DEFAULT_VALUE, generateSlug, getEditPostUrl
+    DEFAULT_VALUE, generateSlug
 } from '../common/components/apollo/EditPost';
 import { serializeValue } from '../common/components/JottsEditor';
 import Layout from '../common/components/Layout';
 import { CookieUser } from '../common/types';
 import { loggedInUser } from '../common/utils/loginStateProvider';
+import EditableListItem from '../common/components/EditableListItem';
 
 const getUserPosts = gql`
 query GetUserPosts($authorId: uuid!) {
@@ -110,6 +109,9 @@ const deleteCollectionMutation = gql`
 mutation DeleteCollectionMutation($id: uuid!){
     delete_jotts_collection(where: {id: {_eq: $id}}) {
         affected_rows
+        returning {
+            id
+        }
     }
 }
 `
@@ -137,114 +139,8 @@ mutation DeletePost($postId: uuid!){
 }
 `
 
-interface EditableListItemProps {
-    listItemProps?: ListItemProps
-    initialValue: string;
-    onChange: (value: string) => any;
-    onDelete?: () => void
-}
-
-interface EditableListItemState {
-    value: string
-    edit: boolean
-    anchorEl: any
-}
-
-class EditableListItem extends React.Component<EditableListItemProps, EditableListItemState> {
-    constructor(props: EditableListItemProps) {
-        super(props)
-        this.state = { edit: false, value: this.props.initialValue, anchorEl: undefined }
-    }
-    handleClose = () => {
-        this.setState({ ...this.state, anchorEl: undefined })
-    }
-    handleEdit = () => {
-        this.setState({ ...this.state, edit: true, anchorEl: undefined })
-    }
-    handleDelete = () => {
-        this.setState({ ...this.state, edit: false, anchorEl: undefined }, () => this.props.onDelete ? this.props.onDelete() : void 0)
-    }
-    handleFinishEdit = async () => {
-        try {
-            if (this.state.value !== this.props.initialValue) {
-                await this.props.onChange(this.state.value)
-            }
-            this.setState({ ...this.state, edit: false })
-        } catch (error) {
-            console.log(error)
-            this.setState({ ...this.state, edit: false, value: this.props.initialValue })
-        }
-    }
-    render() {
-        return (
-            <ListItem
-                button
-                component="a"
-                {...this.props.listItemProps}
-            >
-                <ListItemIcon>
-                    {
-                        this.props.listItemProps && this.props.listItemProps.selected ?
-                            (<FolderOpenIcon />)
-                            :
-                            (<FolderIcon />)
-                    }
-                </ListItemIcon>
-                {
-                    this.state.edit ?
-                        (
-                            <TextField value={this.state.value}
-                                onChange={
-                                    e => this.setState({ ...this.state, value: e.target.value })
-                                }
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        this.handleFinishEdit()
-                                    }
-                                }}
-                            />
-                        )
-                        :
-                        (
-                            <ListItemText inset primary={this.state.value} />
-                        )
-                }
-                <ListItemSecondaryAction>
-                    {
-                        this.state.edit ?
-                            (
-                                <IconButton
-                                    onClick={this.handleFinishEdit}>
-                                    <CheckIcon />
-                                </IconButton>
-                            ) :
-                            (
-                                <IconButton
-                                    onClick={(e) => {
-                                        this.setState({ ...this.state, anchorEl: e.currentTarget })
-                                    }}>
-                                    <MoreIcon />
-                                </IconButton>
-                            )
-                    }
-                    <Menu
-                        open={Boolean(this.state.anchorEl)}
-                        onBackdropClick={this.handleClose}
-                        anchorEl={this.state.anchorEl}
-                    >
-                        <MenuItem onClick={this.handleEdit}>Edit</MenuItem>
-                        <MenuItem onClick={this.handleDelete}>Delete</MenuItem>
-                    </Menu>
-                </ListItemSecondaryAction>
-            </ListItem>
-        )
-    }
-    componentDidUpdate(prevProps: EditableListItemProps) {
-        if (prevProps.initialValue !== this.props.initialValue) {
-            this.setState({ ...this.state, value: this.props.initialValue })
-        }
-    }
-}
+const getEditPostUrl = (handle: string, collectionId: string, postId: string) =>
+    ({ href: `/dashboard?handle=${handle}&collection_id=${collectionId}&post_id=${postId}`, as: `/${handle}/dashboard/?collection_id=${collectionId}&post_id=${postId}` })
 
 const styles = (theme: Theme) => createStyles({
     addButton: {
@@ -280,7 +176,7 @@ class DashBoard extends React.Component<Props> {
         if (!user) {
             return null;
         }
-        const { classes } = this.props;
+        const { collectionId } = this.props;
         return (
             <Layout>
                 <div>
@@ -312,7 +208,7 @@ class DashBoard extends React.Component<Props> {
                                                             await editCollection({ variables: { id: c.id, slug: generateSlug(value, c.id), title: value } })
                                                         }}
                                                         listItemProps={{
-                                                            selected: this.props.collectionId === c.id,
+                                                            selected: collectionId === c.id,
                                                             onClick: () => Router.push(`/dashboard?collection_id=${c.id}`)
                                                         }}
                                                     />
@@ -328,12 +224,12 @@ class DashBoard extends React.Component<Props> {
                             </ListItem>
                         </List>
                         {
-                            this.props.collectionId ?
+                            collectionId ?
                                 (
                                     <List component="nav">
                                         <List component="nav" style={{ width: 300, maxHeight: 500, overflowY: "auto" }}>
                                             {
-                                                this.props.collectionId === 'all' ?
+                                                collectionId === 'all' ?
                                                     (
                                                         <Query<GetUserPosts, GetUserPostsVariables> query={getUserPosts} variables={{ authorId: user.id }}>
                                                             {({ loading, error, data }) => {
@@ -345,7 +241,7 @@ class DashBoard extends React.Component<Props> {
                                                                 }
                                                                 return data ? (
                                                                     data.jotts_post.map(p => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
-                                                                        <Link {...getEditPostUrl(user.handle, p.id)} key={p.id} passHref>
+                                                                        <Link {...getEditPostUrl(user.handle, collectionId, p.id)} key={p.id} passHref>
                                                                             <ListItem
                                                                                 button
                                                                                 component="a"
@@ -370,7 +266,7 @@ class DashBoard extends React.Component<Props> {
                                                     )
                                                     :
                                                     (
-                                                        <Query<GetCollectionPosts, GetCollectionPostsVariables> query={getCollectionPosts} variables={{ collectionId: this.props.collectionId }}>
+                                                        <Query<GetCollectionPosts, GetCollectionPostsVariables> query={getCollectionPosts} variables={{ collectionId }}>
                                                             {({ loading, error, data }) => {
                                                                 if (error) {
                                                                     return <div>{error.message}</div>
@@ -380,7 +276,7 @@ class DashBoard extends React.Component<Props> {
                                                                 }
                                                                 return data ? (
                                                                     data.jotts_collection_post.map(({ post: p }) => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
-                                                                        <Link {...getEditPostUrl(user.handle, p.id)} key={p.id} passHref>
+                                                                        <Link {...getEditPostUrl(user.handle, collectionId, p.id)} key={p.id} passHref>
                                                                             <ListItem
                                                                                 button
                                                                                 component="a"
@@ -514,17 +410,16 @@ class DashBoard extends React.Component<Props> {
     }
 
     deletePost(postId: string, user: CookieUser) {
-        const { collectionId } = this.props
         const { client } = this.props
         client.mutate<DeletePost, DeletePostVariables>({
             mutation: deletePostMutation,
             variables: { postId }
         }).then(res => {
-            if (collectionId && collectionId !== 'all') {
-                this.updateCachePostsOfCollection(collectionId, (oldData) => {
+            const allCollections = client.readQuery<GetUserCollections,GetUserCollectionsVariables>({query:getUserCollections, variables:{authorId:user.id}});
+            allCollections!.jotts_collection.forEach(c=>
+                this.updateCachePostsOfCollection(c.id, (oldData) => {
                     return { jotts_collection_post: oldData ? oldData.jotts_collection_post.filter(p => p.post.id !== postId) : [] }
-                })
-            }
+                }))
             this.updateCachePostsOfAll(user, (oldData) => ({ jotts_post: oldData ? oldData.jotts_post.filter(p => p.id !== postId) : [] }))
         })
     }

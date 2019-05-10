@@ -6,12 +6,21 @@
 // GraphQL mutation operation: DeleteCollectionMutation
 // ====================================================
 
+export interface DeleteCollectionMutation_delete_jotts_collection_returning {
+  __typename: "jotts_collection";
+  id: any;
+}
+
 export interface DeleteCollectionMutation_delete_jotts_collection {
   __typename: "jotts_collection_mutation_response";
   /**
    * number of affected rows by the mutation
    */
   affected_rows: number;
+  /**
+   * data of the affected rows by the mutation
+   */
+  returning: DeleteCollectionMutation_delete_jotts_collection_returning[];
 }
 
 export interface DeleteCollectionMutation {
