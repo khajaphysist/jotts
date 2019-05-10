@@ -201,11 +201,11 @@ class EditPostComponent extends React.Component<Props, State> {
 
     updateCachePostTags = (newTags: string[], client: ApolloClient<any>) => {
         const variables = { id: this.props.postId };
-        const oldData = client.cache.readQuery<GetPost, GetPostVariables>({ query: getPost, variables });
+        const oldData = client.readQuery<GetPost, GetPostVariables>({ query: getPost, variables });
         if (oldData && oldData.jotts_post_by_pk) {
             const oldPost = oldData.jotts_post_by_pk;
             const newPost: GetPost_jotts_post_by_pk = { ...oldPost, post_tags: newTags.map(tag => ({ __typename: 'jotts_post_tag' as const, tag })) };
-            client.cache.writeQuery<GetPost, GetPostVariables>({ query: getPost, variables, data: { jotts_post_by_pk: newPost } })
+            client.writeQuery<GetPost, GetPostVariables>({ query: getPost, variables, data: { jotts_post_by_pk: newPost } })
         }
     }
 

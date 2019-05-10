@@ -10,7 +10,6 @@ export interface NewPost_insert_jotts_post_returning {
   __typename: "jotts_post";
   id: any;
   title: string;
-  content: string | null;
 }
 
 export interface NewPost_insert_jotts_post {
