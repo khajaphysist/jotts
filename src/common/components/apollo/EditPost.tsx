@@ -1,4 +1,4 @@
-import ApolloClient from 'apollo-boost';
+import { ApolloClient } from 'apollo-boost';
 import gql from 'graphql-tag';
 import { debounce, difference } from 'lodash';
 import dynamic from 'next/dynamic';

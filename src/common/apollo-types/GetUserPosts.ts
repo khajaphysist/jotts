@@ -32,6 +32,4 @@ export interface GetUserPosts {
 
 export interface GetUserPostsVariables {
   authorId: any;
-  skip: number;
-  size: number;
 }

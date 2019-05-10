@@ -1,4 +1,4 @@
-import Prism, { TokenStream } from 'prismjs';
+import { languages as prismLanguages, Token, tokenize, TokenStream } from 'prismjs';
 import { Text } from 'slate';
 import { Plugin } from 'slate-react';
 
@@ -10,7 +10,7 @@ const processTokens = (tokens: TokenStream, offset: number, baseClass: string) =
             result.push(...res);
             offset += token.length
         })
-    } else if (tokens instanceof Prism.Token) {
+    } else if (tokens instanceof Token) {
         const { content, type, alias } = tokens
         const currentClass = [baseClass, type, ...(alias instanceof Array ? alias : [alias])].filter(s => s && s.length > 0).join(' ');
         const res = processTokens(content, offset, currentClass);
@@ -39,11 +39,11 @@ const CodeHighlighter = (
             }
             const language = node.data.get('language')
 
-            if(!Prism.languages[language]){
+            if(!prismLanguages[language]){
                 return next()
             }
             const { text } = node;
-            const tokens = Prism.tokenize(text, Prism.languages[language]);
+            const tokens = tokenize(text, prismLanguages[language]);
             const { key } = node.getTexts().get(0);
             const decorations = processTokens(tokens, 0, '')
                 .map(({ className, start, end }) => ({

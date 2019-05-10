@@ -2,6 +2,8 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
+import { jotts_post_insert_input } from "./globalTypes";
+
 // ====================================================
 // GraphQL mutation operation: NewPost
 // ====================================================
@@ -32,9 +34,5 @@ export interface NewPost {
 }
 
 export interface NewPostVariables {
-  authorId: any;
-  title: string;
-  slug: string;
-  content: string;
-  id: any;
+  newPost: jotts_post_insert_input;
 }

@@ -1,16 +1,13 @@
 import { isKeyHotkey } from 'is-hotkey';
-import Prism from 'prismjs';
+import { languages as prismLanguages } from 'prismjs';
 import { Editor, Value } from 'slate';
 import { getEventTransfer, Plugin } from 'slate-react';
 
 import { Divider, IconButton, Paper, Theme, Typography } from '@material-ui/core';
-import FormatCodeIcon from '@material-ui/icons/Code';
-import DvrIcon from '@material-ui/icons/Dvr';
-import FormatBoldIcon from '@material-ui/icons/FormatBold';
-import FormatItalicIcon from '@material-ui/icons/FormatItalic';
-import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
-import FormatUnderlineIcon from '@material-ui/icons/FormatUnderlined';
-import FormatTitleIcon from '@material-ui/icons/Title';
+import {
+  Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
+  FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Title as TitleIcon
+} from '@material-ui/icons';
 
 const getMarkToggleFromHotKey = (event: any): MarkType | undefined => {
     switch (true) {
@@ -60,7 +57,7 @@ const getFormatMarkBtn = (type: MarkType, editor: Editor) => {
             case 'underline':
                 return (<FormatUnderlineIcon color={getMarkBtnColor(type, value)} />);
             case 'code':
-                return (<FormatCodeIcon color={getMarkBtnColor(type, value)} />);
+                return (<CodeIcon color={getMarkBtnColor(type, value)} />);
         }
     })();
     return (
@@ -79,9 +76,9 @@ const getFormatNodeBtn = (type: NodeType, editor: Editor) => {
     const icon = (() => {
         switch (type) {
             case 'heading-one':
-                return (<FormatTitleIcon color={getNodeBtnColor(type, value)} />);
+                return (<TitleIcon color={getNodeBtnColor(type, value)} />);
             case 'heading-two':
-                return (<FormatTitleIcon color={getNodeBtnColor(type, value)} fontSize='small' />);
+                return (<TitleIcon color={getNodeBtnColor(type, value)} fontSize='small' />);
             case 'block-quote':
                 return (<FormatQuoteIcon color={getNodeBtnColor(type, value)} />);
             case 'code-block':
@@ -100,7 +97,7 @@ const getFormatNodeBtn = (type: NodeType, editor: Editor) => {
 }
 
 export default ({ theme }: { theme: Theme }): Plugin => {
-    const languages = Object.keys(Prism.languages).sort();
+    const languages = Object.keys(prismLanguages).sort();
     return {
         renderEditor: (props, editor, next) => {
             const children = next();
