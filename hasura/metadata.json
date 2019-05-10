@@ -36,10 +36,78 @@
                     "comment": null
                 }
             ],
-            "insert_permissions": [],
-            "select_permissions": [],
-            "update_permissions": [],
-            "delete_permissions": [],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "check": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        },
+                        "columns": [
+                            "id",
+                            "slug",
+                            "title",
+                            "description",
+                            "author_id"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "id",
+                            "slug",
+                            "title",
+                            "description",
+                            "author_id"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "id",
+                            "slug",
+                            "title",
+                            "description",
+                            "author_id"
+                        ],
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
             "event_triggers": []
         },
         {
@@ -84,10 +152,78 @@
                     "comment": null
                 }
             ],
-            "insert_permissions": [],
-            "select_permissions": [],
-            "update_permissions": [],
-            "delete_permissions": [],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "check": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        },
+                        "columns": [
+                            "id",
+                            "slug",
+                            "title",
+                            "content",
+                            "author_id"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "id",
+                            "slug",
+                            "title",
+                            "content",
+                            "author_id"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "author_id",
+                            "content",
+                            "id",
+                            "slug",
+                            "title"
+                        ],
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
             "event_triggers": []
         },
         {
@@ -111,10 +247,54 @@
                     "comment": null
                 }
             ],
-            "insert_permissions": [],
-            "select_permissions": [],
-            "update_permissions": [],
-            "delete_permissions": [],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "check": {},
+                        "columns": [
+                            "tag"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {}
+                    }
+                }
+            ],
             "event_triggers": []
         },
         {
@@ -153,7 +333,25 @@
             ],
             "insert_permissions": [],
             "select_permissions": [],
-            "update_permissions": [],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "country",
+                            "name",
+                            "profile_picture"
+                        ],
+                        "filter": {
+                            "id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
             "delete_permissions": [],
             "event_triggers": []
         },
@@ -179,10 +377,108 @@
                 }
             ],
             "array_relationships": [],
-            "insert_permissions": [],
-            "select_permissions": [],
-            "update_permissions": [],
-            "delete_permissions": [],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "check": {
+                            "_and": [
+                                {
+                                    "collection": {
+                                        "author_id": {
+                                            "_eq": "X-Hasura-User-Id"
+                                        }
+                                    }
+                                },
+                                {
+                                    "post": {
+                                        "author_id": {
+                                            "_eq": "X-Hasura-User-Id"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "columns": [
+                            "collection_id",
+                            "post_id"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "collection_id",
+                            "post_id"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "collection_id",
+                            "post_id"
+                        ],
+                        "filter": {
+                            "_and": [
+                                {
+                                    "collection": {
+                                        "author_id": {
+                                            "_eq": "X-Hasura-User-Id"
+                                        }
+                                    }
+                                },
+                                {
+                                    "post": {
+                                        "author_id": {
+                                            "_eq": "X-Hasura-User-Id"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {
+                            "_and": [
+                                {
+                                    "collection": {
+                                        "author_id": {
+                                            "_eq": "X-Hasura-User-Id"
+                                        }
+                                    }
+                                },
+                                {
+                                    "post": {
+                                        "author_id": {
+                                            "_eq": "X-Hasura-User-Id"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
             "event_triggers": []
         },
         {
@@ -193,7 +489,20 @@
             "object_relationships": [],
             "array_relationships": [],
             "insert_permissions": [],
-            "select_permissions": [],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "tag",
+                            "post_count"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
             "update_permissions": [],
             "delete_permissions": [],
             "event_triggers": []
@@ -220,10 +529,75 @@
                 }
             ],
             "array_relationships": [],
-            "insert_permissions": [],
-            "select_permissions": [],
-            "update_permissions": [],
-            "delete_permissions": [],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "check": {
+                            "post": {
+                                "author_id": {
+                                    "_eq": "X-Hasura-User-Id"
+                                }
+                            }
+                        },
+                        "columns": [
+                            "post_id",
+                            "tag"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "post_id",
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "post_id",
+                            "tag"
+                        ],
+                        "filter": {
+                            "post": {
+                                "author_id": {
+                                    "_eq": "X-Hasura-User-Id"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {
+                            "post": {
+                                "author_id": {
+                                    "_eq": "X-Hasura-User-Id"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
             "event_triggers": []
         }
     ],

@@ -1,6 +1,6 @@
 import Prism from 'prismjs';
 import React from 'react';
-import { Editor as EditorInstance, KeyUtils, Value } from 'slate';
+import { Value } from 'slate';
 import { Editor, EditorProps, Plugin } from 'slate-react';
 
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
