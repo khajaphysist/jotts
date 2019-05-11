@@ -122,7 +122,7 @@ class EditPostComponent extends React.Component<Props, State> {
                         this.client = client
                     }
                     return (
-                        <div style={{ maxWidth: 1200, minWidth: 900 }}>
+                        <div>
                             <TitleInput placeholder="Title"
                                 value={this.state.title}
                                 onChange={

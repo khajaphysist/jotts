@@ -3,7 +3,7 @@ import { Text } from 'slate';
 import { Plugin } from 'slate-react';
 
 const processTokens = (tokens: TokenStream, offset: number, baseClass: string) => {
-    const result: Array<{ start: number, end: number, className: string, text: string }> = []
+    const result: Array<{ start: number, end: number, className: string }> = []
     if (tokens instanceof Array) {
         tokens.forEach(token => {
             const res = processTokens(token, offset, baseClass);
@@ -20,8 +20,7 @@ const processTokens = (tokens: TokenStream, offset: number, baseClass: string) =
             result.push({
                 className: baseClass,
                 start: offset,
-                end: offset + tokens.length,
-                text: tokens
+                end: offset + tokens.length
             })
         }
     }

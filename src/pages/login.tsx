@@ -2,8 +2,8 @@ import Router from 'next/router';
 import React from 'react';
 
 import {
-  AppBar, Avatar, Button, createStyles, FormControl, Input, InputLabel, Paper, Tab, Tabs, Theme,
-  Typography, WithStyles, withStyles
+    AppBar, Avatar, Button, createStyles, FormControl, Input, InputLabel, Paper, Tab, Tabs, Theme,
+    Typography, WithStyles, withStyles
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
@@ -92,13 +92,19 @@ class Login extends React.Component<Props, State> {
                                     variant="contained"
                                     color="primary"
                                     className={this.props.classes.submit}
-                                    onClick={(e)=>{
+                                    onClick={(e) => {
                                         e.preventDefault();
-                                        User.login(this.state.email, this.state.password).then(v=>{
-                                            if(v.status===200){
-                                                Router.push('/')
-                                            } else {
-                                                window.alert("invalid email or password")
+                                        User.login(this.state.email, this.state.password).then(v => {
+                                            switch (v) {
+                                                case 'unauthorized':
+                                                    window.alert("invalid email or password")
+                                                    break;
+                                                case 'unknown_error':
+                                                    window.alert("Unknown error occured")
+                                                    break;
+                                                default:
+                                                    Router.push('/')
+                                                    break;
                                             }
                                         });
                                     }}

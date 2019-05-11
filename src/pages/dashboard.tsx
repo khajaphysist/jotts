@@ -179,145 +179,143 @@ class DashBoard extends React.Component<Props> {
         const { collectionId } = this.props;
         return (
             <Layout>
-                <div>
-                    <div style={{ display: 'flex' }}>
-                        <List component="nav" style={{ width: 300, height: 500 }}>
-                            <ListItem button onClick={() => Router.push(`/dashboard?collection_id=all`)}>
-                                <ListItemIcon>
-                                    <LibraryBooksIcon />
-                                </ListItemIcon>
-                                <ListItemText inset primary="All Notes" />
-                            </ListItem>
-                            <Divider />
-                            <Query<GetUserCollections, GetUserCollectionsVariables> query={getUserCollections} variables={{ authorId: user.id }}>
-                                {({ data, loading, error }) => {
-                                    if (error) {
-                                        return <div>{error.message}</div>
-                                    }
-                                    if (loading) {
-                                        return <div>Loading...</div>
-                                    }
-                                    return data ? (
-                                        data.jotts_collection.map(c => (
-                                            <Mutation<EditCollectionMutation, EditCollectionMutationVariables> mutation={editCollectionMutation} key={c.id}>
-                                                {(editCollection) => (
-                                                    <EditableListItem
-                                                        initialValue={c.title}
-                                                        onDelete={() => this.deleteCollection(c.id, user)}
-                                                        onChange={async (value) => {
-                                                            await editCollection({ variables: { id: c.id, slug: generateSlug(value, c.id), title: value } })
-                                                        }}
-                                                        listItemProps={{
-                                                            selected: collectionId === c.id,
-                                                            onClick: () => Router.push(`/dashboard?collection_id=${c.id}`)
-                                                        }}
-                                                    />
-                                                )}
-                                            </Mutation>
-                                        ))
-                                    ) : null
-                                }}
-                            </Query>
-                            <ListItem button component="a" onClick={() => this.createNewCollection(user)}>
-                                <ListItemIcon><FolderAddIcon /></ListItemIcon>
-                                <ListItemText primary={"Add"} />
-                            </ListItem>
-                        </List>
-                        {
-                            collectionId ?
-                                (
-                                    <List component="nav">
-                                        <List component="nav" style={{ width: 300, maxHeight: 500, overflowY: "auto" }}>
-                                            {
-                                                collectionId === 'all' ?
-                                                    (
-                                                        <Query<GetUserPosts, GetUserPostsVariables> query={getUserPosts} variables={{ authorId: user.id }}>
-                                                            {({ loading, error, data }) => {
-                                                                if (error) {
-                                                                    return <div>{error.message}</div>
-                                                                }
-                                                                if (loading) {
-                                                                    return <div>Loading...</div>
-                                                                }
-                                                                return data ? (
-                                                                    data.jotts_post.map(p => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
-                                                                        <Link {...getEditPostUrl(user.handle, collectionId, p.id)} key={p.id} passHref>
-                                                                            <ListItem
-                                                                                button
-                                                                                component="a"
-                                                                                selected={this.props.postId && this.props.postId === p.id ? true : false}
-                                                                            >
-                                                                                <ListItemIcon><NoteIcon /></ListItemIcon>
-                                                                                <ListItemText inset primary={p.title} />
-                                                                                <ListItemSecondaryAction>
-                                                                                    <IconButton onClick={(e) => {
-                                                                                        e.preventDefault();
-                                                                                        this.deletePost(p.id, user)
-                                                                                    }}>
-                                                                                        <DeleteIcon />
-                                                                                    </IconButton>
-                                                                                </ListItemSecondaryAction>
-                                                                            </ListItem>
-                                                                        </Link>
-                                                                    ))
-                                                                ) : null
-                                                            }}
-                                                        </Query>
-                                                    )
-                                                    :
-                                                    (
-                                                        <Query<GetCollectionPosts, GetCollectionPostsVariables> query={getCollectionPosts} variables={{ collectionId }}>
-                                                            {({ loading, error, data }) => {
-                                                                if (error) {
-                                                                    return <div>{error.message}</div>
-                                                                }
-                                                                if (loading) {
-                                                                    return <div>Loading...</div>
-                                                                }
-                                                                return data ? (
-                                                                    data.jotts_collection_post.map(({ post: p }) => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
-                                                                        <Link {...getEditPostUrl(user.handle, collectionId, p.id)} key={p.id} passHref>
-                                                                            <ListItem
-                                                                                button
-                                                                                component="a"
-                                                                                selected={this.props.postId && this.props.postId === p.id ? true : false}
-                                                                            >
-                                                                                <ListItemIcon><NoteIcon /></ListItemIcon>
-                                                                                <ListItemText inset primary={p.title} />
-                                                                                <ListItemSecondaryAction>
-                                                                                    <IconButton onClick={(e) => {
-                                                                                        e.preventDefault();
-                                                                                        this.deletePost(p.id, user)
-                                                                                    }}>
-                                                                                        <DeleteIcon />
-                                                                                    </IconButton>
-                                                                                </ListItemSecondaryAction>
-                                                                            </ListItem>
-                                                                        </Link>
-                                                                    ))
-                                                                ) : null
-                                                            }}
-                                                        </Query>
-                                                    )
-                                            }
-                                        </List>
-                                        <ListItem button component="a" onClick={() => this.createNewPost(user)}>
-                                            <ListItemIcon><NoteAddIcon /></ListItemIcon>
-                                            <ListItemText primary={"Add"} />
-                                        </ListItem>
-                                    </List>
+                <div style={{ display: 'flex' }}>
+                    <List component="nav" style={{ width: 300, height: 500 }}>
+                        <ListItem button onClick={() => Router.push(`/dashboard?collection_id=all`)}>
+                            <ListItemIcon>
+                                <LibraryBooksIcon />
+                            </ListItemIcon>
+                            <ListItemText inset primary="All Notes" />
+                        </ListItem>
+                        <Divider />
+                        <Query<GetUserCollections, GetUserCollectionsVariables> query={getUserCollections} variables={{ authorId: user.id }}>
+                            {({ data, loading, error }) => {
+                                if (error) {
+                                    return <div>{error.message}</div>
+                                }
+                                if (loading) {
+                                    return <div>Loading...</div>
+                                }
+                                return data ? (
+                                    data.jotts_collection.map(c => (
+                                        <Mutation<EditCollectionMutation, EditCollectionMutationVariables> mutation={editCollectionMutation} key={c.id}>
+                                            {(editCollection) => (
+                                                <EditableListItem
+                                                    initialValue={c.title}
+                                                    onDelete={() => this.deleteCollection(c.id, user)}
+                                                    onChange={async (value) => {
+                                                        await editCollection({ variables: { id: c.id, slug: generateSlug(value, c.id), title: value } })
+                                                    }}
+                                                    listItemProps={{
+                                                        selected: collectionId === c.id,
+                                                        onClick: () => Router.push(`/dashboard?collection_id=${c.id}`)
+                                                    }}
+                                                />
+                                            )}
+                                        </Mutation>
+                                    ))
                                 ) : null
-                        }
-                        {
-                            this.props.postId ?
-                                (
-                                    <div style={{ width: 900 }}>
-                                        <EditPost postId={this.props.postId} />
-                                    </div>
-                                ) :
-                                null
-                        }
-                    </div>
+                            }}
+                        </Query>
+                        <ListItem button component="a" onClick={() => this.createNewCollection(user)}>
+                            <ListItemIcon><FolderAddIcon /></ListItemIcon>
+                            <ListItemText primary={"Add"} />
+                        </ListItem>
+                    </List>
+                    {
+                        collectionId ?
+                            (
+                                <List component="nav">
+                                    <List component="nav" style={{ width: 300, maxHeight: 500, overflowY: "auto" }}>
+                                        {
+                                            collectionId === 'all' ?
+                                                (
+                                                    <Query<GetUserPosts, GetUserPostsVariables> query={getUserPosts} variables={{ authorId: user.id }}>
+                                                        {({ loading, error, data }) => {
+                                                            if (error) {
+                                                                return <div>{error.message}</div>
+                                                            }
+                                                            if (loading) {
+                                                                return <div>Loading...</div>
+                                                            }
+                                                            return data ? (
+                                                                data.jotts_post.map(p => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
+                                                                    <Link {...getEditPostUrl(user.handle, collectionId, p.id)} key={p.id} passHref>
+                                                                        <ListItem
+                                                                            button
+                                                                            component="a"
+                                                                            selected={this.props.postId && this.props.postId === p.id ? true : false}
+                                                                        >
+                                                                            <ListItemIcon><NoteIcon /></ListItemIcon>
+                                                                            <ListItemText inset primary={p.title} />
+                                                                            <ListItemSecondaryAction>
+                                                                                <IconButton onClick={(e) => {
+                                                                                    e.preventDefault();
+                                                                                    this.deletePost(p.id, user)
+                                                                                }}>
+                                                                                    <DeleteIcon />
+                                                                                </IconButton>
+                                                                            </ListItemSecondaryAction>
+                                                                        </ListItem>
+                                                                    </Link>
+                                                                ))
+                                                            ) : null
+                                                        }}
+                                                    </Query>
+                                                )
+                                                :
+                                                (
+                                                    <Query<GetCollectionPosts, GetCollectionPostsVariables> query={getCollectionPosts} variables={{ collectionId }}>
+                                                        {({ loading, error, data }) => {
+                                                            if (error) {
+                                                                return <div>{error.message}</div>
+                                                            }
+                                                            if (loading) {
+                                                                return <div>Loading...</div>
+                                                            }
+                                                            return data ? (
+                                                                data.jotts_collection_post.map(({ post: p }) => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
+                                                                    <Link {...getEditPostUrl(user.handle, collectionId, p.id)} key={p.id} passHref>
+                                                                        <ListItem
+                                                                            button
+                                                                            component="a"
+                                                                            selected={this.props.postId && this.props.postId === p.id ? true : false}
+                                                                        >
+                                                                            <ListItemIcon><NoteIcon /></ListItemIcon>
+                                                                            <ListItemText inset primary={p.title} />
+                                                                            <ListItemSecondaryAction>
+                                                                                <IconButton onClick={(e) => {
+                                                                                    e.preventDefault();
+                                                                                    this.deletePost(p.id, user)
+                                                                                }}>
+                                                                                    <DeleteIcon />
+                                                                                </IconButton>
+                                                                            </ListItemSecondaryAction>
+                                                                        </ListItem>
+                                                                    </Link>
+                                                                ))
+                                                            ) : null
+                                                        }}
+                                                    </Query>
+                                                )
+                                        }
+                                    </List>
+                                    <ListItem button component="a" onClick={() => this.createNewPost(user)}>
+                                        <ListItemIcon><NoteAddIcon /></ListItemIcon>
+                                        <ListItemText primary={"Add"} />
+                                    </ListItem>
+                                </List>
+                            ) : null
+                    }
+                    {
+                        this.props.postId ?
+                            (
+                                <div >
+                                    <EditPost postId={this.props.postId} />
+                                </div>
+                            ) :
+                            null
+                    }
                 </div>
             </Layout >
         )
@@ -356,15 +354,23 @@ class DashBoard extends React.Component<Props> {
     updateCachePostsOfAll(user: CookieUser, callback: (oldData: GetUserPosts | null) => GetUserPosts) {
         const { client } = this.props
         const variables = { authorId: user.id }
-        const oldData = client.readQuery<GetUserPosts, GetUserPostsVariables>({ query: getUserPosts, variables })
-        client.writeQuery<GetUserPosts, GetUserPostsVariables>({ query: getUserPosts, variables, data: callback(oldData) })
+        try {
+            const oldData = client.readQuery<GetUserPosts, GetUserPostsVariables>({ query: getUserPosts, variables })
+            client.writeQuery<GetUserPosts, GetUserPostsVariables>({ query: getUserPosts, variables, data: callback(oldData) })
+        } catch (error) {
+
+        }
     }
 
     updateCachePostsOfCollection(collectionId: string, callback: (oldData: GetCollectionPosts | null) => GetCollectionPosts) {
         const { client } = this.props
         const variables = { collectionId }
-        const oldData = client.readQuery<GetCollectionPosts, GetCollectionPostsVariables>({ query: getCollectionPosts, variables })
-        client.writeQuery<GetCollectionPosts, GetCollectionPostsVariables>({ query: getCollectionPosts, variables, data: callback(oldData) })
+        try {
+            const oldData = client.readQuery<GetCollectionPosts, GetCollectionPostsVariables>({ query: getCollectionPosts, variables })
+            client.writeQuery<GetCollectionPosts, GetCollectionPostsVariables>({ query: getCollectionPosts, variables, data: callback(oldData) })
+        } catch (error) {
+
+        }
     }
 
     createNewPost(user: CookieUser) {
@@ -405,7 +411,8 @@ class DashBoard extends React.Component<Props> {
                 const newPost: GetUserPosts_jotts_post = { __typename: 'jotts_post', content, id, post_tags: [], slug, title }
                 return { jotts_post: oldData ? [...oldData.jotts_post, newPost] : [newPost] }
             })
-            Router.push(`/dashboard?handle=${user.handle}&collection_id=${collectionId}&post_id=${id}`)
+            const { href, as } = getEditPostUrl(user.handle, collectionId!, id)
+            Router.push(href, as)
         }).catch(e => console.log(e));
     }
 
@@ -415,8 +422,8 @@ class DashBoard extends React.Component<Props> {
             mutation: deletePostMutation,
             variables: { postId }
         }).then(res => {
-            const allCollections = client.readQuery<GetUserCollections,GetUserCollectionsVariables>({query:getUserCollections, variables:{authorId:user.id}});
-            allCollections!.jotts_collection.forEach(c=>
+            const allCollections = client.readQuery<GetUserCollections, GetUserCollectionsVariables>({ query: getUserCollections, variables: { authorId: user.id } });
+            allCollections!.jotts_collection.forEach(c =>
                 this.updateCachePostsOfCollection(c.id, (oldData) => {
                     return { jotts_collection_post: oldData ? oldData.jotts_collection_post.filter(p => p.post.id !== postId) : [] }
                 }))

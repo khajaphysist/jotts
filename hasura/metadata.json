@@ -332,7 +332,23 @@
                 }
             ],
             "insert_permissions": [],
-            "select_permissions": [],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "country",
+                            "handle",
+                            "id",
+                            "name",
+                            "profile_picture"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
             "update_permissions": [
                 {
                     "role": "user",

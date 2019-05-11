@@ -22,7 +22,7 @@ services:
       - "5050:80"
     restart: unless-stopped
   graphql-engine:
-    image: hasura/graphql-engine:v1.0.0-alpha44
+    image: hasura/graphql-engine:v1.0.0-alpha45
     ports:
     - "8080:8080"
     depends_on:
@@ -31,8 +31,8 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
-      ## uncomment next line to set an admin secret
-      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+      HASURA_GRAPHQL_ADMIN_SECRET: khaja
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256","key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzhXtKI3qJI8Bybs/wPhH\nh1W4AlJ07zsjQXqVGQBNU3YV9sux4gpNpHE8eamQIu9AbDIPyT7E7lfYnFVuEG/I\nTCKGlifeqmC7Njj4Uz5wzhIbH/sbPpCbwiOF/DPfqO1xClRGuxLeF9phjdeoVB+Y\nUcrjugvAPOLTVbAOd9+nYfjoGZoLWxkDVJrAJ0AF3mrG1R+Fgr+18swRWOceIJyv\niEwaH244w0gN38qg7WaxUvfadgukjjV+qyEL6nE3zVbxuxYF6Az+028t01ITeoYa\nJm1W51IcdBnGjJdeXxTntg+6tru+CMg/HFMeS6crx5k4etZByKy5KQNHewOqX53p\nRQIDAQAB\n-----END PUBLIC KEY-----\n","claims_namespace":"jotts_claims","claims_format":"json"}'
 volumes:
   db_data:
   pgadmin:

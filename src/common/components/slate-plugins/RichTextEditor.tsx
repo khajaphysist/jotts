@@ -164,9 +164,9 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                             margin: 0,
                         }}><Typography {...attributes} variant="subtitle1">{children}</Typography></blockquote>
                 case 'heading-one':
-                    return <Typography {...attributes} variant="h1">{children}</Typography>
-                case 'heading-two':
                     return <Typography {...attributes} variant="h2">{children}</Typography>
+                case 'heading-two':
+                    return <Typography {...attributes} variant="h4">{children}</Typography>
                 case 'code-block':
                     let language = node.data.get('language');
                     if (!language) {

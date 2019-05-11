@@ -17,7 +17,7 @@ const knex = Knex({
 
 const client = new ApolloClient({
     uri: 'http://localhost:8080/v1alpha1/graphql',
-    fetch
+    fetch: fetch
 });
 
 interface RegisterUserVariables {
@@ -76,7 +76,12 @@ class User {
                     }
                 }
                 `,
-                variables: { id: user.id }
+                variables: { id: user.id },
+                context:{
+                    headers:{
+                        'x-hasura-admin-secret':'khaja'
+                    }
+                }
             });
             if (!res.data.jotts_user_by_pk) {
                 return undefined;
