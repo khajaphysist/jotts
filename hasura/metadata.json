@@ -19,6 +19,13 @@
                     },
                     "name": "author",
                     "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "parent_id"
+                    },
+                    "name": "parent_collection",
+                    "comment": null
                 }
             ],
             "array_relationships": [
@@ -34,6 +41,19 @@
                     },
                     "name": "collection_posts",
                     "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "parent_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "collection"
+                            }
+                        }
+                    },
+                    "name": "collections",
+                    "comment": null
                 }
             ],
             "insert_permissions": [
@@ -48,11 +68,11 @@
                             }
                         },
                         "columns": [
+                            "author_id",
                             "id",
+                            "parent_id",
                             "slug",
-                            "title",
-                            "description",
-                            "author_id"
+                            "title"
                         ]
                     }
                 }
@@ -64,11 +84,11 @@
                     "permission": {
                         "allow_aggregations": true,
                         "columns": [
+                            "author_id",
                             "id",
+                            "parent_id",
                             "slug",
-                            "title",
-                            "description",
-                            "author_id"
+                            "title"
                         ],
                         "filter": {}
                     }
@@ -81,11 +101,11 @@
                     "permission": {
                         "set": {},
                         "columns": [
+                            "author_id",
                             "id",
+                            "parent_id",
                             "slug",
-                            "title",
-                            "description",
-                            "author_id"
+                            "title"
                         ],
                         "filter": {
                             "author_id": {
@@ -180,11 +200,13 @@
                     "permission": {
                         "allow_aggregations": true,
                         "columns": [
+                            "author_id",
+                            "content",
+                            "created_at",
                             "id",
                             "slug",
                             "title",
-                            "content",
-                            "author_id"
+                            "updated_at"
                         ],
                         "filter": {}
                     }
