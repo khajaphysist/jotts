@@ -14,7 +14,7 @@ import { PRIVATE_KEY, PUBLIC_KEY } from './vars';
 import { CookieUser } from '../common/types';
 
 const dev = process.env.NODE_ENV !== 'production';
-
+console.log(`Running in ${process.env.NODE_ENV} mode`)
 const app = next({ dev, dir: './src' });
 const handle = app.getRequestHandler();
 const LocalStrategy = localStrategy.Strategy;
