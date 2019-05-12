@@ -45,9 +45,11 @@ class Post extends React.Component<Props> {
                     {
                         ({ loading, error, data }) => {
                             if (error) {
+                                console.log(JSON.stringify(error))
                                 return <div>{error.message}</div>
                             }
                             if (loading) {
+                                console.log(data)
                                 return <div>Loading...</div>
                             }
                             if (data && data.jotts_post.length > 0) {

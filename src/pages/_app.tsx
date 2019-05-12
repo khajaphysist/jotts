@@ -25,10 +25,7 @@ class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
 
         if (["/login", "/"].includes(ctx.pathname)) {
             return { pageProps };
-        } else if ((ctx.req && ctx.req.headers.authorization && ctx.req.headers.authorization.length>0) ||
-            isLoggedIn()) {
-            return { pageProps }
-        } else{
+        } else if (process.browser && !isLoggedIn()) {
             redirectTo('/login', { res: ctx.res, status: 301 })
         }
         return { pageProps }

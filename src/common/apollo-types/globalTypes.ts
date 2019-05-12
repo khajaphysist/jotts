@@ -34,8 +34,8 @@ export enum jotts_collection_post_update_column {
  */
 export enum jotts_collection_update_column {
   author_id = "author_id",
-  description = "description",
   id = "id",
+  parent_id = "parent_id",
   slug = "slug",
   title = "title",
 }
@@ -69,9 +69,11 @@ export enum jotts_post_tag_update_column {
 export enum jotts_post_update_column {
   author_id = "author_id",
   content = "content",
+  created_at = "created_at",
   id = "id",
   slug = "slug",
   title = "title",
+  updated_at = "updated_at",
 }
 
 /**
@@ -122,8 +124,10 @@ export interface jotts_collection_insert_input {
   author?: jotts_user_obj_rel_insert_input | null;
   author_id?: any | null;
   collection_posts?: jotts_collection_post_arr_rel_insert_input | null;
-  description?: string | null;
+  collections?: jotts_collection_arr_rel_insert_input | null;
   id?: any | null;
+  parent_collection?: jotts_collection_obj_rel_insert_input | null;
+  parent_id?: any | null;
   slug?: string | null;
   title?: string | null;
 }
@@ -186,10 +190,12 @@ export interface jotts_post_insert_input {
   author_id?: any | null;
   collection_posts?: jotts_collection_post_arr_rel_insert_input | null;
   content?: string | null;
+  created_at?: any | null;
   id?: any | null;
   post_tags?: jotts_post_tag_arr_rel_insert_input | null;
   slug?: string | null;
   title?: string | null;
+  updated_at?: any | null;
 }
 
 /**

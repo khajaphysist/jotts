@@ -92,6 +92,21 @@
                         ],
                         "filter": {}
                     }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "id",
+                            "slug",
+                            "title",
+                            "author_id",
+                            "parent_id"
+                        ],
+                        "filter": {}
+                    }
                 }
             ],
             "update_permissions": [
@@ -210,6 +225,23 @@
                         ],
                         "filter": {}
                     }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "id",
+                            "slug",
+                            "title",
+                            "content",
+                            "author_id",
+                            "created_at",
+                            "updated_at"
+                        ],
+                        "filter": {}
+                    }
                 }
             ],
             "update_permissions": [
@@ -293,6 +325,17 @@
                         ],
                         "filter": {}
                     }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
                 }
             ],
             "update_permissions": [
@@ -366,6 +409,21 @@
                             "id",
                             "name",
                             "profile_picture"
+                        ],
+                        "filter": {}
+                    }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "id",
+                            "handle",
+                            "name",
+                            "profile_picture",
+                            "country"
                         ],
                         "filter": {}
                     }
@@ -458,6 +516,18 @@
                         ],
                         "filter": {}
                     }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "collection_id",
+                            "post_id"
+                        ],
+                        "filter": {}
+                    }
                 }
             ],
             "update_permissions": [
@@ -539,6 +609,18 @@
                         ],
                         "filter": {}
                     }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "tag",
+                            "post_count"
+                        ],
+                        "filter": {}
+                    }
                 }
             ],
             "update_permissions": [],
@@ -590,6 +672,18 @@
             "select_permissions": [
                 {
                     "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "post_id",
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
+                },
+                {
+                    "role": "anonymous",
                     "comment": null,
                     "permission": {
                         "allow_aggregations": true,

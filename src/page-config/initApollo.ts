@@ -8,18 +8,20 @@ if (!process.browser) {
     global.fetch = fetch;
 }
 
-const create = (initialState: any) => new ApolloClient({
-    connectToDevTools: process.browser,
-    ssrMode: !process.browser,
-    link: new HttpLink({
-        uri: 'http://localhost:8080/v1alpha1/graphql',
-        headers:{
-            authorization: `Bearer ${process.browser?getUserToken():''}`
-        },
-        credentials: 'include'
-    }),
-    cache: new InMemoryCache().restore(initialState || {})
-});
+const create = (initialState: any) => {
+    const token = process.browser ? getUserToken() : undefined;
+    const headers = token && typeof token === 'string' && token.length > 0 ? { authorization: `Bearer ${token}` } : {}
+    return new ApolloClient({
+        connectToDevTools: process.browser,
+        ssrMode: !process.browser,
+        link: new HttpLink({
+            uri: 'http://localhost:8080/v1alpha1/graphql',
+            headers,
+            credentials: 'include'
+        }),
+        cache: new InMemoryCache().restore(initialState || {})
+    })
+};
 
 export default function initApollo(initialState: any) {
     if (!process.browser) {

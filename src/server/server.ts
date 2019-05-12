@@ -98,14 +98,14 @@ app
             })
         })
 
-        server.get('/post/:slug', passport.authenticate('jwt', { session: false, failureRedirect: '/login' })
+        server.get('/post/:slug'
             , (req, res) => {
                 const page = '/post';
                 const queryParams = { slug: req.params.slug };
                 app.render(req, res, page, queryParams);
             })
 
-        server.get('/:handle/dashboard', passport.authenticate('jwt', { session: false, failureRedirect: '/login' })
+        server.get('/:handle/dashboard'
             , (req, res) => {
                 const page = '/dashboard';
                 const queryParams = { handle: req.params.handle };

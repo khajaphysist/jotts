@@ -172,7 +172,7 @@ const getInitialProps: GetInitialProps<InitialProps, NextContext> = context => {
 class DashBoard extends React.Component<Props> {
     public static getInitialProps = getInitialProps
     render() {
-        const user = loggedInUser();
+        const user = process.browser ? loggedInUser() : undefined;
         if (!user) {
             return null;
         }
