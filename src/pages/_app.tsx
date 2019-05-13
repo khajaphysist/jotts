@@ -9,9 +9,9 @@ import JssProvider from 'react-jss/lib/JssProvider';
 import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 
 import redirectTo from '../common/components/redirectTo';
+import { isLoggedIn } from '../common/utils/loginStateProvider';
 import getPageContext, { PageContext } from '../page-config/getPageContext';
 import withApolloClient from '../page-config/withApolloClient';
-import { isLoggedIn } from '../common/utils/loginStateProvider';
 
 class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
     private pageContext: PageContext;
@@ -23,7 +23,7 @@ class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
     static async getInitialProps({ Component, ctx }: NextAppContext) {
         const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
 
-        if (["/login", "/"].includes(ctx.pathname)) {
+        if (["/login", "/", "/post"].includes(ctx.pathname)) {
             return { pageProps };
         } else if (process.browser && !isLoggedIn()) {
             redirectTo('/login', { res: ctx.res, status: 301 })

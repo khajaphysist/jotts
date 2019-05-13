@@ -10,7 +10,7 @@
         {
             "table": {
                 "schema": "jotts",
-                "name": "collection"
+                "name": "folder"
             },
             "object_relationships": [
                 {
@@ -24,7 +24,7 @@
                     "using": {
                         "foreign_key_constraint_on": "parent_id"
                     },
-                    "name": "parent_collection",
+                    "name": "parent_folder",
                     "comment": null
                 }
             ],
@@ -32,27 +32,27 @@
                 {
                     "using": {
                         "foreign_key_constraint_on": {
-                            "column": "collection_id",
+                            "column": "parent_id",
                             "table": {
                                 "schema": "jotts",
-                                "name": "collection_post"
+                                "name": "folder"
                             }
                         }
                     },
-                    "name": "collection_posts",
+                    "name": "folders",
                     "comment": null
                 },
                 {
                     "using": {
                         "foreign_key_constraint_on": {
-                            "column": "parent_id",
+                            "column": "folder_id",
                             "table": {
                                 "schema": "jotts",
-                                "name": "collection"
+                                "name": "post"
                             }
                         }
                     },
-                    "name": "collections",
+                    "name": "posts",
                     "comment": null
                 }
             ],
@@ -157,6 +157,13 @@
                     },
                     "name": "author",
                     "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "folder_id"
+                    },
+                    "name": "folder",
+                    "comment": null
                 }
             ],
             "array_relationships": [
@@ -172,19 +179,6 @@
                     },
                     "name": "post_tags",
                     "comment": null
-                },
-                {
-                    "using": {
-                        "foreign_key_constraint_on": {
-                            "column": "post_id",
-                            "table": {
-                                "schema": "jotts",
-                                "name": "collection_post"
-                            }
-                        }
-                    },
-                    "name": "collection_posts",
-                    "comment": null
                 }
             ],
             "insert_permissions": [
@@ -199,18 +193,19 @@
                             }
                         },
                         "columns": [
+                            "author_id",
+                            "content",
+                            "folder_id",
                             "id",
                             "slug",
-                            "title",
-                            "content",
-                            "author_id"
+                            "title"
                         ]
                     }
                 }
             ],
             "select_permissions": [
                 {
-                    "role": "user",
+                    "role": "anonymous",
                     "comment": null,
                     "permission": {
                         "allow_aggregations": true,
@@ -218,6 +213,7 @@
                             "author_id",
                             "content",
                             "created_at",
+                            "folder_id",
                             "id",
                             "slug",
                             "title",
@@ -227,17 +223,18 @@
                     }
                 },
                 {
-                    "role": "anonymous",
+                    "role": "user",
                     "comment": null,
                     "permission": {
                         "allow_aggregations": true,
                         "columns": [
+                            "author_id",
+                            "content",
+                            "created_at",
+                            "folder_id",
                             "id",
                             "slug",
                             "title",
-                            "content",
-                            "author_id",
-                            "created_at",
                             "updated_at"
                         ],
                         "filter": {}
@@ -253,6 +250,7 @@
                         "columns": [
                             "author_id",
                             "content",
+                            "folder_id",
                             "id",
                             "slug",
                             "title"
@@ -375,11 +373,11 @@
                             "column": "author_id",
                             "table": {
                                 "schema": "jotts",
-                                "name": "collection"
+                                "name": "folder"
                             }
                         }
                     },
-                    "name": "collections",
+                    "name": "folders",
                     "comment": null
                 },
                 {
@@ -449,144 +447,6 @@
                 }
             ],
             "delete_permissions": [],
-            "event_triggers": []
-        },
-        {
-            "table": {
-                "schema": "jotts",
-                "name": "collection_post"
-            },
-            "object_relationships": [
-                {
-                    "using": {
-                        "foreign_key_constraint_on": "collection_id"
-                    },
-                    "name": "collection",
-                    "comment": null
-                },
-                {
-                    "using": {
-                        "foreign_key_constraint_on": "post_id"
-                    },
-                    "name": "post",
-                    "comment": null
-                }
-            ],
-            "array_relationships": [],
-            "insert_permissions": [
-                {
-                    "role": "user",
-                    "comment": null,
-                    "permission": {
-                        "set": {},
-                        "check": {
-                            "_and": [
-                                {
-                                    "collection": {
-                                        "author_id": {
-                                            "_eq": "X-Hasura-User-Id"
-                                        }
-                                    }
-                                },
-                                {
-                                    "post": {
-                                        "author_id": {
-                                            "_eq": "X-Hasura-User-Id"
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        "columns": [
-                            "collection_id",
-                            "post_id"
-                        ]
-                    }
-                }
-            ],
-            "select_permissions": [
-                {
-                    "role": "user",
-                    "comment": null,
-                    "permission": {
-                        "allow_aggregations": true,
-                        "columns": [
-                            "collection_id",
-                            "post_id"
-                        ],
-                        "filter": {}
-                    }
-                },
-                {
-                    "role": "anonymous",
-                    "comment": null,
-                    "permission": {
-                        "allow_aggregations": true,
-                        "columns": [
-                            "collection_id",
-                            "post_id"
-                        ],
-                        "filter": {}
-                    }
-                }
-            ],
-            "update_permissions": [
-                {
-                    "role": "user",
-                    "comment": null,
-                    "permission": {
-                        "set": {},
-                        "columns": [
-                            "collection_id",
-                            "post_id"
-                        ],
-                        "filter": {
-                            "_and": [
-                                {
-                                    "collection": {
-                                        "author_id": {
-                                            "_eq": "X-Hasura-User-Id"
-                                        }
-                                    }
-                                },
-                                {
-                                    "post": {
-                                        "author_id": {
-                                            "_eq": "X-Hasura-User-Id"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            ],
-            "delete_permissions": [
-                {
-                    "role": "user",
-                    "comment": null,
-                    "permission": {
-                        "filter": {
-                            "_and": [
-                                {
-                                    "collection": {
-                                        "author_id": {
-                                            "_eq": "X-Hasura-User-Id"
-                                        }
-                                    }
-                                },
-                                {
-                                    "post": {
-                                        "author_id": {
-                                            "_eq": "X-Hasura-User-Id"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            ],
             "event_triggers": []
         },
         {

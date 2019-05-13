@@ -1,18 +1,19 @@
-import { ListItemProps } from "@material-ui/core/ListItem";
+import React from 'react';
 
-import React from "react";
-
-import { ListItem, ListItemIcon, TextField, ListItemText, ListItemSecondaryAction, IconButton, Menu, MenuItem } from "@material-ui/core";
 import {
-    Check as CheckIcon, Folder as FolderIcon,
-    FolderOpen as FolderOpenIcon, MoreVert as MoreIcon,
+  IconButton, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText, Menu, MenuItem,
+  TextField
+} from '@material-ui/core';
+import { ListItemProps } from '@material-ui/core/ListItem';
+import {
+  Check as CheckIcon, Folder as FolderIcon, FolderOpen as FolderOpenIcon, MoreVert as MoreIcon
 } from '@material-ui/icons';
 
 interface EditableListItemProps {
     listItemProps?: ListItemProps
     initialValue: string;
     onChange: (value: string) => any;
-    onDelete?: () => void
+    actions?: React.ReactChild
 }
 
 interface EditableListItemState {
@@ -31,9 +32,6 @@ export default class EditableListItem extends React.Component<EditableListItemPr
     }
     handleEdit = () => {
         this.setState({ ...this.state, edit: true, anchorEl: undefined })
-    }
-    handleDelete = () => {
-        this.setState({ ...this.state, edit: false, anchorEl: undefined }, () => this.props.onDelete ? this.props.onDelete() : void 0)
     }
     handleFinishEdit = async () => {
         try {
@@ -104,7 +102,7 @@ export default class EditableListItem extends React.Component<EditableListItemPr
                         anchorEl={this.state.anchorEl}
                     >
                         <MenuItem onClick={this.handleEdit}>Edit</MenuItem>
-                        <MenuItem onClick={this.handleDelete}>Delete</MenuItem>
+                        {this.props.actions}
                     </Menu>
                 </ListItemSecondaryAction>
             </ListItem>

@@ -7,32 +7,17 @@
 //==============================================================
 
 /**
- * unique or primary key constraints on table "jotts.collection"
+ * unique or primary key constraints on table "jotts.folder"
  */
-export enum jotts_collection_constraint {
-  collection_pkey = "collection_pkey",
-  collection_slug_key = "collection_slug_key",
+export enum jotts_folder_constraint {
+  folder_pkey = "folder_pkey",
+  folder_slug_key = "folder_slug_key",
 }
 
 /**
- * unique or primary key constraints on table "jotts.collection_post"
+ * update columns of table "jotts.folder"
  */
-export enum jotts_collection_post_constraint {
-  collection_post_pkey = "collection_post_pkey",
-}
-
-/**
- * update columns of table "jotts.collection_post"
- */
-export enum jotts_collection_post_update_column {
-  collection_id = "collection_id",
-  post_id = "post_id",
-}
-
-/**
- * update columns of table "jotts.collection"
- */
-export enum jotts_collection_update_column {
+export enum jotts_folder_update_column {
   author_id = "author_id",
   id = "id",
   parent_id = "parent_id",
@@ -70,6 +55,7 @@ export enum jotts_post_update_column {
   author_id = "author_id",
   content = "content",
   created_at = "created_at",
+  folder_id = "folder_id",
   id = "id",
   slug = "slug",
   title = "title",
@@ -110,68 +96,42 @@ export enum jotts_user_update_column {
 }
 
 /**
- * input type for inserting array relation for remote table "jotts.collection"
+ * input type for inserting array relation for remote table "jotts.folder"
  */
-export interface jotts_collection_arr_rel_insert_input {
-  data: jotts_collection_insert_input[];
-  on_conflict?: jotts_collection_on_conflict | null;
+export interface jotts_folder_arr_rel_insert_input {
+  data: jotts_folder_insert_input[];
+  on_conflict?: jotts_folder_on_conflict | null;
 }
 
 /**
- * input type for inserting data into table "jotts.collection"
+ * input type for inserting data into table "jotts.folder"
  */
-export interface jotts_collection_insert_input {
+export interface jotts_folder_insert_input {
   author?: jotts_user_obj_rel_insert_input | null;
   author_id?: any | null;
-  collection_posts?: jotts_collection_post_arr_rel_insert_input | null;
-  collections?: jotts_collection_arr_rel_insert_input | null;
+  folders?: jotts_folder_arr_rel_insert_input | null;
   id?: any | null;
-  parent_collection?: jotts_collection_obj_rel_insert_input | null;
+  parent_folder?: jotts_folder_obj_rel_insert_input | null;
   parent_id?: any | null;
+  posts?: jotts_post_arr_rel_insert_input | null;
   slug?: string | null;
   title?: string | null;
 }
 
 /**
- * input type for inserting object relation for remote table "jotts.collection"
+ * input type for inserting object relation for remote table "jotts.folder"
  */
-export interface jotts_collection_obj_rel_insert_input {
-  data: jotts_collection_insert_input;
-  on_conflict?: jotts_collection_on_conflict | null;
+export interface jotts_folder_obj_rel_insert_input {
+  data: jotts_folder_insert_input;
+  on_conflict?: jotts_folder_on_conflict | null;
 }
 
 /**
- * on conflict condition type for table "jotts.collection"
+ * on conflict condition type for table "jotts.folder"
  */
-export interface jotts_collection_on_conflict {
-  constraint: jotts_collection_constraint;
-  update_columns: jotts_collection_update_column[];
-}
-
-/**
- * input type for inserting array relation for remote table "jotts.collection_post"
- */
-export interface jotts_collection_post_arr_rel_insert_input {
-  data: jotts_collection_post_insert_input[];
-  on_conflict?: jotts_collection_post_on_conflict | null;
-}
-
-/**
- * input type for inserting data into table "jotts.collection_post"
- */
-export interface jotts_collection_post_insert_input {
-  collection?: jotts_collection_obj_rel_insert_input | null;
-  collection_id?: any | null;
-  post?: jotts_post_obj_rel_insert_input | null;
-  post_id?: any | null;
-}
-
-/**
- * on conflict condition type for table "jotts.collection_post"
- */
-export interface jotts_collection_post_on_conflict {
-  constraint: jotts_collection_post_constraint;
-  update_columns: jotts_collection_post_update_column[];
+export interface jotts_folder_on_conflict {
+  constraint: jotts_folder_constraint;
+  update_columns: jotts_folder_update_column[];
 }
 
 /**
@@ -188,9 +148,10 @@ export interface jotts_post_arr_rel_insert_input {
 export interface jotts_post_insert_input {
   author?: jotts_user_obj_rel_insert_input | null;
   author_id?: any | null;
-  collection_posts?: jotts_collection_post_arr_rel_insert_input | null;
   content?: string | null;
   created_at?: any | null;
+  folder?: jotts_folder_obj_rel_insert_input | null;
+  folder_id?: any | null;
   id?: any | null;
   post_tags?: jotts_post_tag_arr_rel_insert_input | null;
   slug?: string | null;
@@ -268,8 +229,8 @@ export interface jotts_tag_on_conflict {
  * input type for inserting data into table "jotts.user"
  */
 export interface jotts_user_insert_input {
-  collections?: jotts_collection_arr_rel_insert_input | null;
   country?: string | null;
+  folders?: jotts_folder_arr_rel_insert_input | null;
   handle?: string | null;
   id?: any | null;
   name?: string | null;
@@ -291,6 +252,21 @@ export interface jotts_user_obj_rel_insert_input {
 export interface jotts_user_on_conflict {
   constraint: jotts_user_constraint;
   update_columns: jotts_user_update_column[];
+}
+
+/**
+ * expression to compare columns of type uuid. All fields are combined with logical 'AND'.
+ */
+export interface uuid_comparison_exp {
+  _eq?: any | null;
+  _gt?: any | null;
+  _gte?: any | null;
+  _in?: (any | null)[] | null;
+  _is_null?: boolean | null;
+  _lt?: any | null;
+  _lte?: any | null;
+  _neq?: any | null;
+  _nin?: (any | null)[] | null;
 }
 
 //==============================================================

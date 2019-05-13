@@ -17,12 +17,21 @@ CREATE TABLE jotts.login_details (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE jotts.folder (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    slug text NOT NULL UNIQUE,
+    title text NOT NULL,
+    author_id uuid NOT NULL REFERENCES jotts."user" ON DELETE CASCADE,
+    parent_id uuid REFERENCES jotts.folder ON DELETE CASCADE
+);
+
 CREATE TABLE jotts.post (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     slug text NOT NULL UNIQUE,
     title text NOT NULL,
     content text,
     author_id uuid NOT NULL REFERENCES jotts."user",
+    folder_id uuid REFERENCES jotts.folder,
     created_at timestamp DEFAULT now() NOT NULL,
     updated_at timestamp DEFAULT now() NOT NULL
 );
@@ -71,17 +80,3 @@ OR
     HAVING count(*) = array_length(string_to_array($1,','),1)
   )
 $$ LANGUAGE SQL STABLE;
-
-CREATE TABLE jotts.collection (
-    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-    slug text NOT NULL UNIQUE,
-    title text NOT NULL,
-    author_id uuid NOT NULL REFERENCES jotts."user" ON DELETE CASCADE,
-    parent_id uuid REFERENCES jotts.collection ON DELETE CASCADE
-);
-
-CREATE TABLE jotts.collection_post (
-    collection_id uuid REFERENCES jotts.collection ON DELETE CASCADE,
-    post_id uuid REFERENCES jotts.post ON DELETE CASCADE,
-    PRIMARY KEY (collection_id, post_id)
-);

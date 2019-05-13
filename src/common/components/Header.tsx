@@ -58,7 +58,7 @@ class Header extends React.Component<StyleProps> {
                     className={this.props.classes.loginButton}
                     onClick={() => {
                       User.logout().then(_d => {
-                        Router.push('/');
+                        window.location.href='/';
                       })
                     }}
                   >Logout</Button>

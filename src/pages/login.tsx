@@ -2,8 +2,8 @@ import Router from 'next/router';
 import React from 'react';
 
 import {
-    AppBar, Avatar, Button, createStyles, FormControl, Input, InputLabel, Paper, Tab, Tabs, Theme,
-    Typography, WithStyles, withStyles
+  AppBar, Avatar, Button, createStyles, FormControl, Input, InputLabel, Paper, Tab, Tabs, Theme,
+  Typography, WithStyles, withStyles
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
@@ -103,7 +103,7 @@ class Login extends React.Component<Props, State> {
                                                     window.alert("Unknown error occured")
                                                     break;
                                                 default:
-                                                    Router.push('/')
+                                                    window.location.href = '/';
                                                     break;
                                             }
                                         });
@@ -151,7 +151,7 @@ class Login extends React.Component<Props, State> {
                                         } else if (!this.state.handle) {
                                             window.alert("handle cannot be empty");
                                         } else {
-                                            User.register(this.state.email, this.state.handle, this.state.password);
+                                            User.register(this.state.email, this.state.handle, this.state.password).then(res => Router.push('/login'));
                                         }
                                     }}
                                 >
