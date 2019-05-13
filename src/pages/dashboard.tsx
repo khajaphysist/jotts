@@ -48,14 +48,14 @@ class DashBoard extends React.Component<Props> {
         return (
             <Layout>
                 <div style={{ display: 'flex' }}>
-                    <List component="nav" style={{ width: 300, height: 500 }}>
+                    <List component="nav" style={{ width: 300, height: 500, overflowY: 'auto' }} disablePadding>
                         <Divider />
                         <FolderList folderId={null} postId={postId} user={user} client={client} padding={0} />
                     </List>
                     {
                         this.props.postId ?
                             (
-                                <div >
+                                <div style={{flex: 1}}>
                                     <EditPost postId={this.props.postId} />
                                 </div>
                             ) :

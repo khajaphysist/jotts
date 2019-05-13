@@ -5,14 +5,14 @@ import React from 'react';
 import { ApolloConsumer } from 'react-apollo';
 import slugify from 'slug';
 
-import { InputBase, Paper } from '@material-ui/core';
+import { InputBase, Paper, TextField, withStyles, Theme, createStyles, WithStyles } from '@material-ui/core';
 import { InputBaseProps } from '@material-ui/core/InputBase';
 
 import {
-  AddPostTagMutation, AddPostTagMutationVariables
+    AddPostTagMutation, AddPostTagMutationVariables
 } from '../../apollo-types/AddPostTagMutation';
 import {
-  DeletePostTagMutation, DeletePostTagMutationVariables
+    DeletePostTagMutation, DeletePostTagMutationVariables
 } from '../../apollo-types/DeletePostTagMutation';
 import { EditPost, EditPostVariables } from '../../apollo-types/EditPost';
 import { GetPost, GetPost_jotts_post_by_pk, GetPostVariables } from '../../apollo-types/GetPost';
@@ -31,7 +31,7 @@ function TitleInput(props: InputBaseProps) {
         <Paper style={{
             padding: 4
         }}>
-            <InputBase {...props} fullWidth/>
+            <InputBase {...props} fullWidth />
         </Paper>
     )
 }
@@ -89,11 +89,28 @@ mutation DeletePostTagMutation($postId: uuid,!, $tag: String!){
 }
 `
 
+const styles = (theme: Theme) => createStyles({
+    root: {
+        padding: 2* theme.spacing.unit
+    },
+    title: {
+        marginBottom: 2* theme.spacing.unit
+    },
+    tags: {
+        marginBottom: 2* theme.spacing.unit
+    },
+    content: {
+
+    }
+})
+
 interface ComponentProps {
     postId: string
 }
 
-type Props = ComponentProps;
+type StyleProps = WithStyles<typeof styles>;
+
+type Props = ComponentProps & StyleProps;
 interface State {
     id: string;
     title: string;
@@ -115,6 +132,7 @@ class EditPostComponent extends React.Component<Props, State> {
         }
     }
     render() {
+        const { classes } = this.props;
         return (
             <ApolloConsumer>
                 {client => {
@@ -122,9 +140,11 @@ class EditPostComponent extends React.Component<Props, State> {
                         this.client = client
                     }
                     return (
-                        <div>
-                            <TitleInput placeholder="Title"
+                        <div className={classes.root}>
+                            <TextField
+                                label="Title"
                                 value={this.state.title}
+                                fullWidth
                                 onChange={
                                     (e) =>
                                         this.setState({
@@ -133,22 +153,26 @@ class EditPostComponent extends React.Component<Props, State> {
                                             slug: generateSlug(e.target.value, this.state.id)
                                         },
                                             () => this.updatePost(client))
-                                } />
-                            <SelectTags
-                                value={this.state.tags}
-                                onChange={async (newTags) => {
-                                    const { tags } = this.state
-                                    if (newTags.length > tags.length) {
-                                        const diffTags = difference(newTags, tags);
-                                        await this.addPostTag(diffTags)
-                                    } else {
-                                        const diffTags = difference(tags, newTags);
-                                        await Promise.all(diffTags.map(tag => this.deletePostTag(tag)))
-                                    }
-                                    this.updateCachePostTags(newTags, client)
-                                    this.setState({ ...this.state, tags: newTags })
-                                }}
+                                }
+                                className={classes.title}
                             />
+                            <div className={classes.tags}>
+                                <SelectTags
+                                    value={this.state.tags}
+                                    onChange={async (newTags) => {
+                                        const { tags } = this.state
+                                        if (newTags.length > tags.length) {
+                                            const diffTags = difference(newTags, tags);
+                                            await this.addPostTag(diffTags)
+                                        } else {
+                                            const diffTags = difference(tags, newTags);
+                                            await Promise.all(diffTags.map(tag => this.deletePostTag(tag)))
+                                        }
+                                        this.updateCachePostTags(newTags, client)
+                                        this.setState({ ...this.state, tags: newTags })
+                                    }}
+                                />
+                            </div>
                             <JottsEditor value={this.state.content} onChange={({ value }) => {
                                 const updateDB = this.state.content.document !== value.document
                                 this.setState({ ...this.state, content: value }, () => {
@@ -156,7 +180,9 @@ class EditPostComponent extends React.Component<Props, State> {
                                         this.updatePost(client)
                                     }
                                 })
-                            }} />
+                            }}
+                                className={classes.content}
+                            />
                         </div>
                     )
                 }}
@@ -251,4 +277,4 @@ class EditPostComponent extends React.Component<Props, State> {
     }, 1000)
 }
 
-export default EditPostComponent;
+export default withStyles(styles)(EditPostComponent);
