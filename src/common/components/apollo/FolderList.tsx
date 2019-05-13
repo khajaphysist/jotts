@@ -131,12 +131,12 @@ interface Props {
     user: CookieUser
 }
 
-interface FolderFolderListProps extends Props {
+interface FolderListProps extends Props {
     padding: number
 }
 
-class FolderFolderList extends React.Component<FolderFolderListProps, State> {
-    constructor(props: FolderFolderListProps) {
+class FolderList extends React.Component<FolderListProps, State> {
+    constructor(props: FolderListProps) {
         super(props)
         this.state = { expanded: {} }
     }
@@ -158,8 +158,8 @@ class FolderFolderList extends React.Component<FolderFolderListProps, State> {
                         }
                         return data ?
                             data.jotts_folder.map(c => (
-                                <div>
-                                    <Mutation<EditFolderMutation, EditFolderMutationVariables> mutation={editFolderMutation} key={c.id}>
+                                <div key={c.id}>
+                                    <Mutation<EditFolderMutation, EditFolderMutationVariables> mutation={editFolderMutation}>
                                         {(editFolder) => (
                                             <EditableListItem
                                                 initialValue={c.title}
@@ -175,11 +175,9 @@ class FolderFolderList extends React.Component<FolderFolderListProps, State> {
                                                     draggable: true,
                                                 }}
                                                 actions={(
-                                                    <>
-                                                        <MenuItem onClick={() => createNewPost(client, c.id)}>Add Notes</MenuItem>
-                                                        <MenuItem onClick={() => createNewFolder(client, c.id)}>Add Folder</MenuItem>
-                                                        <MenuItem onClick={() => deleteFolder(c.id, folderId, client)}>Delete</MenuItem>
-                                                    </>
+                                                    [<MenuItem onClick={() => createNewPost(client, c.id)} key={"add-notes"}>Add Notes</MenuItem>,
+                                                    <MenuItem onClick={() => createNewFolder(client, c.id)} key={"add-folder"}>Add Folder</MenuItem>,
+                                                    <MenuItem onClick={() => deleteFolder(c.id, folderId, client)} key={"delete"}>Delete</MenuItem>,]
                                                 )}
                                             />
                                         )}
@@ -187,7 +185,7 @@ class FolderFolderList extends React.Component<FolderFolderListProps, State> {
                                     <Collapse in={this.state.expanded[c.id]} style={{ borderLeft: '1px solid red' }}>
                                         {
                                             this.state.expanded[c.id] ?
-                                                (<FolderFolderList folderId={c.id} postId={postId} user={user} client={client} padding={4} />) : null
+                                                (<FolderList folderId={c.id} postId={postId} user={user} client={client} padding={4} />) : null
                                         }
                                     </Collapse>
                                 </div>
@@ -374,4 +372,4 @@ interface State {
     expanded: { [key: string]: boolean }
 }
 
-export default FolderFolderList
+export default FolderList

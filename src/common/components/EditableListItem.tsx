@@ -13,7 +13,7 @@ interface EditableListItemProps {
     listItemProps?: ListItemProps
     initialValue: string;
     onChange: (value: string) => any;
-    actions?: React.ReactChild
+    actions?: React.ReactChild[]
 }
 
 interface EditableListItemState {
