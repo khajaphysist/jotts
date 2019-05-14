@@ -173,6 +173,7 @@ class EditPostComponent extends React.Component<Props, State> {
                                         this.updateCachePostTags(newTags, client)
                                         this.setState({ ...this.state, tags: newTags })
                                     }}
+                                    creatable
                                 />
                             </div>
                             <JottsEditor value={this.state.content} onChange={({ value }) => {
@@ -271,7 +272,7 @@ class EditPostComponent extends React.Component<Props, State> {
         if (this.state.id) {
             const { id, title, slug, content } = this.state
             const text = content.document.getTextsAsArray().map(t => t.text).join('\n');
-            const summary = text.length > 350 ? text.substr(0, 350) + '...' : text;
+            const summary = text.length > 300 ? text.substr(0, 300) + '...' : text;
             const s = serializeValue(content);
             await client.mutate<EditPost, EditPostVariables>({
                 mutation: editPostMutation,

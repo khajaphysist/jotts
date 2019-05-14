@@ -8,7 +8,7 @@ import {
   GetTagSuggestions, GetTagSuggestionsVariables
 } from '../../apollo-types/GetTagSuggestions';
 import { GetTopTags } from '../../apollo-types/GetTopTags';
-import MaterialReactSelect from '../MaterialReactSelect';
+import { AsyncMRSelect, CreatableAsyncMRSelect } from '../MaterialReactSelect';
 
 const getTopTags = gql`
 query GetTopTags {
@@ -40,7 +40,8 @@ const debouncedFetch = debounce((input, callback, client: ApolloClient<any>) => 
 
 interface ComponentProps {
     onChange: (selected: string[]) => void,
-    value: string[]
+    value: string[],
+    creatable?: boolean
 }
 type Props = ComponentProps
 
@@ -57,18 +58,38 @@ export default class SelectTags extends React.Component<Props> {
                             if (loading) {
                                 return <div>Loading...</div>
                             }
-                            return data ? (
-                                <MaterialReactSelect
-                                    defaultOptions={data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t).map(t => ({ label: t, value: t }))}
-                                    loadOptions={(input, callback) => {
-                                        debouncedFetch(input, callback, client)
-                                    }}
-                                    onChange={(selected) => {
-                                        this.props.onChange(selected.map(t => t.label))
-                                    }}
-                                    value={this.props.value.map(t => ({ label: t, value: t }))}
-                                />
-                            ) : null
+                            return data ? this.props.creatable ?
+                                (
+                                    <CreatableAsyncMRSelect
+                                        defaultOptions={data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t).map(t => ({ label: t, value: t }))}
+                                        loadOptions={(input, callback) => {
+                                            debouncedFetch(input, callback, client)
+                                        }}
+                                        onChange={(selected) => {
+                                            this.props.onChange(selected.map(t => t.label))
+                                        }}
+                                        value={this.props.value.map(t => ({ label: t, value: t }))}
+                                        isMulti
+                                        placeholder="Select Tags"
+                                        label="Tags"
+                                    />
+                                ) :
+                                (
+
+                                    <AsyncMRSelect
+                                        defaultOptions={data.jotts_tag_post_count_view.map(t => t.tag ? t.tag : '').filter(t => t).map(t => ({ label: t, value: t }))}
+                                        loadOptions={(input, callback) => {
+                                            debouncedFetch(input, callback, client)
+                                        }}
+                                        onChange={(selected) => {
+                                            this.props.onChange(selected.map(t => t.label))
+                                        }}
+                                        value={this.props.value.map(t => ({ label: t, value: t }))}
+                                        isMulti
+                                        placeholder="Select Tags"
+                                        label="Tags"
+                                    />
+                                ) : null
                         }}
                     </Query>
                 )}

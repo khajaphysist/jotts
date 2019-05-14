@@ -8,6 +8,8 @@ const styles = () => createStyles({
     content: {
         margin: 20,
         padding: 20,
+        display: "flex",
+        justifyContent: 'center',
     },
     main: {
         height: "auto",

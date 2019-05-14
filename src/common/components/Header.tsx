@@ -36,6 +36,7 @@ interface StyleProps extends WithStyles<typeof styles> { }
 
 class Header extends React.Component<StyleProps> {
   render() {
+    const loginState = isLoggedIn();
     return (
       <div>
         <AppBar position="static">
@@ -45,7 +46,7 @@ class Header extends React.Component<StyleProps> {
             </Link>
             <NoSsr>
               {
-                isLoggedIn() ?
+                loginState ?
                   <Link {...getDashboardLink(loggedInUser())} passHref>
                     <Button>Dashboard</Button>
                   </Link>
@@ -53,15 +54,19 @@ class Header extends React.Component<StyleProps> {
                   null
               }
               {
-                isLoggedIn() ?
-                  <Button
-                    className={this.props.classes.loginButton}
-                    onClick={() => {
-                      User.logout().then(_d => {
-                        window.location.href='/';
-                      })
-                    }}
-                  >Logout</Button>
+                loginState ?
+                  <div className={this.props.classes.loginButton}>
+                    <Link href="/profile" passHref>
+                      <Button className={this.props.classes.loginButton}>Profile</Button>
+                    </Link>
+                    <Button
+                      onClick={() => {
+                        User.logout().then(_d => {
+                          window.location.href = '/';
+                        })
+                      }}
+                    >Logout</Button>
+                  </div>
                   :
                   <Link href="/login" passHref>
                     <Button className={this.props.classes.loginButton}>Login</Button>

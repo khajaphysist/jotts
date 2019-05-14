@@ -62,6 +62,12 @@ class User {
         return newId;
     }
 
+    public async changePassword(userId: string, newPasswordHash: string) {
+        return knex('jotts.login_details')
+            .where({ id: userId })
+            .update({ password_hash: newPasswordHash })
+    }
+
     public async getOne(email: string): Promise<UserDetails | undefined> {
         const user = (await knex('jotts.login_details').where('email', email).select())[0];
         if (user) {
@@ -77,9 +83,9 @@ class User {
                 }
                 `,
                 variables: { id: user.id },
-                context:{
-                    headers:{
-                        'x-hasura-admin-secret':'khaja'
+                context: {
+                    headers: {
+                        'x-hasura-admin-secret': 'khaja'
                     }
                 }
             });

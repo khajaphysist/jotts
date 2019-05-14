@@ -1,5 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
+import Select from 'react-select';
+import AsyncSelect from 'react-select/lib/Async';
 import CreatableAsyncSelect from 'react-select/lib/AsyncCreatable';
 import { ValueContainerProps } from 'react-select/lib/components/containers';
 import { ControlProps } from 'react-select/lib/components/Control';
@@ -7,6 +9,7 @@ import { MenuProps } from 'react-select/lib/components/Menu';
 import { MultiValueProps } from 'react-select/lib/components/MultiValue';
 import { OptionProps } from 'react-select/lib/components/Option';
 import { PlaceholderProps } from 'react-select/lib/components/Placeholder';
+import { SingleValueProps } from 'react-select/lib/components/SingleValue';
 
 import { Chip, MenuItem, Paper, TextField, Typography } from '@material-ui/core';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
@@ -122,6 +125,14 @@ function Placeholder(props: PlaceholderProps<OptionType>) {
     );
 }
 
+function SingleValue(props: SingleValueProps<OptionType>) {
+    return (
+        <Typography className={props.selectProps.classes.singleValue} {...props.innerProps}>
+            {props.children}
+        </Typography>
+    );
+}
+
 function ValueContainer(props: ValueContainerProps<OptionType>) {
     return <div className={props.selectProps.classes.valueContainer}>{props.children}</div>;
 }
@@ -155,16 +166,13 @@ interface OptionType {
 }
 
 type StyleProps = WithStyles<typeof styles, true>;
-interface ComponentProps {
-    defaultOptions: OptionType[],
-    loadOptions: (input: string, callback: (options: OptionType[]) => void) => void | Promise<void>,
-    onChange: (selected: OptionType[]) => void,
-    value: OptionType[]
-    onCreateOption?: (newOption: string)=>void
-}
-type Props = StyleProps & ComponentProps;
 
-class IntegrationReactSelect extends React.Component<Props> {
+interface CreatableAsyncProps extends AsyncProps {
+    onCreateOption?: (newOption: string) => void
+}
+type CreatableAsyncMRSelectProps = StyleProps & CreatableAsyncProps;
+
+class CreatableAsyncMRSelectComponent extends React.Component<CreatableAsyncMRSelectProps> {
 
     render() {
         const { classes, theme } = this.props;
@@ -183,7 +191,7 @@ class IntegrationReactSelect extends React.Component<Props> {
                         }),
                     }}
                     textFieldProps={{
-                        label: 'Tags',
+                        label: this.props.label,
                         InputLabelProps: {
                             shrink: true,
                         },
@@ -206,10 +214,11 @@ class IntegrationReactSelect extends React.Component<Props> {
                         NoOptionsMessage,
                         Option,
                         Placeholder,
+                        SingleValue,
                         ValueContainer,
                     }}
-                    placeholder="Select tags"
-                    isMulti
+                    placeholder={this.props.placeholder}
+                    isMulti={this.props.isMulti}
                     loadOptions={this.props.loadOptions}
                     onCreateOption={this.props.onCreateOption}
                 />
@@ -218,4 +227,128 @@ class IntegrationReactSelect extends React.Component<Props> {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(IntegrationReactSelect);
+interface BaseProps {
+    defaultOptions: OptionType[],
+    onChange: (selected: OptionType[]) => void,
+    value: OptionType[],
+    isMulti: boolean,
+    placeholder?: string,
+    label?: string
+}
+type BaseMRSelectProps = StyleProps & BaseProps;
+
+class BaseMRSelectComponent extends React.Component<BaseMRSelectProps> {
+
+    render() {
+        const { classes, theme } = this.props;
+
+        return (
+            <div className={classes.root}>
+                <Select<OptionType>
+                    classes={classes}
+                    styles={{
+                        input: base => ({
+                            ...base,
+                            color: theme.palette.text.primary,
+                            '& input': {
+                                font: 'inherit',
+                            },
+                        }),
+                    }}
+                    textFieldProps={{
+                        label: this.props.label,
+                        InputLabelProps: {
+                            shrink: true,
+                        },
+                    }}
+                    value={this.props.value}
+                    options={this.props.defaultOptions}
+                    onChange={(v, _a) => {
+                        if (v && v instanceof Array) {
+                            return this.props.onChange(v)
+                        } else if (v) {
+                            return this.props.onChange([v])
+                        } else {
+                            return this.props.onChange([])
+                        }
+                    }}
+                    components={{
+                        Control,
+                        Menu,
+                        MultiValue,
+                        NoOptionsMessage,
+                        Option,
+                        Placeholder,
+                        SingleValue,
+                        ValueContainer,
+                    }}
+                    placeholder={this.props.placeholder}
+                    isMulti={this.props.isMulti}
+                />
+            </div>
+        );
+    }
+}
+
+interface AsyncProps extends BaseProps {
+    loadOptions: (input: string, callback: (options: OptionType[]) => void) => void | Promise<void>,
+}
+type AsyncMRSelectProps = StyleProps & AsyncProps;
+
+class AsyncMRSelectComponent extends React.Component<AsyncMRSelectProps> {
+
+    render() {
+        const { classes, theme } = this.props;
+
+        return (
+            <div className={classes.root}>
+                <AsyncSelect<OptionType>
+                    classes={classes}
+                    styles={{
+                        input: base => ({
+                            ...base,
+                            color: theme.palette.text.primary,
+                            '& input': {
+                                font: 'inherit',
+                            },
+                        }),
+                    }}
+                    textFieldProps={{
+                        label: this.props.label,
+                        InputLabelProps: {
+                            shrink: true,
+                        },
+                    }}
+                    value={this.props.value}
+                    defaultOptions={this.props.defaultOptions}
+                    onChange={(v, _a) => {
+                        if (v && v instanceof Array) {
+                            return this.props.onChange(v)
+                        } else if (v) {
+                            return this.props.onChange([v])
+                        } else {
+                            return this.props.onChange([])
+                        }
+                    }}
+                    components={{
+                        Control,
+                        Menu,
+                        MultiValue,
+                        NoOptionsMessage,
+                        Option,
+                        Placeholder,
+                        SingleValue,
+                        ValueContainer,
+                    }}
+                    placeholder={this.props.placeholder}
+                    isMulti={this.props.isMulti}
+                    loadOptions={this.props.loadOptions}
+                />
+            </div>
+        );
+    }
+}
+
+export const BaseMRSelect = withStyles(styles, { withTheme: true })(BaseMRSelectComponent);
+export const AsyncMRSelect = withStyles(styles, { withTheme: true })(AsyncMRSelectComponent);
+export const CreatableAsyncMRSelect = withStyles(styles, { withTheme: true })(CreatableAsyncMRSelectComponent);

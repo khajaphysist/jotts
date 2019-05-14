@@ -39,6 +39,9 @@ query GetPostsWithTags($skip: Int!, $size: Int!, $tags: String!) {
 `
 
 const styles = () => createStyles({
+  root:{
+    flex: 1
+  },
   itemContainer: {
     display: "flex",
     flexWrap: "wrap",
@@ -81,7 +84,7 @@ class Index extends React.Component<Props> {
   public render() {
     return (
       <Layout>
-        <div>
+        <div className={this.props.classes.root}>
 
               <Query<GetPostsWithTags, GetPostsWithTagsVariables> query={getPostsWithTags} variables={{ size: this.props.size, skip: (this.props.page - 1) * this.props.size, tags: this.props.tags.join(',') }}>
                 {({ loading, error, data }) => {

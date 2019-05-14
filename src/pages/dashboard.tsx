@@ -3,7 +3,9 @@ import { GetInitialProps, NextContext } from 'next';
 import React from 'react';
 import { withApollo } from 'react-apollo';
 
-import { createStyles, Divider, List, Theme, withStyles, WithStyles } from '@material-ui/core';
+import {
+  createStyles, Divider, List, Theme, Typography, withStyles, WithStyles
+} from '@material-ui/core';
 
 import EditPost from '../common/components/apollo/EditPost';
 import FolderList from '../common/components/apollo/FolderList';
@@ -11,6 +13,10 @@ import Layout from '../common/components/Layout';
 import { loggedInUser } from '../common/utils/loginStateProvider';
 
 const styles = (theme: Theme) => createStyles({
+    root: {
+        flex: 1,
+        display: 'flex'
+    },
     addButton: {
         position: 'absolute',
         bottom: theme.spacing.unit * 4,
@@ -47,15 +53,16 @@ class DashBoard extends React.Component<Props> {
         const { postId, client } = this.props;
         return (
             <Layout>
-                <div style={{ display: 'flex' }}>
+                <div className={this.props.classes.root}>
                     <List component="nav" style={{ width: 300, height: 500, overflowY: 'auto' }} disablePadding>
+                        <Typography variant='h5' color="textSecondary" style={{ padding: 16, paddingTop: 28, paddingBottom: 4 }}>Folders</Typography>
                         <Divider />
                         <FolderList folderId={null} postId={postId} user={user} client={client} padding={0} />
                     </List>
                     {
                         this.props.postId ?
                             (
-                                <div style={{flex: 1}}>
+                                <div style={{ flex: 1 }}>
                                     <EditPost postId={this.props.postId} />
                                 </div>
                             ) :
