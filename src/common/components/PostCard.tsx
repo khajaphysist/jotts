@@ -56,7 +56,7 @@ interface ComponentProps {
             name: string | null
             handle: string
         }
-        content: string | null
+        summary: string | null
         post_tags: Array<{ tag: string }>
     }
 }
@@ -97,7 +97,7 @@ class PostCard extends React.Component<Props, State> {
                 </div>
                 <CardContent className={classes.itemContent}>
                     <Typography variant="body1" >
-                        {this.props.data.content ? this.props.data.content.substr(0, 200) : ''}
+                        {this.props.data.summary}
                     </Typography>
                 </CardContent>
                 <div className={classes.itemsTags}>

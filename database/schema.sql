@@ -29,6 +29,8 @@ CREATE TABLE jotts.post (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
     slug text NOT NULL UNIQUE,
     title text NOT NULL,
+    summary text,
+    text text,
     content text,
     author_id uuid NOT NULL REFERENCES jotts."user",
     folder_id uuid REFERENCES jotts.folder,

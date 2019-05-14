@@ -10,7 +10,7 @@ export interface EditPost_update_jotts_post_returning {
   __typename: "jotts_post";
   id: any;
   title: string;
-  content: string | null;
+  summary: string | null;
 }
 
 export interface EditPost_update_jotts_post {
@@ -37,4 +37,6 @@ export interface EditPostVariables {
   title: string;
   slug: string;
   content?: string | null;
+  text?: string | null;
+  summary?: string | null;
 }

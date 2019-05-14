@@ -24,7 +24,7 @@ query GetPostsWithTags($skip: Int!, $size: Int!, $tags: String!) {
     }
     id
     title
-    content
+    summary
     slug
     post_tags {
       tag

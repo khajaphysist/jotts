@@ -26,7 +26,7 @@ export interface GetPostsWithTags_jotts_post_by_tag {
   author: GetPostsWithTags_jotts_post_by_tag_author;
   id: any;
   title: string;
-  content: string | null;
+  summary: string | null;
   slug: string;
   /**
    * An array relationship

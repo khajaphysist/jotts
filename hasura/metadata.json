@@ -198,6 +198,8 @@
                             "folder_id",
                             "id",
                             "slug",
+                            "summary",
+                            "text",
                             "title"
                         ]
                     }
@@ -216,6 +218,8 @@
                             "folder_id",
                             "id",
                             "slug",
+                            "summary",
+                            "text",
                             "title",
                             "updated_at"
                         ],
@@ -234,6 +238,8 @@
                             "folder_id",
                             "id",
                             "slug",
+                            "summary",
+                            "text",
                             "title",
                             "updated_at"
                         ],
@@ -253,6 +259,8 @@
                             "folder_id",
                             "id",
                             "slug",
+                            "summary",
+                            "text",
                             "title"
                         ],
                         "filter": {

@@ -5,14 +5,16 @@ import React from 'react';
 import { ApolloConsumer } from 'react-apollo';
 import slugify from 'slug';
 
-import { InputBase, Paper, TextField, withStyles, Theme, createStyles, WithStyles } from '@material-ui/core';
+import {
+  createStyles, InputBase, Paper, TextField, Theme, withStyles, WithStyles
+} from '@material-ui/core';
 import { InputBaseProps } from '@material-ui/core/InputBase';
 
 import {
-    AddPostTagMutation, AddPostTagMutationVariables
+  AddPostTagMutation, AddPostTagMutationVariables
 } from '../../apollo-types/AddPostTagMutation';
 import {
-    DeletePostTagMutation, DeletePostTagMutationVariables
+  DeletePostTagMutation, DeletePostTagMutationVariables
 } from '../../apollo-types/DeletePostTagMutation';
 import { EditPost, EditPostVariables } from '../../apollo-types/EditPost';
 import { GetPost, GetPost_jotts_post_by_pk, GetPostVariables } from '../../apollo-types/GetPost';
@@ -50,16 +52,16 @@ query GetPost($id: uuid!){
 }
 `
 const editPostMutation = gql`
-mutation EditPost($id: uuid!, $title: String!, $slug: String!, $content: String){
+mutation EditPost($id: uuid!, $title: String!, $slug: String!, $content: String, $text: String, $summary: String){
     update_jotts_post(
         where: {id: {_eq: $id}},
-        _set: {title: $title,slug:$slug,content:$content}
+        _set: {title: $title,slug:$slug,content:$content,text:$text,summary:$summary}
         ) {
             affected_rows
             returning {
                 id
                 title
-                content
+                summary
             }
     }
 }
@@ -91,13 +93,13 @@ mutation DeletePostTagMutation($postId: uuid,!, $tag: String!){
 
 const styles = (theme: Theme) => createStyles({
     root: {
-        padding: 2* theme.spacing.unit
+        padding: 2 * theme.spacing.unit
     },
     title: {
-        marginBottom: 2* theme.spacing.unit
+        marginBottom: 2 * theme.spacing.unit
     },
     tags: {
-        marginBottom: 2* theme.spacing.unit
+        marginBottom: 2 * theme.spacing.unit
     },
     content: {
 
@@ -268,10 +270,12 @@ class EditPostComponent extends React.Component<Props, State> {
     updatePost = debounce(async (client: ApolloClient<any>) => {
         if (this.state.id) {
             const { id, title, slug, content } = this.state
+            const text = content.document.getTextsAsArray().map(t => t.text).join('\n');
+            const summary = text.length > 350 ? text.substr(0, 350) + '...' : text;
             const s = serializeValue(content);
-            const res = await client.mutate<EditPost, EditPostVariables>({
+            await client.mutate<EditPost, EditPostVariables>({
                 mutation: editPostMutation,
-                variables: { id, title, slug, content: s }
+                variables: { id, title, slug, content: s, text, summary }
             });
         }
     }, 1000)

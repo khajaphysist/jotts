@@ -58,6 +58,8 @@ export enum jotts_post_update_column {
   folder_id = "folder_id",
   id = "id",
   slug = "slug",
+  summary = "summary",
+  text = "text",
   title = "title",
   updated_at = "updated_at",
 }
@@ -155,6 +157,8 @@ export interface jotts_post_insert_input {
   id?: any | null;
   post_tags?: jotts_post_tag_arr_rel_insert_input | null;
   slug?: string | null;
+  summary?: string | null;
+  text?: string | null;
   title?: string | null;
   updated_at?: any | null;
 }
