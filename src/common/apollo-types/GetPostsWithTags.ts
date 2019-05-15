@@ -11,6 +11,7 @@ export interface GetPostsWithTags_jotts_post_by_tag_author {
   id: any;
   handle: string;
   name: string | null;
+  profile_picture: string | null;
 }
 
 export interface GetPostsWithTags_jotts_post_by_tag_post_tags {

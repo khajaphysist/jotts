@@ -82,3 +82,10 @@ OR
     HAVING count(*) = array_length(string_to_array($1,','),1)
   )
 $$ LANGUAGE SQL STABLE;
+
+CREATE TABLE jotts.image (
+    id text PRIMARY KEY,
+    name text NOT NULL,
+    author_id uuid NOT NULL REFERENCES jotts."user" ON DELETE CASCADE,
+    UNIQUE (name, author_id)
+);

@@ -2,9 +2,11 @@ import Link from 'next/link';
 import React from 'react';
 
 import {
-  Button, ButtonBase, Card, CardActions, CardContent, createStyles, Theme, Typography, withStyles,
-  WithStyles
+  Avatar, Button, ButtonBase, Card, CardActions, CardContent, createStyles, Theme, Typography,
+  withStyles, WithStyles
 } from '@material-ui/core';
+
+import { s3ImagesUrl } from './Constants';
 
 const styles = (theme: Theme) => createStyles({
     item: {
@@ -55,6 +57,7 @@ interface ComponentProps {
         author: {
             name: string | null
             handle: string
+            profile_picture: string | null
         }
         summary: string | null
         post_tags: Array<{ tag: string }>
@@ -88,6 +91,7 @@ class PostCard extends React.Component<Props, State> {
                     </Link>
                 </div>
                 <div className={this.props.classes.itemAuthor}>
+                    <Avatar src={`${s3ImagesUrl}/${this.props.data.author.profile_picture}`} />
                     <Typography color="secondary" className={this.props.classes.itemAuthorName}>
                         {this.props.data.author.name ? this.props.data.author.name.substr(0, 15) : ''}
                     </Typography>

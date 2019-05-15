@@ -1,8 +1,11 @@
+import { S3 } from 'aws-sdk';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as crypto from 'crypto';
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
+import { extension } from 'mime-types';
+import * as multer from 'multer';
 import * as next from 'next';
 import * as passport from 'passport';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
@@ -18,6 +21,19 @@ console.log(`Running in ${process.env.NODE_ENV} mode`)
 const app = next({ dev, dir: './src' });
 const handle = app.getRequestHandler();
 const LocalStrategy = localStrategy.Strategy;
+const upload = multer({
+    limits: { files: 1, fileSize: 1024 * 512 }, fileFilter: (_req, file, cb) => {
+        return file.mimetype.startsWith('image/') ? cb(null, true) : cb(Error("Only Image files are allowed"), false)
+    }
+});
+
+const s3 = new S3({
+    endpoint: 'http://127.0.0.1:9001/images',
+    s3BucketEndpoint: true,
+    accessKeyId: 'minio',
+    secretAccessKey: 'minio123',
+    signatureVersion: 'v4'
+})
 
 app
     .prepare()
@@ -132,6 +148,33 @@ app
                     })
             }
         )
+
+        server.post('/image',
+            passport.authenticate('jwt', { session: false }),
+            upload.single('image'),
+            (req, res) => {
+                const { name } = req.body
+                const { mimetype, buffer } = req.file;
+                const ext = extension(mimetype)
+                if (!ext) {
+                    return res.status(500).send("Picture extension not supported")
+                }
+                const imageName = uuidv4() + '.' + ext
+                s3.putObject({
+                    Body: buffer,
+                    Key: imageName,
+                    Bucket: 'images',
+                    Tagging: `name=${name}`
+                }, (err) => {
+                    if (err) {
+                        console.log("Error: ", err);
+                        res.status(500).send(err)
+                    } else {
+                        res.status(200).send(imageName)
+                    }
+
+                })
+            })
 
         server.get('/post/:slug'
             , (req, res) => {

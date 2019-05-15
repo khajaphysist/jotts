@@ -3,7 +3,7 @@ import React from 'react';
 import { Mutation, withApollo } from 'react-apollo';
 
 import {
-  Button, createStyles, List, ListItem, ListItemIcon, ListItemText, Paper, TextField, Theme,
+  Avatar, Button, createStyles, List, ListItem, ListItemIcon, ListItemText, Paper, TextField, Theme,
   withStyles, WithStyles
 } from '@material-ui/core';
 import { Person, Security } from '@material-ui/icons';
@@ -12,12 +12,13 @@ import { GetUserProfile, GetUserProfileVariables } from '../common/apollo-types/
 import {
   UpdateUserProfile, UpdateUserProfileVariables
 } from '../common/apollo-types/UpdateUserProfile';
-import { countries } from '../common/components/Constants';
+import SelectImage from '../common/components/apollo/SelectImage';
+import { countries, s3ImagesUrl } from '../common/components/Constants';
 import Layout from '../common/components/Layout';
 import { BaseMRSelect } from '../common/components/MaterialReactSelect';
 import { CookieUser } from '../common/types';
 import { User } from '../common/utils/agent';
-import { loggedInUser, withUser } from '../common/utils/loginStateProvider';
+import { getUserToken, loggedInUser, withUser } from '../common/utils/loginStateProvider';
 
 const styles = (theme: Theme) => createStyles({
     root: {
@@ -117,10 +118,15 @@ class ProfilePage extends React.Component<Props, State> {
                                         }}
                                         placeholder="Country"
                                     />
-                                    <TextField label="Profile Picture"
-                                        value={profile.profilePicture}
-                                        onChange={e => this.setState({ ...this.state, profile: { ...profile, profilePicture: e.target.value } })}
-                                    />
+                                    <div style={{ display: 'flex' }}>
+                                        <Avatar src={`${s3ImagesUrl}/${profile.profilePicture}`} />
+                                        <div style={{ flex: 1 }}>
+                                            <SelectImage
+                                                user={user}
+                                                value={profile.profilePicture}
+                                                onChange={imgId => this.setState({ ...this.state, profile: { ...profile, profilePicture: imgId } })} />
+                                        </div>
+                                    </div>
                                     <Mutation<UpdateUserProfile, UpdateUserProfileVariables> mutation={updateUserProfile}>
                                         {(updateUserProfile, { data }) => (
                                             <Button color="primary" onClick={() => {

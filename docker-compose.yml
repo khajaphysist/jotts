@@ -34,6 +34,19 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: khaja
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
       HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256","key":"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzhXtKI3qJI8Bybs/wPhH\nh1W4AlJ07zsjQXqVGQBNU3YV9sux4gpNpHE8eamQIu9AbDIPyT7E7lfYnFVuEG/I\nTCKGlifeqmC7Njj4Uz5wzhIbH/sbPpCbwiOF/DPfqO1xClRGuxLeF9phjdeoVB+Y\nUcrjugvAPOLTVbAOd9+nYfjoGZoLWxkDVJrAJ0AF3mrG1R+Fgr+18swRWOceIJyv\niEwaH244w0gN38qg7WaxUvfadgukjjV+qyEL6nE3zVbxuxYF6Az+028t01ITeoYa\nJm1W51IcdBnGjJdeXxTntg+6tru+CMg/HFMeS6crx5k4etZByKy5KQNHewOqX53p\nRQIDAQAB\n-----END PUBLIC KEY-----\n","claims_namespace":"jotts_claims","claims_format":"json"}'
+    
+  minio:
+    container_name: minio_s3_mock
+    image: minio/minio
+    ports:
+    - "9001:9000"
+    volumes:
+    - minio:/data
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data
 volumes:
   db_data:
   pgadmin:
+  minio:

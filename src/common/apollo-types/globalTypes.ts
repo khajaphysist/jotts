@@ -26,6 +26,23 @@ export enum jotts_folder_update_column {
 }
 
 /**
+ * unique or primary key constraints on table "jotts.image"
+ */
+export enum jotts_image_constraint {
+  image_name_author_id_key = "image_name_author_id_key",
+  image_pkey = "image_pkey",
+}
+
+/**
+ * update columns of table "jotts.image"
+ */
+export enum jotts_image_update_column {
+  author_id = "author_id",
+  id = "id",
+  name = "name",
+}
+
+/**
  * unique or primary key constraints on table "jotts.post"
  */
 export enum jotts_post_constraint {
@@ -137,6 +154,32 @@ export interface jotts_folder_on_conflict {
 }
 
 /**
+ * input type for inserting array relation for remote table "jotts.image"
+ */
+export interface jotts_image_arr_rel_insert_input {
+  data: jotts_image_insert_input[];
+  on_conflict?: jotts_image_on_conflict | null;
+}
+
+/**
+ * input type for inserting data into table "jotts.image"
+ */
+export interface jotts_image_insert_input {
+  author?: jotts_user_obj_rel_insert_input | null;
+  author_id?: any | null;
+  id?: string | null;
+  name?: string | null;
+}
+
+/**
+ * on conflict condition type for table "jotts.image"
+ */
+export interface jotts_image_on_conflict {
+  constraint: jotts_image_constraint;
+  update_columns: jotts_image_update_column[];
+}
+
+/**
  * input type for inserting array relation for remote table "jotts.post"
  */
 export interface jotts_post_arr_rel_insert_input {
@@ -237,6 +280,7 @@ export interface jotts_user_insert_input {
   folders?: jotts_folder_arr_rel_insert_input | null;
   handle?: string | null;
   id?: any | null;
+  images?: jotts_image_arr_rel_insert_input | null;
   name?: string | null;
   posts?: jotts_post_arr_rel_insert_input | null;
   profile_picture?: string | null;

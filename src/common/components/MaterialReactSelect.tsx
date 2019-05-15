@@ -231,7 +231,7 @@ interface BaseProps {
     defaultOptions: OptionType[],
     onChange: (selected: OptionType[]) => void,
     value: OptionType[],
-    isMulti: boolean,
+    isMulti?: boolean,
     placeholder?: string,
     label?: string
 }
@@ -283,7 +283,7 @@ class BaseMRSelectComponent extends React.Component<BaseMRSelectProps> {
                         ValueContainer,
                     }}
                     placeholder={this.props.placeholder}
-                    isMulti={this.props.isMulti}
+                    isMulti={Boolean(this.props.isMulti)}
                 />
             </div>
         );

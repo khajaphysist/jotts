@@ -21,6 +21,7 @@ query GetPostsWithTags($skip: Int!, $size: Int!, $tags: String!) {
       id
       handle
       name
+      profile_picture
     }
     id
     title
