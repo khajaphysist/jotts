@@ -160,6 +160,8 @@ class FolderList extends React.Component<FolderListProps> {
                         return data ?
                             data.jotts_folder.map(c => {
                                 const isSelected = selectedFolders.includes(c.id)
+                                const withCurrentFolder = isSelected ? selectedFolders : [...selectedFolders, c.id]
+                                const withoutCurrentFolder = isSelected ? selectedFolders.filter(f => f !== c.id) : selectedFolders
                                 return (
                                     <div key={c.id}>
                                         <Mutation<EditFolderMutation, EditFolderMutationVariables> mutation={editFolderMutation}>
@@ -172,22 +174,25 @@ class FolderList extends React.Component<FolderListProps> {
                                                     listItemProps={{
                                                         selected: isSelected,
                                                         onClick: () => {
-                                                            const newSelected = isSelected ? selectedFolders.filter(f => f !== c.id) : [...selectedFolders, c.id]
+                                                            const newSelected = isSelected ? withoutCurrentFolder : withCurrentFolder
                                                             const { href, as } = getEditPostUrl(user.handle, newSelected.join(','), postId)
                                                             Router.replace(href, as)
                                                         },
                                                         draggable: true,
                                                     }}
                                                     actions={(
-                                                        [<MenuItem onClick={() => createNewPost(client, c.id).then(id => {
-                                                            const { href, as } = getEditPostUrl(user.handle, selectedFoldersJoined, id)
+                                                        [<MenuItem onClick={() => createNewPost(client, c.id).then(newPostId => {
+                                                            const { href, as } = getEditPostUrl(user.handle, withCurrentFolder.join(','), newPostId)
                                                             Router.replace(href, as)
                                                         })} key={"add-notes"}>Add Notes</MenuItem>,
-                                                        <MenuItem onClick={() => createNewFolder(client, c.id).then(id => {
-                                                            const { href, as } = getEditPostUrl(user.handle, selectedFoldersJoined, id)
+                                                        <MenuItem onClick={() => createNewFolder(client, c.id).then(newFolderId => {
+                                                            const { href, as } = getEditPostUrl(user.handle, [...withCurrentFolder, newFolderId].join(','), postId)
                                                             Router.replace(href, as)
                                                         })} key={"add-folder"}>Add Folder</MenuItem>,
-                                                        <MenuItem onClick={() => deleteFolder(c.id, folderId, client)} key={"delete"}>Delete</MenuItem>,]
+                                                        <MenuItem onClick={() => deleteFolder(c.id, folderId, client).then(id => {
+                                                            const { href, as } = getEditPostUrl(user.handle, withoutCurrentFolder.join(','), postId)
+                                                            Router.replace(href, as)
+                                                        })} key={"delete"}>Delete</MenuItem>,]
                                                     )}
                                                 />
                                             )}
@@ -287,13 +292,13 @@ async function createNewFolder(client: ApolloClient<any>, parentId: string | nul
     })
 }
 
-function deleteFolder(id: string, parentId: string | null, client: ApolloClient<any>) {
+async function deleteFolder(id: string, parentId: string | null, client: ApolloClient<any>) {
     const user = loggedInUser();
     if (!user) {
         return
     }
     const variables = { authorId: user.id, parentCondition: parentId === null ? { _is_null: true } : { _eq: parentId } }
-    client.mutate<DeleteFolderMutation, DeleteFolderMutationVariables>({
+    return client.mutate<DeleteFolderMutation, DeleteFolderMutationVariables>({
         mutation: deleteFolderMutation,
         variables: { id }
     }).then(res => {
@@ -304,6 +309,7 @@ function deleteFolder(id: string, parentId: string | null, client: ApolloClient<
         } catch (error) {
 
         }
+        return id
     })
 }
 
