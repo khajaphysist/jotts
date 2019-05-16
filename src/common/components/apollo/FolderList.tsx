@@ -37,10 +37,13 @@ import EditableListItem from '../EditableListItem';
 import { serializeValue } from '../JottsEditor';
 import { DEFAULT_VALUE, generateSlug } from './EditPost';
 
-const getFolderUrl = (handle: string, folderId: string) =>
-    ({ href: `/dashboard?handle=${handle}&folder_id=${folderId}`, as: `/${handle}/dashboard/?folder_id=${folderId}` })
-const getEditPostUrl = (handle: string, folderId: string, postId: string) =>
-    ({ href: `/dashboard?handle=${handle}&folder_id=${folderId}&post_id=${postId}`, as: `/${handle}/dashboard/?folder_id=${folderId}&post_id=${postId}` });
+const getEditPostUrl = (handle: string, folderId: string, postId: string | undefined) => {
+    const queryString = [folderId ? `folder_id=${folderId}` : '', postId ? `post_id=${postId}` : ''].filter(s => s).join('&');
+    return {
+        href: `/dashboard?handle=${handle}` + (queryString ? `&${queryString}` : ''),
+        as: `/${handle}/dashboard/` + (queryString ? `?${queryString}` : '')
+    }
+};
 
 
 const getUserPosts = gql`
@@ -126,6 +129,7 @@ mutation DeletePost($postId: uuid!){
 
 interface Props {
     folderId: string | null,
+    selectedFolders: string[]
     postId: string | undefined
     client: ApolloClient<any>
     user: CookieUser
@@ -141,7 +145,8 @@ class FolderList extends React.Component<FolderListProps, State> {
         this.state = { expanded: {} }
     }
     render() {
-        const { folderId, postId, user, client } = this.props
+        const { folderId, postId, user, client, selectedFolders } = this.props
+        const selectedFoldersJoined = selectedFolders.join(',');
         return (
             <List component="nav" style={{ paddingLeft: this.props.padding }}>
                 <Query<GetSubFolders, GetSubFoldersVariables>
@@ -157,39 +162,49 @@ class FolderList extends React.Component<FolderListProps, State> {
                             return <div>Loading...</div>
                         }
                         return data ?
-                            data.jotts_folder.map(c => (
-                                <div key={c.id}>
-                                    <Mutation<EditFolderMutation, EditFolderMutationVariables> mutation={editFolderMutation}>
-                                        {(editFolder) => (
-                                            <EditableListItem
-                                                initialValue={c.title}
-                                                onChange={async (value) => {
-                                                    await editFolder({ variables: { id: c.id, slug: generateSlug(value, c.id), title: value } })
-                                                }}
-                                                listItemProps={{
-                                                    selected: Boolean(this.state.expanded[c.id]),
-                                                    onClick: () => {
-                                                        this.setState({ expanded: { ...this.state.expanded, [c.id]: !Boolean(this.state.expanded[c.id]) } })
-                                                        Router.push(getFolderUrl(user.handle, c.id).href, getFolderUrl(user.handle, c.id).as)
-                                                    },
-                                                    draggable: true,
-                                                }}
-                                                actions={(
-                                                    [<MenuItem onClick={() => createNewPost(client, c.id)} key={"add-notes"}>Add Notes</MenuItem>,
-                                                    <MenuItem onClick={() => createNewFolder(client, c.id)} key={"add-folder"}>Add Folder</MenuItem>,
-                                                    <MenuItem onClick={() => deleteFolder(c.id, folderId, client)} key={"delete"}>Delete</MenuItem>,]
-                                                )}
-                                            />
-                                        )}
-                                    </Mutation>
-                                    <Collapse in={this.state.expanded[c.id]} style={{ borderLeft: '1px solid red' }}>
-                                        {
-                                            this.state.expanded[c.id] ?
-                                                (<FolderList folderId={c.id} postId={postId} user={user} client={client} padding={4} />) : null
-                                        }
-                                    </Collapse>
-                                </div>
-                            )) : null
+                            data.jotts_folder.map(c => {
+                                const isSelected = selectedFolders.includes(c.id)
+                                return (
+                                    <div key={c.id}>
+                                        <Mutation<EditFolderMutation, EditFolderMutationVariables> mutation={editFolderMutation}>
+                                            {(editFolder) => (
+                                                <EditableListItem
+                                                    initialValue={c.title}
+                                                    onChange={async (value) => {
+                                                        await editFolder({ variables: { id: c.id, slug: generateSlug(value, c.id), title: value } })
+                                                    }}
+                                                    listItemProps={{
+                                                        selected: isSelected,
+                                                        onClick: () => {
+                                                            const newSelected = isSelected ? selectedFolders.filter(f => f !== c.id) : [...selectedFolders, c.id]
+                                                            const { href, as } = getEditPostUrl(user.handle, newSelected.join(','), postId)
+                                                            Router.replace(href, as)
+                                                        },
+                                                        draggable: true,
+                                                    }}
+                                                    actions={(
+                                                        [<MenuItem onClick={() => createNewPost(client, c.id).then(id => {
+                                                            const { href, as } = getEditPostUrl(user.handle, selectedFoldersJoined, id)
+                                                            Router.replace(href, as)
+                                                        })} key={"add-notes"}>Add Notes</MenuItem>,
+                                                        <MenuItem onClick={() => createNewFolder(client, c.id).then(id => {
+                                                            const { href, as } = getEditPostUrl(user.handle, selectedFoldersJoined, id)
+                                                            Router.replace(href, as)
+                                                        })} key={"add-folder"}>Add Folder</MenuItem>,
+                                                        <MenuItem onClick={() => deleteFolder(c.id, folderId, client)} key={"delete"}>Delete</MenuItem>,]
+                                                    )}
+                                                />
+                                            )}
+                                        </Mutation>
+                                        <Collapse in={isSelected} style={{ borderLeft: '1px solid red' }}>
+                                            {
+                                                isSelected ?
+                                                    (<FolderList folderId={c.id} postId={postId} user={user} client={client} padding={4} selectedFolders={selectedFolders} />) : null
+                                            }
+                                        </Collapse>
+                                    </div>
+                                )
+                            }) : null
                     }}
                 </Query>
                 {
@@ -210,7 +225,7 @@ class FolderList extends React.Component<FolderListProps, State> {
                                     }
                                     return data ? (
                                         data.jotts_post.map(p => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
-                                            <Link {...getEditPostUrl(user.handle, folderId, p.id)} key={p.id} passHref>
+                                            <Link {...getEditPostUrl(user.handle, selectedFoldersJoined, p.id)} key={p.id} passHref replace>
                                                 <ListItem
                                                     button
                                                     component="a"
@@ -251,7 +266,7 @@ mutation NewFolderMutation($title:String!, $slug:String!, $authorId: uuid!, $id:
 }
 `
 
-function createNewFolder(client: ApolloClient<any>, parentId: string | null) {
+async function createNewFolder(client: ApolloClient<any>, parentId: string | null) {
     const user = loggedInUser();
     if (!user) {
         return
@@ -260,7 +275,7 @@ function createNewFolder(client: ApolloClient<any>, parentId: string | null) {
     const title = 'untitled';
     const slug = generateSlug(title, id);
     const variables = { authorId: user.id, parentCondition: parentId === null ? { _is_null: true } : { _eq: parentId } }
-    client.mutate<NewFolderMutation, NewFolderMutationVariables>({
+    return client.mutate<NewFolderMutation, NewFolderMutationVariables>({
         mutation: newFolderMutation,
         variables: { authorId: user.id, id, title, slug, parentId }
     }).then(res => {
@@ -272,7 +287,7 @@ function createNewFolder(client: ApolloClient<any>, parentId: string | null) {
         } catch (error) {
 
         }
-        Router.push(getFolderUrl(user.handle, id).href, getFolderUrl(user.handle, id).as)
+        return id
     })
 }
 
@@ -316,7 +331,7 @@ function updateCachePostsOfFolder(folderId: string, client: ApolloClient<any>, c
     }
 }
 
-function createNewPost(client: ApolloClient<any>, folderId: string) {
+async function createNewPost(client: ApolloClient<any>, folderId: string) {
     const user = loggedInUser();
     if (!user) {
         return
@@ -348,8 +363,8 @@ function createNewPost(client: ApolloClient<any>, folderId: string) {
             const newPost: GetUserPosts_jotts_post = { __typename: 'jotts_post', content, id, post_tags: [], slug, title }
             return { jotts_post: oldData ? [...oldData.jotts_post, newPost] : [newPost] }
         })
-        Router.push(getEditPostUrl(user.handle, folderId!, id).href, getEditPostUrl(user.handle, folderId!, id).as)
-    }).catch(e => console.log(e));
+        return id
+    });
 }
 
 function deletePost(postId: string, folderId: string, client: ApolloClient<any>) {

@@ -206,7 +206,8 @@ app
         server.get('/:handle/dashboard'
             , (req, res) => {
                 const page = '/dashboard';
-                const queryParams = { handle: req.params.handle };
+                const { post_id, folder_id } = req.query
+                const queryParams = { handle: req.params.handle, post_id, folder_id };
                 app.render(req, res, page, queryParams);
             })
 

@@ -50,20 +50,27 @@ class DashBoard extends React.Component<Props> {
         if (!user) {
             return null;
         }
-        const { postId, client } = this.props;
+        const { postId, client, folderId, classes } = this.props;
         return (
             <Layout>
-                <div className={this.props.classes.root}>
-                    <List component="nav" style={{ width: 300, height: 500, overflowY: 'auto' }} disablePadding>
+                <div className={classes.root}>
+                    <List component="nav" style={{ width: 300, height: 800, overflowY: 'auto' }} disablePadding>
                         <Typography variant='h5' color="textSecondary" style={{ padding: 16, paddingTop: 28, paddingBottom: 4 }}>Folders</Typography>
                         <Divider />
-                        <FolderList folderId={null} postId={postId} user={user} client={client} padding={0} />
+                        <FolderList 
+                        folderId={null} 
+                        postId={postId} 
+                        user={user} 
+                        client={client}
+                        padding={0} 
+                        selectedFolders={folderId ? folderId.split(',') : []}
+                        />
                     </List>
                     {
-                        this.props.postId ?
+                        postId ?
                             (
                                 <div style={{ flex: 1 }}>
-                                    <EditPost postId={this.props.postId} />
+                                    <EditPost postId={postId} />
                                 </div>
                             ) :
                             null
