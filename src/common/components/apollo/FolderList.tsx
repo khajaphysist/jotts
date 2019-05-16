@@ -139,11 +139,7 @@ interface FolderListProps extends Props {
     padding: number
 }
 
-class FolderList extends React.Component<FolderListProps, State> {
-    constructor(props: FolderListProps) {
-        super(props)
-        this.state = { expanded: {} }
-    }
+class FolderList extends React.Component<FolderListProps> {
     render() {
         const { folderId, postId, user, client, selectedFolders } = this.props
         const selectedFoldersJoined = selectedFolders.join(',');
@@ -381,10 +377,6 @@ function deletePost(postId: string, folderId: string, client: ApolloClient<any>)
         })
         updateCachePostsOfAll(user, client, (oldData) => ({ jotts_post: oldData ? oldData.jotts_post.filter(p => p.id !== postId) : [] }))
     })
-}
-
-interface State {
-    expanded: { [key: string]: boolean }
 }
 
 export default FolderList
