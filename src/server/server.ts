@@ -175,6 +175,26 @@ app
 
                 })
             })
+        server.delete('/image',
+            passport.authenticate('jwt', { session: false }),
+            (req, res) => {
+                const { id } = req.body;
+                if (!id) {
+                    return res.status(400).send("Invalid Image id")
+                }
+                s3.deleteObject({
+                    Bucket: 'images',
+                    Key: id,
+                }, (err) => {
+                    if (err) {
+                        console.log("Error: ", err);
+                        res.status(500).send(err)
+                    } else {
+                        res.status(200).send("OK")
+                    }
+                })
+            }
+        )
 
         server.get('/post/:slug'
             , (req, res) => {

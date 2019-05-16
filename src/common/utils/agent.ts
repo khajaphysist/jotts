@@ -63,3 +63,36 @@ export const User = {
         localStorage.removeItem('user');
     }
 }
+
+export const ImageS3 = {
+    addImageS3: async (img: File) => {
+        const formData = new FormData();
+        formData.append('image', img);
+        formData.append('name', img.name)
+        const res = await fetch('/image', {
+            method: 'POST',
+            headers: {
+                "Authorization": `Bearer ${getUserToken()}`
+            },
+            body: formData
+        })
+        if (res.status !== 200) {
+            window.alert("Failed to upload")
+        } else {
+            const imgId = await res.text();
+            return imgId
+        }
+    },
+
+    deleteImageS3: async (id: string) => {
+        const res = await fetch('/image', {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getUserToken()}`
+            },
+            body: JSON.stringify({ id })
+        })
+        return res.status === 200
+    }
+}

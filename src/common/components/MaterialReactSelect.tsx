@@ -212,7 +212,7 @@ class CreatableAsyncMRSelectComponent extends React.Component<CreatableAsyncMRSe
                         Menu,
                         MultiValue,
                         NoOptionsMessage,
-                        Option,
+                        Option: this.props.OptionComponent ? this.props.OptionComponent : Option,
                         Placeholder,
                         SingleValue,
                         ValueContainer,
@@ -233,7 +233,9 @@ interface BaseProps {
     value: OptionType[],
     isMulti?: boolean,
     placeholder?: string,
-    label?: string
+    label?: string,
+    OptionComponent?: React.FunctionComponent<OptionProps<OptionType>>,
+    SingleValueComponent?: React.FunctionComponent<SingleValueProps<OptionType>>,
 }
 type BaseMRSelectProps = StyleProps & BaseProps;
 
@@ -277,9 +279,9 @@ class BaseMRSelectComponent extends React.Component<BaseMRSelectProps> {
                         Menu,
                         MultiValue,
                         NoOptionsMessage,
-                        Option,
+                        Option: this.props.OptionComponent ? this.props.OptionComponent : Option,
                         Placeholder,
-                        SingleValue,
+                        SingleValue: this.props.SingleValueComponent ? this.props.SingleValueComponent : SingleValue,
                         ValueContainer,
                     }}
                     placeholder={this.props.placeholder}
@@ -335,7 +337,7 @@ class AsyncMRSelectComponent extends React.Component<AsyncMRSelectProps> {
                         Menu,
                         MultiValue,
                         NoOptionsMessage,
-                        Option,
+                        Option: this.props.OptionComponent ? this.props.OptionComponent : Option,
                         Placeholder,
                         SingleValue,
                         ValueContainer,

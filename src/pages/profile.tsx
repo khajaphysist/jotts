@@ -18,17 +18,20 @@ import Layout from '../common/components/Layout';
 import { BaseMRSelect } from '../common/components/MaterialReactSelect';
 import { CookieUser } from '../common/types';
 import { User } from '../common/utils/agent';
-import { getUserToken, loggedInUser, withUser } from '../common/utils/loginStateProvider';
+import { loggedInUser, withUser } from '../common/utils/loginStateProvider';
 
 const styles = (theme: Theme) => createStyles({
     root: {
-        display: 'flex'
+        display: 'flex',
+        flex: 1
     },
     sidebar: {
         width: 250
     },
     main: {
-        padding: 2 * theme.spacing.unit
+        padding: 2 * theme.spacing.unit,
+        flex: 1,
+        maxWidth: 600
     },
     profileRoot: {
         display: 'flex',
@@ -47,7 +50,7 @@ interface State {
     profile: {
         name: string,
         country: string | undefined,
-        profilePicture: string
+        profilePicture: string | null
     },
     passwords: {
         oldPassword: string,
@@ -116,17 +119,15 @@ class ProfilePage extends React.Component<Props, State> {
                                             console.log(v)
                                             this.setState({ ...this.state, profile: { ...profile, country: v[0].value } })
                                         }}
-                                        placeholder="Country"
+                                        placeholder="Select country"
+                                        label="Country"
                                     />
-                                    <div style={{ display: 'flex' }}>
-                                        <Avatar src={`${s3ImagesUrl}/${profile.profilePicture}`} />
-                                        <div style={{ flex: 1 }}>
-                                            <SelectImage
-                                                user={user}
-                                                value={profile.profilePicture}
-                                                onChange={imgId => this.setState({ ...this.state, profile: { ...profile, profilePicture: imgId } })} />
-                                        </div>
-                                    </div>
+                                    <SelectImage
+                                        user={user}
+                                        value={profile.profilePicture}
+                                        onChange={imgId => this.setState({ ...this.state, profile: { ...profile, profilePicture: imgId } })}
+                                        label="Profile Picture"
+                                    />
                                     <Mutation<UpdateUserProfile, UpdateUserProfileVariables> mutation={updateUserProfile}>
                                         {(updateUserProfile, { data }) => (
                                             <Button color="primary" onClick={() => {
