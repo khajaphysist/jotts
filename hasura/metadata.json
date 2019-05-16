@@ -1,0 +1,706 @@
+{
+    "functions": [
+        {
+            "schema": "jotts",
+            "name": "post_by_tag"
+        }
+    ],
+    "remote_schemas": [],
+    "tables": [
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "folder"
+            },
+            "object_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "author_id"
+                    },
+                    "name": "author",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "parent_id"
+                    },
+                    "name": "parent_folder",
+                    "comment": null
+                }
+            ],
+            "array_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "parent_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "folder"
+                            }
+                        }
+                    },
+                    "name": "folders",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "folder_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "post"
+                            }
+                        }
+                    },
+                    "name": "posts",
+                    "comment": null
+                }
+            ],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "check": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        },
+                        "columns": [
+                            "author_id",
+                            "id",
+                            "parent_id",
+                            "slug",
+                            "title"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "author_id",
+                            "id",
+                            "parent_id",
+                            "slug",
+                            "title"
+                        ],
+                        "filter": {}
+                    }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "id",
+                            "slug",
+                            "title",
+                            "author_id",
+                            "parent_id"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "author_id",
+                            "id",
+                            "parent_id",
+                            "slug",
+                            "title"
+                        ],
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "post"
+            },
+            "object_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "author_id"
+                    },
+                    "name": "author",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "folder_id"
+                    },
+                    "name": "folder",
+                    "comment": null
+                }
+            ],
+            "array_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "post_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "post_tag"
+                            }
+                        }
+                    },
+                    "name": "post_tags",
+                    "comment": null
+                }
+            ],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "check": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        },
+                        "columns": [
+                            "author_id",
+                            "content",
+                            "folder_id",
+                            "id",
+                            "slug",
+                            "summary",
+                            "text",
+                            "title"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "author_id",
+                            "content",
+                            "created_at",
+                            "folder_id",
+                            "id",
+                            "slug",
+                            "summary",
+                            "text",
+                            "title",
+                            "updated_at"
+                        ],
+                        "filter": {}
+                    }
+                },
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "author_id",
+                            "content",
+                            "created_at",
+                            "folder_id",
+                            "id",
+                            "slug",
+                            "summary",
+                            "text",
+                            "title",
+                            "updated_at"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "author_id",
+                            "content",
+                            "folder_id",
+                            "id",
+                            "slug",
+                            "summary",
+                            "text",
+                            "title"
+                        ],
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "tag"
+            },
+            "object_relationships": [],
+            "array_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "tag",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "post_tag"
+                            }
+                        }
+                    },
+                    "name": "post_tags",
+                    "comment": null
+                }
+            ],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "check": {},
+                        "columns": [
+                            "tag"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {}
+                    }
+                }
+            ],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "user"
+            },
+            "object_relationships": [],
+            "array_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "author_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "folder"
+                            }
+                        }
+                    },
+                    "name": "folders",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "author_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "post"
+                            }
+                        }
+                    },
+                    "name": "posts",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": {
+                            "column": "author_id",
+                            "table": {
+                                "schema": "jotts",
+                                "name": "image"
+                            }
+                        }
+                    },
+                    "name": "images",
+                    "comment": null
+                }
+            ],
+            "insert_permissions": [],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "country",
+                            "handle",
+                            "id",
+                            "name",
+                            "profile_picture"
+                        ],
+                        "filter": {}
+                    }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "id",
+                            "handle",
+                            "name",
+                            "profile_picture",
+                            "country"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "country",
+                            "name",
+                            "profile_picture"
+                        ],
+                        "filter": {
+                            "id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "delete_permissions": [],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "tag_post_count_view"
+            },
+            "object_relationships": [],
+            "array_relationships": [],
+            "insert_permissions": [],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "tag",
+                            "post_count"
+                        ],
+                        "filter": {}
+                    }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "tag",
+                            "post_count"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [],
+            "delete_permissions": [],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "post_tag"
+            },
+            "object_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "post_id"
+                    },
+                    "name": "post",
+                    "comment": null
+                },
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "tag"
+                    },
+                    "name": "tagByTag",
+                    "comment": null
+                }
+            ],
+            "array_relationships": [],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "check": {
+                            "post": {
+                                "author_id": {
+                                    "_eq": "X-Hasura-User-Id"
+                                }
+                            }
+                        },
+                        "columns": [
+                            "post_id",
+                            "tag"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "post_id",
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
+                },
+                {
+                    "role": "anonymous",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "post_id",
+                            "tag"
+                        ],
+                        "filter": {}
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {},
+                        "columns": [
+                            "post_id",
+                            "tag"
+                        ],
+                        "filter": {
+                            "post": {
+                                "author_id": {
+                                    "_eq": "X-Hasura-User-Id"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {
+                            "post": {
+                                "author_id": {
+                                    "_eq": "X-Hasura-User-Id"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "event_triggers": []
+        },
+        {
+            "table": {
+                "schema": "jotts",
+                "name": "image"
+            },
+            "object_relationships": [
+                {
+                    "using": {
+                        "foreign_key_constraint_on": "author_id"
+                    },
+                    "name": "author",
+                    "comment": null
+                }
+            ],
+            "array_relationships": [],
+            "insert_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {
+                            "author_id": "x-hasura-User-Id"
+                        },
+                        "check": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        },
+                        "columns": [
+                            "id",
+                            "name"
+                        ]
+                    }
+                }
+            ],
+            "select_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "allow_aggregations": true,
+                        "columns": [
+                            "author_id",
+                            "id",
+                            "name"
+                        ],
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "update_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "set": {
+                            "author_id": "x-hasura-User-Id"
+                        },
+                        "columns": [
+                            "name"
+                        ],
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "delete_permissions": [
+                {
+                    "role": "user",
+                    "comment": null,
+                    "permission": {
+                        "filter": {
+                            "author_id": {
+                                "_eq": "X-Hasura-User-Id"
+                            }
+                        }
+                    }
+                }
+            ],
+            "event_triggers": []
+        }
+    ],
+    "query_templates": []
+}
