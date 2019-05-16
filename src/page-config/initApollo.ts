@@ -15,7 +15,7 @@ const create = (initialState: any) => {
         connectToDevTools: process.browser,
         ssrMode: !process.browser,
         link: new HttpLink({
-            uri: 'http://localhost:8080/v1alpha1/graphql',
+            uri: 'http://localhost:8080/v1/graphql',
             headers,
             credentials: 'include'
         }),

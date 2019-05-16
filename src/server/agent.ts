@@ -16,7 +16,7 @@ const knex = Knex({
 });
 
 const client = new ApolloClient({
-    uri: 'http://localhost:8080/v1alpha1/graphql',
+    uri: 'http://localhost:8080/v1/graphql',
     fetch: fetch
 });
 
