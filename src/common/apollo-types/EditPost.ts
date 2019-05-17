@@ -10,6 +10,7 @@ export interface EditPost_update_jotts_post_returning {
   __typename: "jotts_post";
   id: any;
   title: string;
+  content: string | null;
   summary: string | null;
 }
 
