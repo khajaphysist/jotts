@@ -35,6 +35,10 @@ query GetPostSummary($slug: String!) {
 const styles = (theme: Theme) => createStyles({
     root: {
         minWidth: 600,
+        maxWidth: 1200,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: 'center'
     },
     title: {
 
@@ -43,7 +47,6 @@ const styles = (theme: Theme) => createStyles({
 
     },
     content: {
-
     },
     tagsContainer: {
         marginTop: 2 * theme.spacing.unit
@@ -85,14 +88,16 @@ class Post extends React.Component<Props> {
                                 const postData = data.jotts_post[0];
                                 return (
                                     <div className={classes.root}>
-                                        <Typography variant='h1' className={classes.title}>{postData.title}</Typography>
+                                        <Typography variant='h2' component="h1" className={classes.title}>{postData.title}</Typography>
                                         <div className={classes.author}>
                                             <p>Author: {postData.author.name}, @{postData.author.handle},</p>
                                         </div>
                                         {
                                             postData.content ?
                                                 (
-                                                    <JottsEditor value={deserializeValue(postData.content)} readOnly className={classes.content} />
+                                                    <div className={classes.content}>
+                                                        <JottsEditor value={deserializeValue(postData.content)} readOnly />
+                                                    </div>
                                                 ) : null
                                         }
                                         <div className={classes.tagsContainer}>

@@ -1,13 +1,19 @@
 import { isKeyHotkey } from 'is-hotkey';
 import { languages as prismLanguages } from 'prismjs';
+import { useState } from 'react';
 import { Editor, Value } from 'slate';
 import { getEventTransfer, Plugin } from 'slate-react';
 
-import { Divider, IconButton, Paper, Theme, Typography } from '@material-ui/core';
+import { Divider, IconButton, Paper, TextField, Theme, Typography } from '@material-ui/core';
 import {
   Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
-  FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Title as TitleIcon
+  FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Image, Title as TitleIcon
 } from '@material-ui/icons';
+
+import { loggedInUser } from '../../utils/loginStateProvider';
+import SelectImage from '../apollo/SelectImage';
+import { s3ImagesUrl } from '../Constants';
+import { EditImage } from './EditImage';
 
 const getMarkToggleFromHotKey = (event: any): MarkType | undefined => {
     switch (true) {
@@ -29,7 +35,7 @@ const isHotKey = (event: any, key: string) => isKeyHotkey(key)(event);
 const DEFAULT_NODE = 'paragraph'
 
 const markTypes = ['bold', 'italic', 'underline', 'code'] as const;
-const nodeTypes = ['heading-one', 'heading-two', 'block-quote', 'code-block'] as const;
+const nodeTypes = ['heading-one', 'heading-two', 'block-quote', 'code-block', 'image'] as const;
 
 type MarkType = typeof markTypes[number];
 type NodeType = typeof nodeTypes[number];
@@ -83,6 +89,8 @@ const getFormatNodeBtn = (type: NodeType, editor: Editor) => {
                 return (<FormatQuoteIcon color={getNodeBtnColor(type, value)} />);
             case 'code-block':
                 return (<DvrIcon color={getNodeBtnColor(type, value)} />);
+            case 'image':
+                return (<Image color={getNodeBtnColor(type, value)} />);
         }
     })();
     return icon ? (
@@ -115,6 +123,7 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                                     {getFormatNodeBtn('block-quote', editor)}
                                     {getFormatMarkBtn('code', editor)}
                                     {getFormatNodeBtn('code-block', editor)}
+                                    {getFormatNodeBtn('image', editor)}
                                 </div>
                                 <Divider />
                             </div>
@@ -164,9 +173,9 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                             margin: 0,
                         }}><Typography {...attributes} variant="subtitle1">{children}</Typography></blockquote>
                 case 'heading-one':
-                    return <Typography {...attributes} variant="h2" gutterBottom>{children}</Typography>
+                    return <Typography {...attributes} variant="h3" component="h1" gutterBottom>{children}</Typography>
                 case 'heading-two':
-                    return <Typography {...attributes} variant="h4" gutterBottom>{children}</Typography>
+                    return <Typography {...attributes} variant="h4" component="h2" gutterBottom>{children}</Typography>
                 case 'code-block':
                     let language = node.data.get('language');
                     if (!language) {
@@ -195,6 +204,17 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                                     {children}
                                 </code>
                             </pre>
+                        </div>
+                    )
+                case 'image':
+                    return (
+                        <div style={{
+                            margin: 4 * theme.spacing.unit
+                        }}>
+                            <EditImage editor={editor} node={node} />
+                            <Typography variant="subtitle2" {...attributes} align="center" color="textSecondary">
+                                {children}
+                            </Typography>
                         </div>
                     )
                 default:
