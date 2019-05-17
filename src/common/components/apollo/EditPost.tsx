@@ -6,9 +6,8 @@ import { ApolloConsumer } from 'react-apollo';
 import slugify from 'slug';
 
 import {
-  createStyles, InputBase, Paper, TextField, Theme, withStyles, WithStyles
+  createStyles, TextField, Theme, withStyles, WithStyles
 } from '@material-ui/core';
-import { InputBaseProps } from '@material-ui/core/InputBase';
 
 import {
   AddPostTagMutation, AddPostTagMutationVariables
@@ -27,16 +26,6 @@ const SelectTags = dynamic(() => import('../apollo/SelectTags'), { ssr: false })
 
 export const DEFAULT_VALUE = createMessageValue("Start Jotting...");
 export const generateSlug = (title: string, id: string) => slugify(title + '-' + id);
-
-function TitleInput(props: InputBaseProps) {
-    return (
-        <Paper style={{
-            padding: 4
-        }}>
-            <InputBase {...props} fullWidth />
-        </Paper>
-    )
-}
 
 const getPost = gql`
 query GetPost($id: uuid!){
@@ -61,6 +50,7 @@ mutation EditPost($id: uuid!, $title: String!, $slug: String!, $content: String,
             returning {
                 id
                 title
+                content
                 summary
             }
     }

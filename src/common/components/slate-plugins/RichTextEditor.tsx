@@ -1,19 +1,14 @@
 import { isKeyHotkey } from 'is-hotkey';
 import { languages as prismLanguages } from 'prismjs';
-import { useState } from 'react';
 import { Editor, Value } from 'slate';
 import { getEventTransfer, Plugin } from 'slate-react';
 
-import { Divider, IconButton, Paper, TextField, Theme, Typography } from '@material-ui/core';
+import { Divider, IconButton, Paper, Theme, Typography } from '@material-ui/core';
 import {
-  Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
-  FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Image, Title as TitleIcon
+    Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
+    FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Image, Title as TitleIcon
 } from '@material-ui/icons';
-
-import { loggedInUser } from '../../utils/loginStateProvider';
-import SelectImage from '../apollo/SelectImage';
-import { s3ImagesUrl } from '../Constants';
-import { EditImage } from './EditImage';
+import EditImage from './EditImage';
 
 const getMarkToggleFromHotKey = (event: any): MarkType | undefined => {
     switch (true) {
@@ -163,19 +158,39 @@ export default ({ theme }: { theme: Theme }): Plugin => {
 
             switch (node.type) {
                 case 'paragraph':
-                    return <Typography {...attributes} variant='body1'>{children}</Typography>
+                    return <Typography {...attributes} variant='body1' style={{ marginBottom: 2 * theme.spacing.unit }}>{children}</Typography>
                 case 'block-quote':
-                    return <blockquote
+                    return <Typography
+                        {...attributes}
+                        variant="subtitle1"
+                        component="blockquote"
                         style={{
                             color: theme.palette.text.secondary,
                             borderLeft: '0.2em solid ' + theme.palette.secondary.light,
                             paddingLeft: theme.spacing.unit,
                             margin: 0,
-                        }}><Typography {...attributes} variant="subtitle1">{children}</Typography></blockquote>
+                            marginBottom: 2 * theme.spacing.unit,
+                        }}
+                    >
+                        {children}
+                    </Typography>
                 case 'heading-one':
-                    return <Typography {...attributes} variant="h3" component="h1" gutterBottom>{children}</Typography>
+                    return (
+                        <div style={{ marginBottom: 2 * theme.spacing.unit }}>
+                            <Typography {...attributes} variant="h3" component="h1" gutterBottom>{children}</Typography>
+                            <Divider />
+                        </div>
+                    )
                 case 'heading-two':
-                    return <Typography {...attributes} variant="h4" component="h2" gutterBottom>{children}</Typography>
+                    return <Typography
+                        {...attributes}
+                        variant="h4"
+                        component="h2"
+                        style={{
+                            marginBottom: 2 * theme.spacing.unit,
+                        }}
+                    >{children}
+                    </Typography>
                 case 'code-block':
                     let language = node.data.get('language');
                     if (!language) {
@@ -183,7 +198,7 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                         editor.setNodeByKey(node.key, { data: { language }, type: node.type })
                     }
                     return (
-                        <div>
+                        <div style={{ marginBottom: 2 * theme.spacing.unit }}>
                             {
                                 editor.readOnly ? null :
                                     (
@@ -213,7 +228,7 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                         }}>
                             <EditImage editor={editor} node={node} />
                             <Typography variant="subtitle2" {...attributes} align="center" color="textSecondary">
-                                {children}
+                                caption: {children}
                             </Typography>
                         </div>
                     )

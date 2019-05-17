@@ -5,7 +5,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 
 import {
-  Chip, createStyles, Paper, Theme, Typography, withStyles, WithStyles
+  Chip, createStyles, Theme, Typography, withStyles, WithStyles
 } from '@material-ui/core';
 
 import { GetPostSummary, GetPostSummaryVariables } from '../common/apollo-types/GetPostSummary';
@@ -34,11 +34,10 @@ query GetPostSummary($slug: String!) {
 
 const styles = (theme: Theme) => createStyles({
     root: {
-        minWidth: 600,
+        minWidth: 900,
         maxWidth: 1200,
         display: "flex",
         flexDirection: "column",
-        alignItems: 'center'
     },
     title: {
 
