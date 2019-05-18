@@ -67,7 +67,12 @@ const CodeHighlighter = (
                 return next();
             }
             return (
-                <span {...attributes} className={"token " + mark.data.get('className')}>{children}</span>
+                <span 
+                {...attributes} 
+                className={"token " + mark.data.get('className')}
+                >
+                {children}
+                </span>
             )
         }
     }

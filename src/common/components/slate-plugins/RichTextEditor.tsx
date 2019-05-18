@@ -3,12 +3,13 @@ import { languages as prismLanguages } from 'prismjs';
 import { Editor, Value } from 'slate';
 import { getEventTransfer, Plugin } from 'slate-react';
 
-import { Divider, IconButton, Paper, Theme, Typography } from '@material-ui/core';
+import { Divider, IconButton, Paper, Theme, Typography, Tooltip, TextField } from '@material-ui/core';
 import {
     Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
-    FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Image, Title as TitleIcon
+    FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Image, Title as TitleIcon, Highlight, Link
 } from '@material-ui/icons';
 import EditImage from './EditImage';
+import CustomToolTip from '../CustomToolTip';
 
 const getMarkToggleFromHotKey = (event: any): MarkType | undefined => {
     switch (true) {
@@ -29,8 +30,8 @@ const isHotKey = (event: any, key: string) => isKeyHotkey(key)(event);
 
 const DEFAULT_NODE = 'paragraph'
 
-const markTypes = ['bold', 'italic', 'underline', 'code'] as const;
-const nodeTypes = ['heading-one', 'heading-two', 'block-quote', 'code-block', 'image'] as const;
+const markTypes = ['bold', 'italic', 'underline', 'code', 'highlight'] as const;
+const nodeTypes = ['heading-one', 'heading-two', 'block-quote', 'code-block', 'image', 'link'] as const;
 
 type MarkType = typeof markTypes[number];
 type NodeType = typeof nodeTypes[number];
@@ -41,11 +42,17 @@ const hasMark = (type: MarkType, value: Value) =>
 const hasBlock = (type: NodeType, value: Value) =>
     value.blocks.some(node => node !== undefined && node.type === type)
 
+const hasInline = (type: NodeType, value: Value) =>
+    value.inlines.some(node => node !== undefined && node.type === type)
+
 const getMarkBtnColor = (type: MarkType, value: Value) =>
     hasMark(type, value) ? 'secondary' : 'disabled';
 
-const getNodeBtnColor = (type: NodeType, value: Value) =>
+const getBlockBtnColor = (type: NodeType, value: Value) =>
     hasBlock(type, value) ? 'secondary' : 'disabled';
+
+const getInlineBtnColor = (type: NodeType, value: Value) =>
+    hasInline(type, value) ? 'secondary' : 'disabled';
 
 const getFormatMarkBtn = (type: MarkType, editor: Editor) => {
     const { value } = editor
@@ -59,16 +66,23 @@ const getFormatMarkBtn = (type: MarkType, editor: Editor) => {
                 return (<FormatUnderlineIcon color={getMarkBtnColor(type, value)} />);
             case 'code':
                 return (<CodeIcon color={getMarkBtnColor(type, value)} />);
+            case 'highlight':
+                return (<Highlight color={getMarkBtnColor(type, value)} />);
         }
     })();
     return (
-        <IconButton onClick={e => {
-            e.preventDefault();
-            editor.toggleMark(type)
-            editor.focus()
-        }}>
-            {icon}
-        </IconButton>
+        <Tooltip
+            title={type}
+            enterDelay={200}
+        >
+            <IconButton onClick={e => {
+                e.preventDefault();
+                editor.toggleMark(type)
+                editor.focus()
+            }}>
+                {icon}
+            </IconButton>
+        </Tooltip>
     )
 }
 
@@ -77,25 +91,30 @@ const getFormatNodeBtn = (type: NodeType, editor: Editor) => {
     const icon = (() => {
         switch (type) {
             case 'heading-one':
-                return (<TitleIcon color={getNodeBtnColor(type, value)} />);
+                return (<TitleIcon color={getBlockBtnColor(type, value)} />);
             case 'heading-two':
-                return (<TitleIcon color={getNodeBtnColor(type, value)} fontSize='small' />);
+                return (<TitleIcon color={getBlockBtnColor(type, value)} fontSize='small' />);
             case 'block-quote':
-                return (<FormatQuoteIcon color={getNodeBtnColor(type, value)} />);
+                return (<FormatQuoteIcon color={getBlockBtnColor(type, value)} />);
             case 'code-block':
-                return (<DvrIcon color={getNodeBtnColor(type, value)} />);
+                return (<DvrIcon color={getBlockBtnColor(type, value)} />);
             case 'image':
-                return (<Image color={getNodeBtnColor(type, value)} />);
+                return (<Image color={getBlockBtnColor(type, value)} />);
         }
     })();
     return icon ? (
-        <IconButton onClick={e => {
-            e.preventDefault();
-            editor.setBlocks(hasBlock(type, value) ? DEFAULT_NODE : type)
-            editor.focus()
-        }}>
-            {icon}
-        </IconButton>
+        <Tooltip
+            title={type}
+            enterDelay={200}
+        >
+            <IconButton onClick={e => {
+                e.preventDefault();
+                editor.setBlocks(hasBlock(type, value) ? DEFAULT_NODE : type)
+                editor.focus()
+            }}>
+                {icon}
+            </IconButton>
+        </Tooltip>
     ) : null
 }
 
@@ -115,6 +134,19 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                                     {getFormatMarkBtn('bold', editor)}
                                     {getFormatMarkBtn('italic', editor)}
                                     {getFormatMarkBtn('underline', editor)}
+                                    {getFormatMarkBtn('highlight', editor)}
+                                    <Tooltip
+                                        title='link'
+                                        enterDelay={200}
+                                    >
+                                        <IconButton onClick={e => {
+                                            e.preventDefault();
+                                            hasInline('link', editor.value) ? editor.unwrapInline('link') : editor.wrapInline('link')
+                                            editor.focus()
+                                        }}>
+                                            <Link color={getInlineBtnColor('link', editor.value)} />
+                                        </IconButton>
+                                    </Tooltip>
                                     {getFormatNodeBtn('block-quote', editor)}
                                     {getFormatMarkBtn('code', editor)}
                                     {getFormatNodeBtn('code-block', editor)}
@@ -139,6 +171,8 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                     return <em {...attributes}>{children}</em>
                 case 'underline':
                     return <u {...attributes}>{children}</u>
+                case 'highlight':
+                    return <mark {...attributes}>{children}</mark>
                 case 'code':
                     return (
                         <code
@@ -231,6 +265,27 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                                 caption: {children}
                             </Typography>
                         </div>
+                    )
+                case 'link':
+                    return (editor.readOnly ?
+                        <a {...attributes} href={node.data.get('href')} target="_blank">{children}</a>
+                        :
+                        <CustomToolTip
+                            interactive
+                            enterDelay={200}
+                            leaveDelay={200}
+                            title={
+                                <Paper>
+                                    <TextField
+                                        label="Url"
+                                        value={node.data.get('href')}
+                                        onChange={event => editor.setNodeByKey(node.key, { data: { href: event.target.value }, type: node.type })}
+                                    />
+                                </Paper>
+                            }
+                        >
+                            <a {...attributes} href={node.data.get('href')} target="_blank">{children}</a>
+                        </CustomToolTip>
                     )
                 default:
                     return next()
