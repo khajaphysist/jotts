@@ -2,13 +2,14 @@ import Router from 'next/router';
 import React from 'react';
 
 import {
-  AppBar, Avatar, Button, createStyles, FormControl, Input, InputLabel, Paper, Tab, Tabs, Theme,
-  Typography, WithStyles, withStyles
+    AppBar, Avatar, Button, createStyles, FormControl, Input, InputLabel, Paper, Tab, Tabs, Theme,
+    Typography, WithStyles, withStyles
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import Layout from '../common/components/Layout';
 import { User } from '../common/utils/agent';
+import Link from 'next/link';
 
 const styles = (theme: Theme) => createStyles({
     main: {
@@ -86,6 +87,9 @@ class Login extends React.Component<Props, State> {
                                     <InputLabel htmlFor="password">Password</InputLabel>
                                     <Input name="password" type="password" id="password" autoComplete="current-password" onChange={(e) => { this.setState({ ...this.state, password: e.target.value }) }} required={true} />
                                 </FormControl>
+                                <Link href='/forgot-password' passHref>
+                                    <Typography component="a">Forgot Password</Typography>
+                                </Link>
                                 <Button
                                     type="submit"
                                     fullWidth

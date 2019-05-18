@@ -15,6 +15,7 @@ import * as uuidv4 from 'uuid/v4';
 import { CookieUser } from '../common/types';
 import User from './agent';
 import { PRIVATE_KEY, PUBLIC_KEY } from './vars';
+import { sendResetPasswordMail } from './reset-password';
 
 const dev = process.env.NODE_ENV !== 'production';
 console.log(`Running in ${process.env.NODE_ENV} mode`)
@@ -26,6 +27,17 @@ const upload = multer({
         return file.mimetype.startsWith('image/') ? cb(null, true) : cb(Error("Only Image files are allowed"), false)
     }
 });
+
+const validatePassword = (password: string) => {
+    return password && password.length > 6 ? true : false
+}
+const validateEmail = (email: string) => {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!email || !re.test(String(email).toLowerCase())) {
+        return false
+    }
+    return true
+}
 
 const s3 = new S3({
     endpoint: 'http://127.0.0.1:9001/images',
@@ -86,7 +98,7 @@ app
                     'x-hasura-allowed-roles': ['user'],
                     'x-hasura-user-id': req.user.id
                 }
-                const token = jwt.sign(req.user, PRIVATE_KEY, { algorithm: "RS256" });
+                const token = jwt.sign(req.user, PRIVATE_KEY, { algorithm: "RS256", expiresIn: "2d" });
                 res.send({ user, token })
             });
 
@@ -101,6 +113,9 @@ app
 
         server.post('/register', (req, res) => {
             const { email, handle, password } = req.body;
+            if (!(validateEmail(email) && validatePassword(password) && handle)) {
+                return res.status(400).send("Invalid email, or password length less than 6 characters or empty handle")
+            }
             const password_salt = uuidv4();
             const password_iterations = 1000 + Math.floor(Math.random() * 1000);
             crypto.pbkdf2(password, password_salt, password_iterations, 64, 'sha512', (err, key) => {
@@ -119,6 +134,9 @@ app
             (req, res) => {
                 const user: CookieUser = req.user;
                 const { oldPassword, newPassword } = req.body;
+                if(validatePassword(newPassword)){
+                    res.status(400).send("Password should have 6 characters minimum")
+                }
                 User.getOne(user.email)
                     .then(userDetails => {
                         if (userDetails) {
@@ -128,12 +146,14 @@ app
                                 if (err || hash !== password_hash) {
                                     return res.status(401).send("Invalid Password");
                                 }
+                                const password_salt = uuidv4();
+                                const password_iterations = 1000 + Math.floor(Math.random() * 1000);
                                 crypto.pbkdf2(newPassword, password_salt, password_iterations, 64, 'sha512', (err, key) => {
                                     if (err) {
                                         return res.status(500).send("unknown error occurred")
                                     }
                                     const newHash = key.toString('hex');
-                                    User.changePassword(userDetails.id, newHash)
+                                    User.changePassword(userDetails.id, newHash, password_salt, password_iterations)
                                         .then((r: any) => {
                                             console.log(r);
                                             res.status(200).send("success")
@@ -145,6 +165,9 @@ app
                                 })
                             })
                         }
+                    }).catch(e => {
+                        console.log(e)
+                        res.status(500).send("unknown error occurred")
                     })
             }
         )
@@ -195,6 +218,60 @@ app
                 })
             }
         )
+
+        server.post('/forgot-password',
+            (req, res) => {
+                const { email } = req.body;
+                if (!validateEmail(email)) {
+                    return res.status(400).send("Invalid Email")
+                }
+                User.getOne(email).then(userDetails => {
+                    if (userDetails) {
+                        const token = jwt.sign({ id: userDetails.id }, PRIVATE_KEY, { algorithm: "RS256", expiresIn: "1h" });
+                        sendResetPasswordMail(email, token).then(r => {
+                            if (r) {
+                                res.status(200).send("OK")
+                            } else {
+                                res.status(500).send("Some error occurred")
+                            }
+                        }).catch(e => {
+                            console.log(e)
+                            res.status(500).send("Some error occurred")
+                        })
+                    }
+                })
+            })
+        server.post('/reset-password',
+            (req, res) => {
+                const { newPassword, token } = req.body;
+                if (!newPassword || !token || !validatePassword(newPassword)) {
+                    return res.status(400).send("Invalid request")
+                }
+                try {
+                    const { id } = jwt.verify(token, PUBLIC_KEY, { algorithms: ["RS256"] }) as { id: string };
+                    const password_salt = uuidv4();
+                    const password_iterations = 1000 + Math.floor(Math.random() * 1000);
+                    crypto.pbkdf2(newPassword, password_salt, password_iterations, 64, 'sha512', (err, key) => {
+                        if (err) {
+                            return res.status(500).send("unknown error occurred")
+                        }
+                        const newHash = key.toString('hex');
+                        User.changePassword(id, newHash, password_salt, password_iterations)
+                            .then((r: any) => {
+                                console.log(r);
+                                res.status(200).send("success")
+                            })
+                            .catch((e: any) => {
+                                console.log(e)
+                                res.status(500).send("unknown error occurred")
+                            })
+                    })
+                } catch (error) {
+                    console.log(error)
+                    res.status(403).send("Unauthorized")
+                }
+            })
+
 
         server.get('/post/:slug'
             , (req, res) => {

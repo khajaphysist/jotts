@@ -62,10 +62,10 @@ class User {
         return newId;
     }
 
-    public async changePassword(userId: string, newPasswordHash: string) {
+    public async changePassword(userId: string, newPasswordHash: string, password_salt: string, password_iterations: number) {
         return knex('jotts.login_details')
             .where({ id: userId })
-            .update({ password_hash: newPasswordHash })
+            .update({ password_hash: newPasswordHash, password_salt, password_iterations })
     }
 
     public async getOne(email: string): Promise<UserDetails | undefined> {
