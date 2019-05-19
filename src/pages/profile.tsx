@@ -26,20 +26,25 @@ const styles = (theme: Theme) => createStyles({
         flex: 1
     },
     sidebar: {
-        width: 250
+        width: 250,
+        margin: 2 * theme.spacing.unit
     },
     main: {
         padding: 2 * theme.spacing.unit,
         flex: 1,
-        maxWidth: 600
+        maxWidth: 600,
     },
     profileRoot: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: 250,
     },
     passwordRoot: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: 200,
     }
 })
 type StyleProps = WithStyles<typeof styles>
@@ -111,16 +116,18 @@ class ProfilePage extends React.Component<Props, State> {
                                         label="Name"
                                         value={profile.name}
                                         onChange={e => this.setState({ ...this.state, profile: { ...profile, name: e.target.value } })} />
-                                    <BaseMRSelect
-                                        defaultOptions={countryOptions}
-                                        isMulti={false}
-                                        value={profile.country ? [{ label: profile.country, value: profile.country }] : []}
-                                        onChange={(v) => {
-                                            this.setState({ ...this.state, profile: { ...profile, country: v[0].value } })
-                                        }}
-                                        placeholder="Select country"
-                                        label="Country"
-                                    />
+                                    <div>
+                                        <BaseMRSelect
+                                            defaultOptions={countryOptions}
+                                            isMulti={false}
+                                            value={profile.country ? [{ label: profile.country, value: profile.country }] : []}
+                                            onChange={(v) => {
+                                                this.setState({ ...this.state, profile: { ...profile, country: v[0].value } })
+                                            }}
+                                            placeholder="Select country"
+                                            label="Country"
+                                        />
+                                    </div>
                                     <SelectImage
                                         user={user}
                                         value={profile.profilePicture}

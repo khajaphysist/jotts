@@ -50,7 +50,7 @@ class EditImage extends React.Component<Props, State> {
                     title={
                         !editor.readOnly ? (
                             <ClickAwayListener onClickAway={() => this.setState({ ...this.state, popupOpen: false })}>
-                                <Paper style={{ width: 300 }}>
+                                <Paper style={{ width: 400 }}>
                                     <TextField
                                         value={url ? url : ''}
                                         fullWidth
@@ -75,7 +75,7 @@ class EditImage extends React.Component<Props, State> {
                                     }
                                 </Paper>
                             </ClickAwayListener>
-                        ) : null
+                        ) : ''
                     }
                 >
                     <div

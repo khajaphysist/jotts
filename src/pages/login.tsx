@@ -130,7 +130,7 @@ class Login extends React.Component<Props, State> {
                                     <Input id="email" name="email" autoComplete="email" autoFocus onChange={(e) => { this.setState({ ...this.state, email: e.target.value }) }} required={true} />
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth>
-                                    <InputLabel >Handle</InputLabel>
+                                    <InputLabel >Display Handle</InputLabel>
                                     <Input id="handle" name="handle" onChange={(e) => { this.setState({ ...this.state, handle: e.target.value }) }} required={true} />
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth>

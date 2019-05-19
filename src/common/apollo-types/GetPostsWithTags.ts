@@ -33,6 +33,7 @@ export interface GetPostsWithTags_jotts_post_by_tag {
    * An array relationship
    */
   post_tags: GetPostsWithTags_jotts_post_by_tag_post_tags[];
+  created_at: any;
 }
 
 export interface GetPostsWithTags_jotts_post_by_tag_aggregate_aggregate {

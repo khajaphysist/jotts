@@ -211,14 +211,14 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                 case 'heading-one':
                     return (
                         <div style={{ marginBottom: 2 * theme.spacing.unit }}>
-                            <Typography {...attributes} variant="h3" component="h1" gutterBottom>{children}</Typography>
+                            <Typography {...attributes} variant="h4" component="h1" gutterBottom>{children}</Typography>
                             <Divider />
                         </div>
                     )
                 case 'heading-two':
                     return <Typography
                         {...attributes}
-                        variant="h4"
+                        variant="h5"
                         component="h2"
                         style={{
                             marginBottom: 2 * theme.spacing.unit,
@@ -262,7 +262,7 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                         }}>
                             <EditImage editor={editor} node={node} />
                             <Typography variant="subtitle2" {...attributes} align="center" color="textSecondary">
-                                caption: {children}
+                                {node.text.length>0?'':'Caption...'}{children}
                             </Typography>
                         </div>
                     )
