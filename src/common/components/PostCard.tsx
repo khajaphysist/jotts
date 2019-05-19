@@ -2,48 +2,48 @@ import Link from 'next/link';
 import React from 'react';
 
 import {
-  Avatar, Button, ButtonBase, Card, CardActions, CardContent, createStyles, Theme, Typography,
-  withStyles, WithStyles
+    ButtonBase, Card, CardContent, createStyles, Theme, Typography,
+    withStyles, WithStyles
 } from '@material-ui/core';
-
-import { s3ImagesUrl } from './Constants';
 
 const styles = (theme: Theme) => createStyles({
     item: {
-        width: "300px",
-        height: "450px",
+        width: 500,
+        height: 350,
         padding: theme.spacing.unit,
         margin: theme.spacing.unit,
-        display: "flex",
-        flexDirection: "column"
     },
     itemHeader: {
-        height: "80px",
-        padding: `${theme.spacing.unit}px ${2 * theme.spacing.unit}px`
+        height: 108,
+        overflow: "hidden",
+        padding: `${theme.spacing.unit}px ${2 * theme.spacing.unit}px`,
     },
     itemContent: {
-        height: "240px",
+        height: 156,
         display: "flex",
         flexDirection: "column",
-        padding: `${theme.spacing.unit}px ${2 * theme.spacing.unit}px`
-    },
-    itemActions: {
-        flex: 1
+        padding: `${theme.spacing.unit}px ${2 * theme.spacing.unit}px`,
+        overflow: "hidden",
     },
     itemAuthor: {
-        height: "24px",
+        height: 16,
         display: "flex",
+        alignItems: 'center',
         padding: `0px ${2 * theme.spacing.unit}px`
     },
-    itemAuthorName: {
-        flex: 1
-    },
-    itemAuthorHandle: {
-        flex: 1
+    date: {
+        marginLeft: theme.spacing.unit
     },
     itemsTags: {
-        height: "48px",
-        padding: `0px ${2 * theme.spacing.unit}px`
+        height: 56,
+        display:"flex",
+        flexWrap: "wrap",
+        alignItems:'flex-start',
+        padding: `${theme.spacing.unit}px ${2 * theme.spacing.unit}px`,
+        paddingLeft: theme.spacing.unit
+    },
+    tag:{
+        marginLeft: theme.spacing.unit
     }
 })
 
@@ -61,6 +61,7 @@ interface ComponentProps {
         }
         summary: string | null
         post_tags: Array<{ tag: string }>
+        created_at: any
     }
 }
 
@@ -84,19 +85,18 @@ class PostCard extends React.Component<Props, State> {
                 <div className={classes.itemHeader}>
                     <Link href={"/post?slug=" + this.props.data.slug} as={"/post/" + this.props.data.slug} passHref>
                         <ButtonBase style={{ textAlign: 'start' }}>
-                            <Typography variant="h6">
-                                {this.props.data.title.substr(0, 40)}
+                            <Typography variant="h6" component="h1">
+                                {this.props.data.title}
                             </Typography>
                         </ButtonBase>
                     </Link>
                 </div>
                 <div className={this.props.classes.itemAuthor}>
-                    <Avatar src={`${s3ImagesUrl}/${this.props.data.author.profile_picture}`} />
-                    <Typography color="secondary" className={this.props.classes.itemAuthorName}>
-                        {this.props.data.author.name ? this.props.data.author.name.substr(0, 15) : ''}
+                    <Typography color="secondary" >
+                        {this.props.data.author.handle}
                     </Typography>
-                    <Typography color="textSecondary" className={this.props.classes.itemAuthorHandle}>
-                        @{this.props.data.author.handle.substr(0, 15)}
+                    <Typography color="textSecondary" variant="caption" className={classes.date}>
+                        {(new Date(this.props.data.created_at)).toDateString().substr(4)}
                     </Typography>
                 </div>
                 <CardContent className={classes.itemContent}>
@@ -105,14 +105,14 @@ class PostCard extends React.Component<Props, State> {
                     </Typography>
                 </CardContent>
                 <div className={classes.itemsTags}>
-                    <Typography variant="subtitle2" color="textSecondary">
-                        {this.props.data.post_tags.map(t => t.tag).join(", ")}
-                    </Typography>
+                    {this.props.data.post_tags.map(t => (
+                        <Link href={`/?tags=${t.tag}`} passHref key={t.tag}>
+                            <Typography variant="subtitle2" color="textSecondary" component="a" className={classes.tag}>
+                                {t.tag}
+                            </Typography>
+                        </Link>
+                    ))}
                 </div>
-                <CardActions className={classes.itemActions}>
-                    <Button>Like</Button>
-                    <Button>Save</Button>
-                </CardActions>
             </Card>
         )
     }

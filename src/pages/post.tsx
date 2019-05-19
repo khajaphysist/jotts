@@ -5,16 +5,17 @@ import React from 'react';
 import { Query } from 'react-apollo';
 
 import {
-  Chip, createStyles, Theme, Typography, withStyles, WithStyles
+    Chip, createStyles, Theme, Typography, withStyles, WithStyles, Avatar
 } from '@material-ui/core';
 
 import { GetPostSummary, GetPostSummaryVariables } from '../common/apollo-types/GetPostSummary';
 import JottsEditor, { deserializeValue } from '../common/components/JottsEditor';
 import Layout from '../common/components/Layout';
+import { s3ImagesUrl } from '../common/components/Constants';
 
 const getPostSummary = gql`
-query GetPostSummary($slug: String!) {
-    jotts_post(where:{slug: {_eq: $slug}}) {
+query GetPostSummary($postId: uuid!) {
+    jotts_post(where:{id: {_eq: $postId}}) {
         id
         title
         author {
@@ -28,6 +29,7 @@ query GetPostSummary($slug: String!) {
             tag
         }
         content
+        created_at
     }
 }
 `;
@@ -35,7 +37,7 @@ query GetPostSummary($slug: String!) {
 const styles = (theme: Theme) => createStyles({
     root: {
         minWidth: 900,
-        maxWidth: 1200,
+        maxWidth: "70%",
         display: "flex",
         flexDirection: "column",
     },
@@ -43,7 +45,16 @@ const styles = (theme: Theme) => createStyles({
 
     },
     author: {
-
+        height: 64,
+        display: "flex",
+        alignItems: 'center',
+        margin: `${theme.spacing.unit}px 0px`
+    },
+    authorName:{
+        marginLeft: theme.spacing.unit
+    },
+    profilePicture:{
+        
     },
     content: {
     },
@@ -58,21 +69,20 @@ const styles = (theme: Theme) => createStyles({
 type StyleProps = WithStyles<typeof styles>
 
 interface InitialProps {
-    slug: string
+    postId: string
 }
 
 type Props = InitialProps & StyleProps;
 
 class Post extends React.Component<Props> {
     public static getInitialProps = async (context: NextContext<{ slug: string }>) => {
-        const { slug } = context.query
-        return { slug }
+        return { postId: context.query.slug.substr(-36) }
     }
     public render() {
         const { classes } = this.props
         return (
             <Layout>
-                <Query<GetPostSummary, GetPostSummaryVariables> query={getPostSummary} variables={{ slug: this.props.slug }}>
+                <Query<GetPostSummary, GetPostSummaryVariables> query={getPostSummary} variables={{ postId: this.props.postId }}>
                     {
                         ({ loading, error, data }) => {
                             if (error) {
@@ -87,9 +97,17 @@ class Post extends React.Component<Props> {
                                 const postData = data.jotts_post[0];
                                 return (
                                     <div className={classes.root}>
-                                        <Typography variant='h2' component="h1" className={classes.title}>{postData.title}</Typography>
+                                        <Typography variant='h3' component="h1" className={classes.title}>{postData.title}</Typography>
                                         <div className={classes.author}>
-                                            <p>Author: {postData.author.name}, @{postData.author.handle},</p>
+                                            <Avatar src={`${s3ImagesUrl}/${postData.author.profile_picture}`} className={this.props.classes.profilePicture} />
+                                            <div className={this.props.classes.authorName}>
+                                                <Typography color="secondary" >
+                                                    {postData.author.handle}
+                                                </Typography>
+                                                <Typography color="textSecondary" variant="caption">
+                                                    {(new Date(postData.created_at)).toDateString().substr(4)}
+                                                </Typography>
+                                            </div>
                                         </div>
                                         {
                                             postData.content ?
@@ -101,7 +119,7 @@ class Post extends React.Component<Props> {
                                         }
                                         <div className={classes.tagsContainer}>
                                             {postData.post_tags.map(t => (
-                                                <Link href={`/?tags=${t.tag}`} passHref>
+                                                <Link href={`/?tags=${t.tag}`} passHref key={t.tag}>
                                                     <Chip label={t.tag} className={classes.tag} component={'a' as any} />
                                                 </Link>
                                             ))}

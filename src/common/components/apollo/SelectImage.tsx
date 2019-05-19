@@ -2,8 +2,8 @@ import { ApolloClient, gql } from 'apollo-boost';
 import React from 'react';
 import { Query } from 'react-apollo';
 
-import { IconButton, ListItemSecondaryAction, MenuItem, Typography } from '@material-ui/core';
-import { AddAPhoto, AddPhotoAlternate, Delete } from '@material-ui/icons';
+import { IconButton, MenuItem, Typography } from '@material-ui/core';
+import { AddPhotoAlternate, Delete } from '@material-ui/icons';
 
 import {
   AddImageDetails, AddImageDetails_insert_jotts_image, AddImageDetailsVariables
@@ -16,7 +16,6 @@ import {
 } from '../../apollo-types/GetAllUserImages';
 import { CookieUser } from '../../types';
 import { ImageS3 } from '../../utils/agent';
-import { getUserToken } from '../../utils/loginStateProvider';
 import { s3ImagesUrl } from '../Constants';
 import { BaseMRSelect } from '../MaterialReactSelect';
 

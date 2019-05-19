@@ -109,6 +109,7 @@ interface State {
     content: EditorValue
     slug: string;
     tags: string[];
+    saving: boolean
 }
 
 class EditPostComponent extends React.Component<Props, State> {
@@ -121,6 +122,7 @@ class EditPostComponent extends React.Component<Props, State> {
             slug: '',
             content: DEFAULT_VALUE,
             tags: [],
+            saving: false
         }
     }
     render() {
@@ -168,7 +170,7 @@ class EditPostComponent extends React.Component<Props, State> {
                             </div>
                             <JottsEditor value={this.state.content} onChange={({ value }) => {
                                 const updateDB = this.state.content.document !== value.document
-                                this.setState({ ...this.state, content: value }, () => {
+                                this.setState({ ...this.state, content: value, saving: updateDB}, async () => {
                                     if (updateDB) {
                                         this.updatePost(client)
                                     }
@@ -176,6 +178,12 @@ class EditPostComponent extends React.Component<Props, State> {
                             }}
                                 className={classes.content}
                             />
+                            {
+                                this.state.saving?
+                                (<p>saving...</p>)
+                                :
+                                null
+                            }
                         </div>
                     )
                 }}
@@ -268,6 +276,7 @@ class EditPostComponent extends React.Component<Props, State> {
                 mutation: editPostMutation,
                 variables: { id, title, slug, content: s, text, summary }
             });
+            this.setState({ ...this.state, saving: false })
         }
     }, 1000)
 }

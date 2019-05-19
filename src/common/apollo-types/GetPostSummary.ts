@@ -33,6 +33,7 @@ export interface GetPostSummary_jotts_post {
    */
   post_tags: GetPostSummary_jotts_post_post_tags[];
   content: string | null;
+  created_at: any;
 }
 
 export interface GetPostSummary {
@@ -43,5 +44,5 @@ export interface GetPostSummary {
 }
 
 export interface GetPostSummaryVariables {
-  slug: string;
+  postId: any;
 }
