@@ -1,4 +1,3 @@
-import Router from 'next/router';
 import React from 'react';
 
 import {
@@ -155,7 +154,14 @@ class Login extends React.Component<Props, State> {
                                         } else if (!this.state.handle) {
                                             window.alert("handle cannot be empty");
                                         } else {
-                                            User.register(this.state.email, this.state.handle, this.state.password).then(res => Router.push('/login'));
+                                            User.register(this.state.email, this.state.handle, this.state.password)
+                                                .then(res => {
+                                                    if (res.status === 200) {
+                                                        window.alert("Registered successfully. Continue to login")
+                                                        this.setState({ ...this.state, tab: 'login' })
+                                                    }
+                                                })
+                                                .catch(() => window.alert("Some error occurred"));
                                         }
                                     }}
                                 >

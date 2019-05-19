@@ -3,17 +3,17 @@ import React from 'react';
 import { Mutation, withApollo } from 'react-apollo';
 
 import {
-  Avatar, Button, createStyles, List, ListItem, ListItemIcon, ListItemText, Paper, TextField, Theme,
-  withStyles, WithStyles
+    Button, createStyles, List, ListItem, ListItemIcon, ListItemText, Paper, TextField, Theme,
+    withStyles, WithStyles
 } from '@material-ui/core';
 import { Person, Security } from '@material-ui/icons';
 
 import { GetUserProfile, GetUserProfileVariables } from '../common/apollo-types/GetUserProfile';
 import {
-  UpdateUserProfile, UpdateUserProfileVariables
+    UpdateUserProfile, UpdateUserProfileVariables
 } from '../common/apollo-types/UpdateUserProfile';
 import SelectImage from '../common/components/apollo/SelectImage';
-import { countries, s3ImagesUrl } from '../common/components/Constants';
+import { countries } from '../common/components/Constants';
 import Layout from '../common/components/Layout';
 import { BaseMRSelect } from '../common/components/MaterialReactSelect';
 import { CookieUser } from '../common/types';
@@ -116,7 +116,6 @@ class ProfilePage extends React.Component<Props, State> {
                                         isMulti={false}
                                         value={profile.country ? [{ label: profile.country, value: profile.country }] : []}
                                         onChange={(v) => {
-                                            console.log(v)
                                             this.setState({ ...this.state, profile: { ...profile, country: v[0].value } })
                                         }}
                                         placeholder="Select country"
@@ -129,7 +128,7 @@ class ProfilePage extends React.Component<Props, State> {
                                         label="Profile Picture"
                                     />
                                     <Mutation<UpdateUserProfile, UpdateUserProfileVariables> mutation={updateUserProfile}>
-                                        {(updateUserProfile, { data }) => (
+                                        {(updateUserProfile) => (
                                             <Button color="primary" onClick={() => {
                                                 updateUserProfile({ variables: { ...profile, userId: user.id } })
                                             }}

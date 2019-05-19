@@ -3,5 +3,6 @@ export interface CookieUser {
     name: string | null;
     profile_picture: string | null;
     handle: string;
-    email: string
+    email: string;
+    exp: number;
 }

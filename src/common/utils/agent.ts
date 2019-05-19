@@ -58,7 +58,7 @@ export const User = {
                 return 'unknown_error' as const
         }
     },
-    logout: async () => {
+    logout: () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
     }

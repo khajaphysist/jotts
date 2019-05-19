@@ -99,6 +99,7 @@ app
                     'x-hasura-user-id': req.user.id
                 }
                 const token = jwt.sign(req.user, PRIVATE_KEY, { algorithm: "RS256", expiresIn: "2d" });
+                user.exp = Math.floor(Date.now() / 1000) + 86400 * 2 - 10;
                 res.send({ user, token })
             });
 
@@ -134,7 +135,7 @@ app
             (req, res) => {
                 const user: CookieUser = req.user;
                 const { oldPassword, newPassword } = req.body;
-                if(validatePassword(newPassword)){
+                if (validatePassword(newPassword)) {
                     res.status(400).send("Password should have 6 characters minimum")
                 }
                 User.getOne(user.email)
