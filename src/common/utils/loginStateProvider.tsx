@@ -1,15 +1,26 @@
 import React from 'react';
 
 import { CookieUser } from '../types';
+import { User } from './agent';
 
 export const isLoggedIn = (): boolean => {
-    if (process.browser && localStorage.getItem('token') && localStorage.getItem('user')) {
-        return true;
+    const userStr = process.browser?localStorage.getItem('user'):undefined
+    if (process.browser && localStorage.getItem('token') && userStr) {
+        const user = JSON.parse(userStr) as CookieUser
+        if(user.exp > Math.ceil(Date.now()/1000)){
+            return true;
+        }else {
+            User.logout()
+            return false;
+        }
     }
     return false;
 }
 
 export const loggedInUser = () => {
+    if(!isLoggedIn()){
+        return undefined;
+    }
     const user = process.browser ? localStorage.getItem('user') : undefined;
     return user ? JSON.parse(decodeURIComponent(user)) as CookieUser : undefined;
 }

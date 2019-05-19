@@ -116,7 +116,6 @@ class ProfilePage extends React.Component<Props, State> {
                                         isMulti={false}
                                         value={profile.country ? [{ label: profile.country, value: profile.country }] : []}
                                         onChange={(v) => {
-                                            console.log(v)
                                             this.setState({ ...this.state, profile: { ...profile, country: v[0].value } })
                                         }}
                                         placeholder="Select country"
