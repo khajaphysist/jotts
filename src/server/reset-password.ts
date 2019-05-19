@@ -1,6 +1,6 @@
 import * as nodemailer from 'nodemailer';
 
-const resetPasswordUrl = "http://localhost:3000/reset-password"
+const resetPasswordUrl = "https://jotts.io/reset-password"
 
 export async function sendResetPasswordMail(email:string, token:string) {
     const transporter = nodemailer.createTransport({

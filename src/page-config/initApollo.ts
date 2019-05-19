@@ -1,6 +1,7 @@
 import { ApolloClient, HttpLink, InMemoryCache } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
 import { getUserToken } from '../common/utils/loginStateProvider';
+import { graphqlEndpoint } from '../common/components/Constants';
 
 let apolloClient: ReturnType<typeof create> | null = null;
 
@@ -15,7 +16,7 @@ const create = (initialState: any) => {
         connectToDevTools: process.browser,
         ssrMode: !process.browser,
         link: new HttpLink({
-            uri: 'http://localhost:8080/v1/graphql',
+            uri: graphqlEndpoint,
             headers,
             credentials: 'include'
         }),

@@ -16,6 +16,7 @@ import { CookieUser } from '../common/types';
 import User from './agent';
 import { PRIVATE_KEY, PUBLIC_KEY } from './vars';
 import { sendResetPasswordMail } from './reset-password';
+import { s3ImagesUrl } from '../common/components/Constants';
 
 const dev = process.env.NODE_ENV !== 'production';
 console.log(`Running in ${process.env.NODE_ENV} mode`)
@@ -40,7 +41,7 @@ const validateEmail = (email: string) => {
 }
 
 const s3 = new S3({
-    endpoint: 'http://127.0.0.1:9001/images',
+    endpoint: s3ImagesUrl,
     s3BucketEndpoint: true,
     accessKeyId: 'minio',
     secretAccessKey: 'minio123',
