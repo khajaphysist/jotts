@@ -1,4 +1,4 @@
-import { languages as prismLanguages, Token, tokenize, TokenStream } from 'prismjs';
+import { languages as prismLanguages, Token, tokenize, TokenStream } from '../../../lib/prism';
 import { Text } from 'slate';
 import { Plugin } from 'slate-react';
 

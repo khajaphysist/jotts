@@ -1,4 +1,4 @@
-import Prism from 'prismjs';
+import Prism from '../../lib/prism';
 import React from 'react';
 import { Value } from 'slate';
 import { Editor, EditorProps, Plugin } from 'slate-react';
@@ -24,11 +24,16 @@ class JottsEditor extends React.Component<Props> {
     constructor(props: Props) {
         super(props)
         this.plugins = [RichTextEditor({ theme: this.props.theme }), CodeHighlighter({ nodeType: 'code-block' })];
-        Prism.hooks.add('complete', () => this.forceUpdate());
+        // Prism.hooks.add('complete', () => this.forceUpdate());
     }
 
     render() {
         return (<Editor {...this.props} plugins={this.plugins} />)
+    }
+    componentDidMount(){
+        if(this.props.readOnly){
+            Prism.highlightAll()
+        }
     }
 }
 

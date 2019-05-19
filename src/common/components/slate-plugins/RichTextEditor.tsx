@@ -1,5 +1,5 @@
 import { isKeyHotkey } from 'is-hotkey';
-import { languages as prismLanguages } from 'prismjs';
+import { languages as prismLanguages } from '../../../lib/prism';
 import { Editor, Value } from 'slate';
 import { getEventTransfer, Plugin } from 'slate-react';
 
@@ -232,7 +232,7 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                         editor.setNodeByKey(node.key, { data: { language }, type: node.type })
                     }
                     return (
-                        <div style={{ marginBottom: 2 * theme.spacing.unit }}>
+                        <div style={{ marginBottom: 2 * theme.spacing.unit }} className={'line-numbers'}>
                             {
                                 editor.readOnly ? null :
                                     (
@@ -250,7 +250,7 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                             }
                             <pre className={'language-' + language}>
                                 <code className={'language-' + language} {...attributes}>
-                                    {children}
+                                    {editor.readOnly?node.text:children}
                                 </code>
                             </pre>
                         </div>
