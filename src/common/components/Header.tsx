@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Router from 'next/router';
 import React from 'react';
 
 import {
@@ -15,10 +14,6 @@ const getDashboardLink = (user: CookieUser | undefined) => {
     return {
       href: `/dashboard?handle=${user.handle}`,
       as: `/${user.handle}/dashboard`
-    }
-  } else {
-    return {
-      href: '/login'
     }
   }
 }
@@ -61,9 +56,8 @@ class Header extends React.Component<StyleProps> {
                     </Link>
                     <Button
                       onClick={() => {
-                        User.logout().then(_d => {
-                          window.location.href = '/';
-                        })
+                        User.logout()
+                        window.location.href = '/';
                       }}
                     >Logout</Button>
                   </div>

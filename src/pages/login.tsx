@@ -1,4 +1,3 @@
-import Router from 'next/router';
 import React from 'react';
 
 import {
@@ -162,7 +161,7 @@ class Login extends React.Component<Props, State> {
                                                         this.setState({ ...this.state, tab: 'login' })
                                                     }
                                                 })
-                                                .catch(e => window.alert("Some error occurred"));
+                                                .catch(() => window.alert("Some error occurred"));
                                         }
                                     }}
                                 >
