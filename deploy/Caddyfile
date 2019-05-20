@@ -1,0 +1,5 @@
+http://jotts.io
+
+gzip
+proxy /v1/graphql localhost:8080/v1/graphql
+proxy / localhost:3000
