@@ -16,13 +16,11 @@ import { CookieUser } from '../common/types';
 import User from './agent';
 import { sendResetPasswordMail } from './reset-password';
 import {
-  PG_CONNECTION_STRING, PRIVATE_KEY, PUBLIC_KEY, S3_ACCESS_KEY_ID, S3_IMAGES_BUCKET_URL,
-  S3_SECRET_ACCESS_KEY
+  PRIVATE_KEY, PUBLIC_KEY, S3_ACCESS_KEY_ID, S3_IMAGES_BUCKET_URL, S3_SECRET_ACCESS_KEY
 } from './vars';
 
 const dev = process.env.NODE_ENV !== 'production';
 console.log(`Running in ${process.env.NODE_ENV} mode`)
-console.log("Connection String ",PG_CONNECTION_STRING)
 
 const s3 = new S3({
     endpoint: S3_IMAGES_BUCKET_URL,

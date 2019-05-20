@@ -4,7 +4,7 @@ import fetch from 'isomorphic-unfetch';
 import * as Knex from 'knex';
 
 import { GetUser, GetUserVariables } from '../common/apollo-types/GetUser';
-import { GRAPHQL_ENDPOINT, PG_CONNECTION_STRING } from './vars';
+import { GRAPHQL_ENDPOINT, HASURA_ADMIN_SECRET, PG_CONNECTION_STRING } from './vars';
 
 const knex = Knex({
     client: 'pg',
@@ -81,7 +81,7 @@ class User {
                 variables: { id: user.id },
                 context: {
                     headers: {
-                        'x-hasura-admin-secret': 'khaja'
+                        'x-hasura-admin-secret': HASURA_ADMIN_SECRET
                     }
                 }
             });

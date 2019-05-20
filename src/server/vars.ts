@@ -12,6 +12,7 @@ export const S3_IMAGES_BUCKET_URL = process.env.S3_IMAGES_BUCKET_URL || 'http://
 export const S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY || 'minio';
 export const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY || 'minio123'
 
+export const HASURA_ADMIN_SECRET = process.env.HASURA_ADMIN_SECRET || 'khaja'
 export const GRAPHQL_ENDPOINT = 'http://localhost:8080/v1/graphql';
 export const PG_CONNECTION_STRING = process.env.PG_CONNECTION_STRING || ''//'postgresql://postgres:postgres@localhost:5432/postgres'
 

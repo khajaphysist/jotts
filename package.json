@@ -85,7 +85,8 @@
     "@types/slug": "^0.9.1",
     "@types/styled-jsx": "^2.2.8",
     "@types/uuid": "^3.4.4",
-    "typescript": "^3.4.3",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5",
     "webpack": "^4.30.0"
   }
 }
