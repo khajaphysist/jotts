@@ -13,13 +13,22 @@ import * as localStrategy from 'passport-local';
 import * as uuidv4 from 'uuid/v4';
 
 import { CookieUser } from '../common/types';
+import { s3ImagesUrl } from '../common/vars';
 import User from './agent';
-import { PRIVATE_KEY, PUBLIC_KEY } from './vars';
 import { sendResetPasswordMail } from './reset-password';
-import { s3ImagesUrl } from '../common/components/Constants';
+import { PRIVATE_KEY, PUBLIC_KEY, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY } from './vars';
 
 const dev = process.env.NODE_ENV !== 'production';
 console.log(`Running in ${process.env.NODE_ENV} mode`)
+
+const s3 = new S3({
+    endpoint: s3ImagesUrl,
+    s3BucketEndpoint: true,
+    accessKeyId: S3_ACCESS_KEY_ID,
+    secretAccessKey: S3_SECRET_ACCESS_KEY,
+    ...(S3_ACCESS_KEY_ID === 'minio' ? { signatureVersion: 'v4' } : {})
+})
+
 const app = next({ dev, dir: './src' });
 const handle = app.getRequestHandler();
 const LocalStrategy = localStrategy.Strategy;
@@ -39,14 +48,6 @@ const validateEmail = (email: string) => {
     }
     return true
 }
-
-const s3 = new S3({
-    endpoint: s3ImagesUrl,
-    s3BucketEndpoint: true,
-    accessKeyId: 'minio',
-    secretAccessKey: 'minio123',
-    signatureVersion: 'v4'
-})
 
 app
     .prepare()

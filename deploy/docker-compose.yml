@@ -1,0 +1,13 @@
+version: '3.6'
+services:
+  graphql-engine:
+    image: hasura/graphql-engine:v1.0.0-beta.1
+    ports:
+    - "8080:8080"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: ${PG_CONNECTION_STRING}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false" # set to "false" to disable console
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"RS256","key":"${PUBLIC_KEY}","claims_namespace":"jotts_claims","claims_format":"json"}'

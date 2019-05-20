@@ -5,13 +5,13 @@ import React from 'react';
 import { Query } from 'react-apollo';
 
 import {
-    Chip, createStyles, Theme, Typography, withStyles, WithStyles, Avatar
+  Avatar, Chip, createStyles, Theme, Typography, withStyles, WithStyles
 } from '@material-ui/core';
 
 import { GetPostSummary, GetPostSummaryVariables } from '../common/apollo-types/GetPostSummary';
 import JottsEditor, { deserializeValue } from '../common/components/JottsEditor';
 import Layout from '../common/components/Layout';
-import { s3ImagesUrl } from '../common/components/Constants';
+import { s3ImagesUrl } from '../common/vars';
 
 const getPostSummary = gql`
 query GetPostSummary($postId: uuid!) {

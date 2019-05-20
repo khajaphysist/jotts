@@ -1,12 +1,14 @@
+import React from 'react';
 import { Block, Editor, Inline } from 'slate';
 
-import { TextField, Tooltip, IconButton, Paper, withStyles, createStyles, WithStyles, ClickAwayListener } from '@material-ui/core';
+import {
+  ClickAwayListener, createStyles, IconButton, Paper, TextField, Tooltip, withStyles, WithStyles
+} from '@material-ui/core';
+import { AddPhotoAlternate } from '@material-ui/icons';
 
 import { loggedInUser } from '../../utils/loginStateProvider';
+import { s3ImagesUrl } from '../../vars';
 import SelectImage from '../apollo/SelectImage';
-import { s3ImagesUrl } from '../Constants';
-import { AddPhotoAlternate } from '@material-ui/icons';
-import React from 'react';
 
 const styles = createStyles({
     tooltip: {

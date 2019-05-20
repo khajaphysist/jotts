@@ -4,16 +4,12 @@ import fetch from 'isomorphic-unfetch';
 import * as Knex from 'knex';
 
 import { GetUser, GetUserVariables } from '../common/apollo-types/GetUser';
-import { graphqlEndpoint } from '../common/components/Constants';
+import { graphqlEndpoint } from '../common/vars';
+import { PG_CONNECTION_STRING } from './vars';
 
 const knex = Knex({
     client: 'pg',
-    connection: {
-        host: '127.0.0.1',
-        user: 'postgres',
-        password: 'postgres',
-        database: 'postgres'
-    }
+    connection: PG_CONNECTION_STRING,
 });
 
 const client = new ApolloClient({
