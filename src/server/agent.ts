@@ -4,8 +4,7 @@ import fetch from 'isomorphic-unfetch';
 import * as Knex from 'knex';
 
 import { GetUser, GetUserVariables } from '../common/apollo-types/GetUser';
-import { graphqlEndpoint } from '../common/vars';
-import { PG_CONNECTION_STRING } from './vars';
+import { GRAPHQL_ENDPOINT, PG_CONNECTION_STRING } from './vars';
 
 const knex = Knex({
     client: 'pg',
@@ -13,7 +12,7 @@ const knex = Knex({
 });
 
 const client = new ApolloClient({
-    uri: graphqlEndpoint,
+    uri: GRAPHQL_ENDPOINT,
     fetch: fetch
 });
 

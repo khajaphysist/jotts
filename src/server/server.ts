@@ -13,16 +13,19 @@ import * as localStrategy from 'passport-local';
 import * as uuidv4 from 'uuid/v4';
 
 import { CookieUser } from '../common/types';
-import { s3ImagesUrl } from '../common/vars';
 import User from './agent';
 import { sendResetPasswordMail } from './reset-password';
-import { PRIVATE_KEY, PUBLIC_KEY, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY } from './vars';
+import {
+  PG_CONNECTION_STRING, PRIVATE_KEY, PUBLIC_KEY, S3_ACCESS_KEY_ID, S3_IMAGES_BUCKET_URL,
+  S3_SECRET_ACCESS_KEY
+} from './vars';
 
 const dev = process.env.NODE_ENV !== 'production';
 console.log(`Running in ${process.env.NODE_ENV} mode`)
+console.log("Connection String ",PG_CONNECTION_STRING)
 
 const s3 = new S3({
-    endpoint: s3ImagesUrl,
+    endpoint: S3_IMAGES_BUCKET_URL,
     s3BucketEndpoint: true,
     accessKeyId: S3_ACCESS_KEY_ID,
     secretAccessKey: S3_SECRET_ACCESS_KEY,
