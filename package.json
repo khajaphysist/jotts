@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "next ./src",
+    "dev": "ts-node -O '{\"module\": \"commonjs\"}' src/server/server.ts",
     "build": "next build ./src",
     "start": "next start ./src",
     "codegen": "apollo client:codegen --target typescript --outputFlat src/common/apollo-types"
@@ -85,6 +85,7 @@
     "@types/slug": "^0.9.1",
     "@types/styled-jsx": "^2.2.8",
     "@types/uuid": "^3.4.4",
+    "ts-node": "^8.1.0",
     "typescript": "^3.4.5",
     "webpack": "^4.30.0"
   }
