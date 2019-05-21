@@ -1,13 +1,15 @@
 import * as nodemailer from 'nodemailer';
 
-const resetPasswordUrl = "http://localhost:3000/reset-password"
+import { ADMIN_EMAIL, ADMIN_EMAIL_PASS } from './vars';
+
+const resetPasswordUrl = "https://jotts.io/reset-password"
 
 export async function sendResetPasswordMail(email:string, token:string) {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: process.env.ADMIN_EMAIL,
-            pass: process.env.ADMIN_EMAIL_PASS
+            user: ADMIN_EMAIL,
+            pass: ADMIN_EMAIL_PASS
         }
     });
 
@@ -17,7 +19,7 @@ export async function sendResetPasswordMail(email:string, token:string) {
 
     try {
         const info:{accepted: string[]} = await transporter.sendMail({
-            from: `"jotts.io" <${process.env.ADMIN_EMAIL}>`,
+            from: `"jotts.io" <${ADMIN_EMAIL}>`,
             to: email,
             subject: "Reset Password",
             text,

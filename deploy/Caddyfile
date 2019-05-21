@@ -1,0 +1,5 @@
+jotts.io {
+  gzip
+  proxy /v1/graphql {$GRAPHQL_ENDPOINT}
+  proxy / localhost:3000
+}

@@ -5,13 +5,14 @@ import React from 'react';
 import { Query } from 'react-apollo';
 
 import {
-    Chip, createStyles, Theme, Typography, withStyles, WithStyles, Avatar
+  Avatar, Chip, createStyles, Theme, Typography, withStyles, WithStyles
 } from '@material-ui/core';
 
 import { GetPostSummary, GetPostSummaryVariables } from '../common/apollo-types/GetPostSummary';
 import JottsEditor, { deserializeValue } from '../common/components/JottsEditor';
 import Layout from '../common/components/Layout';
-import { s3ImagesUrl } from '../common/components/Constants';
+import { s3ImagesUrl } from '../common/vars';
+import Head from 'next/head';
 
 const getPostSummary = gql`
 query GetPostSummary($postId: uuid!) {
@@ -97,6 +98,7 @@ class Post extends React.Component<Props> {
                                 const postData = data.jotts_post[0];
                                 return (
                                     <div className={classes.root}>
+                                        <Head><title>{postData.title}</title></Head>
                                         <Typography variant='h3' component="h1" className={classes.title}>{postData.title}</Typography>
                                         <div className={classes.author}>
                                             <Avatar src={`${s3ImagesUrl}/${postData.author.profile_picture}`} className={this.props.classes.profilePicture} />

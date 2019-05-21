@@ -4,19 +4,15 @@ import fetch from 'isomorphic-unfetch';
 import * as Knex from 'knex';
 
 import { GetUser, GetUserVariables } from '../common/apollo-types/GetUser';
+import { GRAPHQL_ENDPOINT, HASURA_ADMIN_SECRET, PG_CONNECTION_STRING } from './vars';
 
 const knex = Knex({
     client: 'pg',
-    connection: {
-        host: '127.0.0.1',
-        user: 'postgres',
-        password: 'postgres',
-        database: 'postgres'
-    }
+    connection: PG_CONNECTION_STRING,
 });
 
 const client = new ApolloClient({
-    uri: 'http://localhost:8080/v1/graphql',
+    uri: GRAPHQL_ENDPOINT,
     fetch: fetch
 });
 
@@ -85,7 +81,7 @@ class User {
                 variables: { id: user.id },
                 context: {
                     headers: {
-                        'x-hasura-admin-secret': 'khaja'
+                        'x-hasura-admin-secret': HASURA_ADMIN_SECRET
                     }
                 }
             });

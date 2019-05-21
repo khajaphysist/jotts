@@ -16,7 +16,7 @@ import {
 } from '../../apollo-types/GetAllUserImages';
 import { CookieUser } from '../../types';
 import { ImageS3 } from '../../utils/agent';
-import { s3ImagesUrl } from '../Constants';
+import { s3ImagesUrl } from '../../vars';
 import { BaseMRSelect } from '../MaterialReactSelect';
 
 const getAllUserImages = gql`

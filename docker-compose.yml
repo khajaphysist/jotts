@@ -39,7 +39,7 @@ services:
     container_name: minio_s3_mock
     image: minio/minio
     ports:
-    - "9001:9000"
+    - "8888:9000"
     volumes:
     - minio:/data
     environment:
