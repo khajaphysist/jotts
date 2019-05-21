@@ -138,7 +138,7 @@ app
             (req, res) => {
                 const user: CookieUser = req.user;
                 const { oldPassword, newPassword } = req.body;
-                if (validatePassword(newPassword)) {
+                if (!validatePassword(newPassword)) {
                     res.status(400).send("Password should have 6 characters minimum")
                 }
                 User.getOne(user.email)

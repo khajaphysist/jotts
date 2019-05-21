@@ -43,7 +43,7 @@ class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
         return (
             <Container>
                 <Head>
-                    <title>Test page</title>
+                    <title>Jotts - Yours Personal Knowledge Database</title>
                 </Head>
                 <ApolloProvider client={this.props.apolloClient}>
                     <JssProvider
