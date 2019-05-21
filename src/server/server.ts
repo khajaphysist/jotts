@@ -11,6 +11,7 @@ import * as passport from 'passport';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import * as localStrategy from 'passport-local';
 import * as uuidv4 from 'uuid/v4';
+import * as helmet from 'helmet';
 
 import { CookieUser } from '../common/types';
 import User from './agent';
@@ -54,6 +55,7 @@ app
     .prepare()
     .then(() => {
         const server = express();
+        server.use(helmet())
         server.use(bodyParser.json());
         server.use(passport.initialize());
         server.use(cookieParser())
