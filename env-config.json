@@ -1,0 +1,12 @@
+{
+    "PRIVATE_KEY": "",
+    "PUBLIC_KEY": "",
+    "S3_IMAGES_BUCKET_URL": "http://127.0.0.1:8888/images",
+    "S3_ACCESS_KEY_ID": "minio",
+    "S3_SECRET_ACCESS_KEY": "minio123",
+    "HASURA_ADMIN_SECRET": "khaja",
+    "GRAPHQL_ENDPOINT": "http://localhost:8080/v1/graphql",
+    "PG_CONNECTION_STRING": "postgresql://postgres:postgres@localhost:5432/postgres",
+    "ADMIN_EMAIL": "",
+    "ADMIN_EMAIL_PASS": ""
+}
