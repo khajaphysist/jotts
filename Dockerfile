@@ -8,6 +8,7 @@ RUN npm run build
 FROM node:alpine as release
 WORKDIR /root/
 COPY --from=builder /usr/src/app/src src
+COPY --from=builder /usr/src/app/node_modules node_modules
 COPY package.json package.json
 ENV NODE_ENV=production
 CMD [ "npm", "run", "start" ]
