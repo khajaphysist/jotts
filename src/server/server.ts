@@ -24,7 +24,7 @@ console.log(`Running in ${process.env.NODE_ENV} mode`)
 
 const s3 = new S3({
     endpoint: S3_IMAGES_BUCKET_URL,
-    s3BucketEndpoint: true,
+    s3BucketEndpoint: S3_ACCESS_KEY_ID === 'minio',
     accessKeyId: S3_ACCESS_KEY_ID,
     secretAccessKey: S3_SECRET_ACCESS_KEY,
     ...(S3_ACCESS_KEY_ID === 'minio' ? { signatureVersion: 'v4' } : {})
@@ -190,7 +190,8 @@ app
                 s3.putObject({
                     Body: buffer,
                     Key: imageName,
-                    Bucket: 'images',
+                    Bucket: 'jotts-images',
+                    ACL: 'public-read',
                     Tagging: `name=${name}`
                 }, (err) => {
                     if (err) {
@@ -210,7 +211,7 @@ app
                     return res.status(400).send("Invalid Image id")
                 }
                 s3.deleteObject({
-                    Bucket: 'images',
+                    Bucket: 'jotts-images',
                     Key: id,
                 }, (err) => {
                     if (err) {
