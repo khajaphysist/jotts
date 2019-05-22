@@ -10,7 +10,7 @@ WORKDIR /root/
 COPY --from=builder /usr/src/app/src src
 COPY --from=builder /usr/src/app/node_modules node_modules
 COPY package.json package.json
-COPY env-config.json env-config.json
+COPY vars.env vars.env
 ENV NODE_ENV=production
 CMD [ "npm", "run", "dev" ]
 EXPOSE 3000
