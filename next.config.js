@@ -1,6 +1,5 @@
-import * as dotenv from 'dotenv';
-import * as dotenvExpand from 'dotenv-expand';
-
+const dotenv = require('dotenv');
+const dotenvExpand = require('dotenv-expand');
 dotenvExpand(dotenv.config())
 
 const withTypescript = require('@zeit/next-typescript')
