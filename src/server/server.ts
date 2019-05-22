@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as crypto from 'crypto';
 import * as express from 'express';
+import * as helmet from 'helmet';
 import * as jwt from 'jsonwebtoken';
 import { extension } from 'mime-types';
 import * as multer from 'multer';
@@ -11,20 +12,19 @@ import * as passport from 'passport';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import * as localStrategy from 'passport-local';
 import * as uuidv4 from 'uuid/v4';
-import * as helmet from 'helmet';
 
 import { CookieUser } from '../common/types';
 import User from './agent';
 import { sendResetPasswordMail } from './reset-password';
 import {
-  PRIVATE_KEY, PUBLIC_KEY, S3_ACCESS_KEY_ID, S3_IMAGES_BUCKET_URL, S3_SECRET_ACCESS_KEY
+  PRIVATE_KEY, PUBLIC_KEY, S3_ACCESS_KEY_ID, S3_BUCKENT_NAME, S3_ENDPOINT, S3_SECRET_ACCESS_KEY
 } from './vars';
 
 const dev = process.env.NODE_ENV !== 'production';
 console.log(`Running in ${process.env.NODE_ENV} mode`)
 
 const s3 = new S3({
-    endpoint: S3_IMAGES_BUCKET_URL,
+    endpoint: S3_ENDPOINT,
     s3BucketEndpoint: S3_ACCESS_KEY_ID === 'minio',
     accessKeyId: S3_ACCESS_KEY_ID,
     secretAccessKey: S3_SECRET_ACCESS_KEY,
@@ -192,7 +192,7 @@ app
                 s3.putObject({
                     Body: buffer,
                     Key: imageName,
-                    Bucket: 'jotts-images',
+                    Bucket: S3_BUCKENT_NAME,
                     ACL: 'public-read',
                     Tagging: `name=${name}`
                 }, (err) => {
@@ -213,7 +213,7 @@ app
                     return res.status(400).send("Invalid Image id")
                 }
                 s3.deleteObject({
-                    Bucket: 'jotts-images',
+                    Bucket: S3_BUCKENT_NAME,
                     Key: id,
                 }, (err) => {
                     if (err) {

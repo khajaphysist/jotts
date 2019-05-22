@@ -16,7 +16,7 @@ import {
 } from '../../apollo-types/GetAllUserImages';
 import { CookieUser } from '../../types';
 import { ImageS3 } from '../../utils/agent';
-import { s3ImagesUrl } from '../../vars';
+import { s3ImagePrefix } from '../../vars';
 import { BaseMRSelect } from '../MaterialReactSelect';
 
 const getAllUserImages = gql`
@@ -107,7 +107,7 @@ class SelectImage extends React.Component<Props> {
                                             {
                                                 img ?
                                                     (
-                                                        <img src={`${s3ImagesUrl}/${img.id}`} style={{ width: 64, height: 64 }} />
+                                                        <img src={`${s3ImagePrefix}/${img.id}`} style={{ width: 64, height: 64 }} />
                                                     ) : null
                                             }
                                             <Typography className={props.selectProps.classes.singleValue} {...props.innerProps} style={{ margin: 4 }}>
@@ -131,7 +131,7 @@ class SelectImage extends React.Component<Props> {
                                                 display: 'flex'
                                             }}
                                             {...props.innerProps}>
-                                            <img src={`${s3ImagesUrl}/${img.id}`} style={{ width: 64, height: 64 }} />
+                                            <img src={`${s3ImagePrefix}/${img.id}`} style={{ width: 64, height: 64 }} />
                                             <div style={{ flex: 1, margin: 4 }}>
                                                 {props.children}
                                             </div>

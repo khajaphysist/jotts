@@ -1,15 +1,19 @@
 import { isKeyHotkey } from 'is-hotkey';
-import { languages as prismLanguages } from '../../../lib/prism';
 import { Editor, Value } from 'slate';
 import { getEventTransfer, Plugin } from 'slate-react';
 
-import { Divider, IconButton, Paper, Theme, Typography, Tooltip, TextField } from '@material-ui/core';
 import {
-    Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
-    FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Image, Title as TitleIcon, Highlight, Link
+  Divider, IconButton, Paper, TextField, Theme, Tooltip, Typography
+} from '@material-ui/core';
+import {
+  Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
+  FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Highlight, Image, Link,
+  Title as TitleIcon
 } from '@material-ui/icons';
-import EditImage from './EditImage';
+
+import { languages as prismLanguages } from '../../../lib/prism';
 import CustomToolTip from '../CustomToolTip';
+import EditImage from './EditImage';
 
 const getMarkToggleFromHotKey = (event: any): MarkType | undefined => {
     switch (true) {
@@ -110,6 +114,7 @@ const getFormatNodeBtn = (type: NodeType, editor: Editor) => {
             <IconButton onClick={e => {
                 e.preventDefault();
                 editor.setBlocks(hasBlock(type, value) ? DEFAULT_NODE : type)
+                // hasBlock(type, value)? editor.unwrapBlock(type):editor.wrapBlock(type)
                 editor.focus()
             }}>
                 {icon}
@@ -249,7 +254,7 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                                     )
                             }
                             <pre className={'language-' + language}>
-                                <code className={'language-' + language} {...attributes}>
+                                <code className={'language-' + language} {...attributes} style={{overflow: 'auto'}}>
                                     {editor.readOnly?node.text:children}
                                 </code>
                             </pre>

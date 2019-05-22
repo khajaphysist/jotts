@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import { NextContext } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
 import { Query } from 'react-apollo';
@@ -11,8 +12,7 @@ import {
 import { GetPostSummary, GetPostSummaryVariables } from '../common/apollo-types/GetPostSummary';
 import JottsEditor, { deserializeValue } from '../common/components/JottsEditor';
 import Layout from '../common/components/Layout';
-import { s3ImagesUrl } from '../common/vars';
-import Head from 'next/head';
+import { s3ImagePrefix } from '../common/vars';
 
 const getPostSummary = gql`
 query GetPostSummary($postId: uuid!) {
@@ -101,7 +101,7 @@ class Post extends React.Component<Props> {
                                         <Head><title>{postData.title}</title></Head>
                                         <Typography variant='h3' component="h1" className={classes.title}>{postData.title}</Typography>
                                         <div className={classes.author}>
-                                            <Avatar src={`${s3ImagesUrl}/${postData.author.profile_picture}`} className={this.props.classes.profilePicture} />
+                                            <Avatar src={`${s3ImagePrefix}/${postData.author.profile_picture}`} className={this.props.classes.profilePicture} />
                                             <div className={this.props.classes.authorName}>
                                                 <Typography color="secondary" >
                                                     {postData.author.handle}

@@ -7,7 +7,7 @@ import {
 import { AddPhotoAlternate } from '@material-ui/icons';
 
 import { loggedInUser } from '../../utils/loginStateProvider';
-import { s3ImagesUrl } from '../../vars';
+import { s3ImagePrefix } from '../../vars';
 import SelectImage from '../apollo/SelectImage';
 
 const styles = createStyles({
@@ -33,7 +33,7 @@ class EditImage extends React.Component<Props, State> {
         const { editor, node, classes } = this.props
         const url: string | null | undefined = node.data.get('url');
         const imgId: string | null | undefined = node.data.get('imgId')
-        const imgSrc = imgId ? `${s3ImagesUrl}/${imgId}` : url ? url : ''
+        const imgSrc = imgId ? `${s3ImagePrefix}/${imgId}` : url ? url : ''
         const user = loggedInUser();
         return (
             <div

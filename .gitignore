@@ -6,3 +6,5 @@ node_modules/
 
 deploy/keys
 deploy/ssh
+
+vars.env

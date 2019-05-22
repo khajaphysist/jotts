@@ -1,5 +1,5 @@
 jotts.io {
   gzip
-  proxy /v1/graphql {$GRAPHQL_ENDPOINT}
+  proxy /v1/graphql localhost:8080
   proxy / localhost:3000
 }

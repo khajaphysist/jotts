@@ -14,8 +14,17 @@ import { loggedInUser } from '../common/utils/loginStateProvider';
 
 const styles = (theme: Theme) => createStyles({
     root: {
+        display: 'flex',
+        maxWidth: 1200
+    },
+    navBar: {
+        width: 300,
+        height: 800,
+        overflowY: 'auto'
+    },
+    editor: {
         flex: 1,
-        display: 'flex'
+        maxWidth: 900
     },
     addButton: {
         position: 'absolute',
@@ -54,22 +63,22 @@ class DashBoard extends React.Component<Props> {
         return (
             <Layout>
                 <div className={classes.root}>
-                    <List component="nav" style={{ width: 300, height: 800, overflowY: 'auto' }} disablePadding>
+                    <List component="nav" className={classes.navBar} disablePadding>
                         <Typography variant='h5' color="textSecondary" style={{ padding: 16, paddingTop: 28, paddingBottom: 4 }}>Folders</Typography>
                         <Divider />
-                        <FolderList 
-                        folderId={null} 
-                        postId={postId} 
-                        user={user} 
-                        client={client}
-                        padding={0} 
-                        selectedFolders={folderId ? folderId.split(',') : []}
+                        <FolderList
+                            folderId={null}
+                            postId={postId}
+                            user={user}
+                            client={client}
+                            padding={0}
+                            selectedFolders={folderId ? folderId.split(',') : []}
                         />
                     </List>
                     {
                         postId ?
                             (
-                                <div style={{ flex: 1 }}>
+                                <div className={classes.editor}>
                                     <EditPost postId={postId} />
                                 </div>
                             ) :
