@@ -11,6 +11,7 @@ COPY --from=builder /usr/src/app/src src
 COPY --from=builder /usr/src/app/node_modules node_modules
 COPY package.json package.json
 COPY vars.env vars.env
+COPY next.config.js next.config.js
 ENV NODE_ENV=production
 CMD [ "npm", "run", "dev" ]
 EXPOSE 3000
