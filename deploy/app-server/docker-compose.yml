@@ -1,0 +1,9 @@
+version: '3.6'
+services:
+  app:
+    image: app:latest
+    restart: unless-stopped
+    environment:
+      APP_ENV_VARS:
+    ports:
+    - "3000:3000"

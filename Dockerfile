@@ -1,17 +1,10 @@
-FROM node:alpine as builder
-WORKDIR /usr/src/app
+FROM node:alpine
+WORKDIR /app
 COPY package.json .
 RUN npm install
 COPY . ./
 RUN npm run build
-
-FROM node:alpine as release
-WORKDIR /root/
-COPY --from=builder /usr/src/app/src src
-COPY --from=builder /usr/src/app/node_modules node_modules
-COPY package.json package.json
-COPY vars.env vars.env
-COPY next.config.js next.config.js
 ENV NODE_ENV=production
+ENV APP_ENV_VARS="{}"
 CMD [ "npm", "run", "dev" ]
 EXPOSE 3000
