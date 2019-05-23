@@ -6,7 +6,7 @@ import { ApolloConsumer } from 'react-apollo';
 import slugify from 'slug';
 
 import {
-  createStyles, TextField, Theme, withStyles, WithStyles
+  createStyles, TextField, Theme, withStyles, WithStyles, Typography
 } from '@material-ui/core';
 
 import {
@@ -178,12 +178,7 @@ class EditPostComponent extends React.Component<Props, State> {
                             }}
                                 className={classes.content}
                             />
-                            {
-                                this.state.saving?
-                                (<p>saving...</p>)
-                                :
-                                null
-                            }
+                            <Typography variant="caption" color="textSecondary">{this.state.saving?"saving...":""}</Typography>
                         </div>
                     )
                 }}
@@ -278,7 +273,7 @@ class EditPostComponent extends React.Component<Props, State> {
             });
             this.setState({ ...this.state, saving: false })
         }
-    }, 10000)
+    }, 2000)
 }
 
 export default withStyles(styles)(EditPostComponent);
