@@ -278,7 +278,7 @@ class EditPostComponent extends React.Component<Props, State> {
             });
             this.setState({ ...this.state, saving: false })
         }
-    }, 1000)
+    }, 10000)
 }
 
 export default withStyles(styles)(EditPostComponent);
