@@ -1,0 +1,21 @@
+version: 2.0
+jobs:
+  deploy:
+    branches:
+      only:
+        - master
+    docker:
+      - image: alpine:latest
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "64:b0:b7:08:30:49:74:ca:0e:29:8f:da:92:98:8c:73"
+      - run:
+          name: Create config json file
+          command: |
+            echo $APP_ENV_VARS > env-config.json;
+            scp env-config.json ubuntu@$APP_SERVER_IP:~/
+            scp deploy/app-server/docker-compose.yml ubuntu@$APP_SERVER_IP:~/
+            ssh -i do_ssh_key ubuntu@$APP_SERVER_IP 'docker container ls -q | xargs docker stop; docker container ls -a -q | xargs docker rm; docker images -q | xargs docker rmi; export APP_ENV_VARS=`cat env-config.json`; docker-compose up -d'
+
