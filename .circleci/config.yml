@@ -2,7 +2,7 @@ version: 2.0
 jobs:
   deploy:
     docker:
-      - image: alpine:latest
+      - image: ubuntu:latest
     steps:
       - checkout
       - add_ssh_keys:
