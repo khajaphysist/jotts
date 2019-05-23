@@ -8,7 +8,7 @@ import {
 import {
   Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
   FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Highlight, Image, Link,
-  Title as TitleIcon
+  Title as TitleIcon, List
 } from '@material-ui/icons';
 
 import { languages as prismLanguages } from '../../../lib/prism';
