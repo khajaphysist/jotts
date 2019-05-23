@@ -12,6 +12,7 @@ jobs:
           name: Create config json file
           command: |
             echo $APP_ENV_VARS > env-config.json;
+            sudo apt-get install openssh-client;
             scp env-config.json ubuntu@$APP_SERVER_IP:~/
             scp deploy/app-server/docker-compose.yml ubuntu@$APP_SERVER_IP:~/
             ssh -i do_ssh_key ubuntu@$APP_SERVER_IP 'docker container ls -q | xargs docker stop; docker container ls -a -q | xargs docker rm; docker images -q | xargs docker rmi; export APP_ENV_VARS=`cat env-config.json`; docker-compose up -d'
