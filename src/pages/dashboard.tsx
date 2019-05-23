@@ -15,16 +15,18 @@ import { loggedInUser } from '../common/utils/loginStateProvider';
 const styles = (theme: Theme) => createStyles({
     root: {
         display: 'flex',
-        maxWidth: 1200
+        width: "90%"
     },
     navBar: {
-        width: 300,
+        minWidth: 300,
+        maxWidth: 300,
         height: 800,
         overflowY: 'auto'
     },
     editor: {
         flex: 1,
-        maxWidth: 900
+        minWidth: 600,
+        maxWidth: "70%"
     },
     addButton: {
         position: 'absolute',

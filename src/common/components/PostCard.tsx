@@ -2,19 +2,18 @@ import Link from 'next/link';
 import React from 'react';
 
 import {
-    ButtonBase, Card, CardContent, createStyles, Theme, Typography,
-    withStyles, WithStyles
+  ButtonBase, Card, CardContent, createStyles, Theme, Typography, withStyles, WithStyles
 } from '@material-ui/core';
 
 const styles = (theme: Theme) => createStyles({
     item: {
-        width: 500,
-        height: 350,
+        width: 400,
+        height: 300,
         padding: theme.spacing.unit,
         margin: theme.spacing.unit,
     },
     itemHeader: {
-        height: 108,
+        height: 72,
         overflow: "hidden",
         padding: `${theme.spacing.unit}px ${2 * theme.spacing.unit}px`,
     },
@@ -35,15 +34,16 @@ const styles = (theme: Theme) => createStyles({
         marginLeft: theme.spacing.unit
     },
     itemsTags: {
-        height: 56,
-        display:"flex",
+        height: 32,
+        display: "flex",
         flexWrap: "wrap",
-        alignItems:'flex-start',
-        padding: `${theme.spacing.unit}px ${2 * theme.spacing.unit}px`,
+        alignItems: 'flex-start',
+        padding: `0px ${2 * theme.spacing.unit}px`,
         paddingLeft: theme.spacing.unit
     },
-    tag:{
-        marginLeft: theme.spacing.unit
+    tag: {
+        marginLeft: theme.spacing.unit,
+        textDecoration: 'none'
     }
 })
 
