@@ -7,6 +7,7 @@ import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import CodeHighlighter from './slate-plugins/CodeHighlighter';
 import RichTextEditor from './slate-plugins/RichTextEditor';
+import PasteHtml from './slate-plugins/PasteHtml';
 
 const styles = () => createStyles({
 });
@@ -23,7 +24,11 @@ class JottsEditor extends React.Component<Props> {
     private plugins: Plugin[]
     constructor(props: Props) {
         super(props)
-        this.plugins = [RichTextEditor({ theme: this.props.theme }), CodeHighlighter({ nodeType: 'code-block' })];
+        this.plugins = [
+            RichTextEditor({ theme: this.props.theme }),
+            CodeHighlighter({ nodeType: 'code-block' }),
+            PasteHtml(),
+        ];
         // Prism.hooks.add('complete', () => this.forceUpdate());
     }
 

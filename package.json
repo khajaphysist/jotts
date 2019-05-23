@@ -13,6 +13,7 @@
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
     "@types/passport": "^1.0.0",
+    "@types/slate-html-serializer": "^0.6.3",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-typescript": "^1.1.1",
     "apollo-boost": "^0.3.1",
@@ -51,6 +52,7 @@
     "react-jss": "^8.6.1",
     "react-select": "^2.4.3",
     "slate": "^0.45.1",
+    "slate-html-serializer": "^0.8.5",
     "slate-react": "^0.21.22",
     "slug": "^1.1.0",
     "uuid": "^3.3.2"
