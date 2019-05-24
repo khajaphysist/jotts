@@ -74,7 +74,7 @@ const getInitialProps: GetInitialProps<InitialProps, NextContext<{ page: string,
   const { page, size, tags } = context.query
   return {
     page: page ? parseInt(page, 10) : 1,
-    size: size ? parseInt(s, 10) : defaultPageSize,
+    size: size ? parseInt(size, 10) : defaultPageSize,
     tags: tags ? tags.split(",") : []
   }
 }

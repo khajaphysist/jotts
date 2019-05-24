@@ -44,14 +44,9 @@ interface InitialProps {
     folderId: string | undefined
 }
 
-const getQueryParm = (query: string | string[] | undefined) =>
-    query instanceof Array ? (query.length > 0 ? query[0] : undefined) : query;
-
-const getInitialProps: GetInitialProps<InitialProps, NextContext> = context => {
+const getInitialProps: GetInitialProps<InitialProps, NextContext<{ post_id: string, folder_id: string }>> = context => {
     const { post_id, folder_id } = context.query;
-    const postId = getQueryParm(post_id);
-    const folderId = getQueryParm(folder_id);
-    return { postId, folderId }
+    return { postId: post_id, folderId: folder_id }
 }
 
 class DashBoard extends React.Component<Props> {

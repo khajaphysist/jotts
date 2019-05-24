@@ -1,4 +1,4 @@
-import { String } from 'aws-sdk/clients/configservice';
+import { GetInitialProps, NextContext } from 'next';
 import Link from 'next/link';
 import Router from 'next/router';
 import React from 'react';
@@ -52,10 +52,10 @@ interface InitialProps {
 
 type Props = StyleProps & InitialProps;
 
-const getInitialProps: GetInitialProps<InitialProps, NextContext<{ action: string }>> = async (context) => {
+const getInitialProps: GetInitialProps<InitialProps, NextContext<{ action: string }>> = (context) => {
     const { action } = context.query
     return {
-        action: action ? action : 'login'
+        action: action === 'signup' ? 'signup' as const : 'login' as const
     }
 }
 
