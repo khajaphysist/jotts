@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 
 import {
-  AppBar, Button, createStyles, NoSsr, Toolbar, WithStyles, withStyles
+  AppBar, Button, createStyles, NoSsr, Toolbar, Typography, WithStyles, withStyles
 } from '@material-ui/core';
 
 import { CookieUser } from '../types';
@@ -35,9 +35,11 @@ class Header extends React.Component<StyleProps> {
     return (
       <div>
         <AppBar position="static">
-          <Toolbar >
+          <Toolbar>
             <Link href="/" passHref>
-              <Button>Home</Button>
+              <Typography variant="h6" color="inherit" component='a' style={{ textDecoration: 'none' }}>
+                Jotts.io
+              </Typography>
             </Link>
             <NoSsr>
               {
@@ -62,9 +64,14 @@ class Header extends React.Component<StyleProps> {
                     >Logout</Button>
                   </div>
                   :
-                  <Link href="/login" passHref>
-                    <Button className={this.props.classes.loginButton}>Login</Button>
-                  </Link>
+                  <div className={this.props.classes.loginButton}>
+                    <Link href="/login?action=signup" passHref>
+                      <Button color="inherit">Sign Up</Button>
+                    </Link>
+                    <Link href="/login" passHref>
+                      <Button color="inherit">Login</Button>
+                    </Link>
+                  </div>
               }
             </NoSsr>
           </Toolbar>

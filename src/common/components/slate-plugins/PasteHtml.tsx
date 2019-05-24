@@ -35,7 +35,7 @@ const RULES: Rule[] = [
         // Special case for code blocks, which need to grab the nested childNodes.
         deserialize(el, next) {
             if (el.tagName.toLowerCase() === 'pre') {
-                const code: ChildNode & Element = el.childNodes[0];
+                const code = el.childNodes[0] as ChildNode & Element;
                 let language = '';
 
                 el.classList.forEach(className => {
@@ -57,7 +57,7 @@ const RULES: Rule[] = [
                     object: 'block',
                     type: 'code-block',
                     nodes: next(childNodes),
-                    data:{
+                    data: {
                         language
                     }
                 }
@@ -127,7 +127,7 @@ const serializer = new Html({ rules: RULES })
 export default (): Plugin => {
     return {
         onPaste: (event, editor, next) => {
-            const transfer = getEventTransfer(event)
+            const transfer: any = getEventTransfer(event)
             if (transfer.type !== 'html') return next()
             const { document } = serializer.deserialize(transfer.html)
             editor.insertFragment(document)

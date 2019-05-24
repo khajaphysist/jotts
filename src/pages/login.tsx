@@ -1,14 +1,16 @@
+import { String } from 'aws-sdk/clients/configservice';
+import Link from 'next/link';
+import Router from 'next/router';
 import React from 'react';
 
 import {
-    AppBar, Avatar, Button, createStyles, FormControl, Input, InputLabel, Paper, Tab, Tabs, Theme,
-    Typography, WithStyles, withStyles
+  AppBar, Avatar, Button, createStyles, FormControl, Input, InputLabel, Paper, Tab, Tabs, Theme,
+  Typography, WithStyles, withStyles
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import Layout from '../common/components/Layout';
 import { User } from '../common/utils/agent';
-import Link from 'next/link';
 
 const styles = (theme: Theme) => createStyles({
     main: {
@@ -44,10 +46,20 @@ const styles = (theme: Theme) => createStyles({
 
 interface StyleProps extends WithStyles<typeof styles> { };
 
-type Props = StyleProps;
+interface InitialProps {
+    action: 'login' | 'signup'
+}
+
+type Props = StyleProps & InitialProps;
+
+const getInitialProps: GetInitialProps<InitialProps, NextContext<{ action: string }>> = async (context) => {
+    const { action } = context.query
+    return {
+        action: action ? action : 'login'
+    }
+}
 
 interface State {
-    tab: 'login' | 'signup';
     email: string;
     password: string;
     confirm_password?: string;
@@ -55,21 +67,23 @@ interface State {
 }
 
 class Login extends React.Component<Props, State> {
+    public static getInitialProps = getInitialProps;
     constructor(props: Props) {
         super(props);
-        this.state = { tab: 'login', email: '', password: '' }
+        this.state = { email: '', password: '' }
     }
     render() {
+        const { action } = this.props
         return (
             <Layout>
                 <main className={this.props.classes.main}>
                     <AppBar position="static">
-                        <Tabs value={this.state.tab} onChange={(_e, v) => { this.setState({ ...this.state, tab: v }) }} variant="fullWidth">
+                        <Tabs value={action} onChange={(_e, v) => { Router.replace(`/login?action=${v}`) }} variant="fullWidth">
                             <Tab label="Login" value='login' />
                             <Tab label="Sign Up" value='signup' />
                         </Tabs>
                     </AppBar>
-                    {this.state.tab === 'login' &&
+                    {action === 'login' &&
                         <Paper className={this.props.classes.paper}>
                             <Avatar className={this.props.classes.avatar}>
                                 <LockOutlinedIcon />
@@ -116,7 +130,7 @@ class Login extends React.Component<Props, State> {
                 </Button>
                             </form>
                         </Paper>}
-                    {this.state.tab === 'signup' &&
+                    {action === 'signup' &&
                         <Paper className={this.props.classes.paper}>
                             <Avatar className={this.props.classes.avatar}>
                                 <LockOutlinedIcon />
@@ -158,7 +172,7 @@ class Login extends React.Component<Props, State> {
                                                 .then(res => {
                                                     if (res.status === 200) {
                                                         window.alert("Registered successfully. Continue to login")
-                                                        this.setState({ ...this.state, tab: 'login' })
+                                                        Router.replace(`/login?action=login`)
                                                     }
                                                 })
                                                 .catch(() => window.alert("Some error occurred"));
