@@ -37,8 +37,8 @@ query GetPostSummary($postId: uuid!) {
 
 const styles = (theme: Theme) => createStyles({
     root: {
-        minWidth: 900,
-        maxWidth: "70%",
+        minWidth: 600,
+        maxWidth: 900,
         display: "flex",
         flexDirection: "column",
     },
