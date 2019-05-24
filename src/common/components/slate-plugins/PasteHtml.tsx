@@ -1,7 +1,7 @@
-import { Plugin, getEventTransfer } from "slate-react";
-import Html, { Rule } from "slate-html-serializer";
+import Html, { Rule } from 'slate-html-serializer';
+import { getEventTransfer, Plugin } from 'slate-react';
 
-const BLOCK_TAGS:{[key:string]:string} = {
+const BLOCK_TAGS: { [key: string]: string } = {
     p: 'paragraph',
     li: 'list-item',
     ul: 'unordered-list',
@@ -16,20 +16,38 @@ const BLOCK_TAGS:{[key:string]:string} = {
 }
 
 
-const MARK_TAGS:{[key:string]:string} = {
+const MARK_TAGS: { [key: string]: string } = {
     strong: 'bold',
     em: 'italic',
     u: 'underline',
     code: 'code',
 }
 
-const RULES:Rule[] = [
+const getLanguage = (className: string) => {
+    if (className.startsWith('language-') || className.startsWith('lang-')) {
+        return className.startsWith('language-') ? className.substr(9) : className.substr(5);
+    }
+    return ''
+}
+
+const RULES: Rule[] = [
     {
         // Special case for code blocks, which need to grab the nested childNodes.
         deserialize(el, next) {
             if (el.tagName.toLowerCase() === 'pre') {
-                const code = el.childNodes[0];
-                console.log(code)
+                const code: ChildNode & Element = el.childNodes[0];
+                let language = '';
+
+                el.classList.forEach(className => {
+                    language = getLanguage(className)
+                });
+
+                if (code && code.classList) {
+                    code.classList.forEach((className: string) => {
+                        language = getLanguage(className)
+                    });
+                }
+
                 const childNodes =
                     code && code.tagName.toLowerCase() === 'code'
                         ? code.childNodes
@@ -39,6 +57,9 @@ const RULES:Rule[] = [
                     object: 'block',
                     type: 'code-block',
                     nodes: next(childNodes),
+                    data:{
+                        language
+                    }
                 }
             }
         },
@@ -101,7 +122,7 @@ const RULES:Rule[] = [
     },
 ]
 
-const serializer = new Html({ rules: RULES})
+const serializer = new Html({ rules: RULES })
 
 export default (): Plugin => {
     return {
