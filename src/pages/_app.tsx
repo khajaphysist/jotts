@@ -23,7 +23,7 @@ class MyApp extends App<{ apolloClient: ApolloClient<NormalizedCacheObject> }> {
     static async getInitialProps({ Component, ctx }: NextAppContext) {
         const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
 
-        if (["/login", "/", "/post", "/forgot-password", "/reset-password"].includes(ctx.pathname)) {
+        if (["/login", "/", "/post", "/forgot-password", "/reset-password", "/explore", "/try", "/about"].includes(ctx.pathname)) {
             return { pageProps };
         } else if (process.browser && !isLoggedIn()) {
             redirectTo('/login', { res: ctx.res, status: 301 })

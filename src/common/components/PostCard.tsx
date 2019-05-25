@@ -7,8 +7,8 @@ import {
 
 const styles = (theme: Theme) => createStyles({
     item: {
-        width: 400,
-        height: 300,
+        width: 360,
+        height: 270,
         padding: theme.spacing.unit,
         margin: theme.spacing.unit,
     },
@@ -18,7 +18,7 @@ const styles = (theme: Theme) => createStyles({
         padding: `${theme.spacing.unit}px ${2 * theme.spacing.unit}px`,
     },
     itemContent: {
-        height: 156,
+        height: 132,
         display: "flex",
         flexDirection: "column",
         padding: `${theme.spacing.unit}px ${2 * theme.spacing.unit}px`,
@@ -34,12 +34,13 @@ const styles = (theme: Theme) => createStyles({
         marginLeft: theme.spacing.unit
     },
     itemsTags: {
-        height: 32,
+        height: 20,
         display: "flex",
         flexWrap: "wrap",
         alignItems: 'flex-start',
         padding: `0px ${2 * theme.spacing.unit}px`,
-        paddingLeft: theme.spacing.unit
+        paddingLeft: theme.spacing.unit,
+        overflow: 'hidden'
     },
     tag: {
         marginLeft: theme.spacing.unit,
