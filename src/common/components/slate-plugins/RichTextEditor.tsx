@@ -3,12 +3,12 @@ import { Editor, Value } from 'slate';
 import { getEventTransfer, Plugin } from 'slate-react';
 
 import {
-  Divider, IconButton, Paper, TextField, Theme, Tooltip, Typography
+    Divider, IconButton, Paper, TextField, Theme, Tooltip, Typography
 } from '@material-ui/core';
 import {
-  Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
-  FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Highlight, Image, Link,
-  Title as TitleIcon, List
+    Code as CodeIcon, Dvr as DvrIcon, FormatBold as FormatBoldIcon, FormatItalic as FormatItalicIcon,
+    FormatQuote as FormatQuoteIcon, FormatUnderlined as FormatUnderlineIcon, Highlight, Image, Link,
+    Title as TitleIcon, List
 } from '@material-ui/icons';
 
 import { languages as prismLanguages } from '../../../lib/prism';
@@ -146,7 +146,14 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                                     >
                                         <IconButton onClick={e => {
                                             e.preventDefault();
-                                            hasInline('link', editor.value) ? editor.unwrapInline('link') : editor.wrapInline('link')
+                                            hasInline('link', editor.value) ?
+                                                editor.unwrapInline('link') :
+                                                editor.wrapInline({
+                                                    type: 'link',
+                                                    data: {
+                                                        href: 'https://'
+                                                    }
+                                                })
                                             editor.focus()
                                         }}>
                                             <Link color={getInlineBtnColor('link', editor.value)} />
@@ -254,8 +261,8 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                                     )
                             }
                             <pre className={'language-' + language}>
-                                <code className={'language-' + language} {...attributes} style={{overflow: 'auto'}}>
-                                    {editor.readOnly?node.text:children}
+                                <code className={'language-' + language} {...attributes} style={{ overflow: 'auto' }}>
+                                    {editor.readOnly ? node.text : children}
                                 </code>
                             </pre>
                         </div>
@@ -267,7 +274,12 @@ export default ({ theme }: { theme: Theme }): Plugin => {
                         }}>
                             <EditImage editor={editor} node={node} />
                             <Typography variant="subtitle2" {...attributes} align="center" color="textSecondary">
-                                {node.text.length>0?'':'Caption...'}{children}
+                                {node.text.length > 0 ? null : (
+                                    <span contentEditable={false}>
+                                        Caption...
+                                    </span>
+                                )}
+                                {children}
                             </Typography>
                         </div>
                     )

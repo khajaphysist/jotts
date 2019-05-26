@@ -5,7 +5,7 @@ import Router from 'next/router';
 import React from 'react';
 import { Query } from 'react-apollo';
 
-import { createStyles, NoSsr, WithStyles, withStyles, Theme } from '@material-ui/core';
+import { createStyles, NoSsr, Theme, WithStyles, withStyles } from '@material-ui/core';
 
 import {
   GetPostsWithTags, GetPostsWithTagsVariables
@@ -70,17 +70,12 @@ type Props = StyleProps & InitialProps
 
 const defaultPageSize = 20;
 
-const getInitialProps: GetInitialProps<InitialProps, NextContext> = async (context) => {
-  const p = context.query['page'];
-  const s = context.query['size'];
-  const t = context.query['tags'];
-  const page = p && !(p instanceof Array) ? parseInt(p, 10) : 1;
-  const size = s && !(s instanceof Array) ? parseInt(s, 10) : defaultPageSize;
-  const tags = t && !(t instanceof Array) ? t.split(",") : []
+const getInitialProps: GetInitialProps<InitialProps, NextContext<{ page: string, size: string, tags: string }>> = async (context) => {
+  const { page, size, tags } = context.query
   return {
-    page,
-    size,
-    tags
+    page: page ? parseInt(page, 10) : 1,
+    size: size ? parseInt(size, 10) : defaultPageSize,
+    tags: tags ? tags.split(",") : []
   }
 }
 

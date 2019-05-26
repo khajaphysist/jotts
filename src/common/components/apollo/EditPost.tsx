@@ -178,7 +178,7 @@ class EditPostComponent extends React.Component<Props, State> {
                             }}
                                 className={classes.content}
                             />
-                            <Typography variant="caption" color="textSecondary">{this.state.saving?"saving...":""}</Typography>
+                            <Typography variant="caption" color="textSecondary">{this.state.saving?"saving...":"saved"}</Typography>
                         </div>
                     )
                 }}

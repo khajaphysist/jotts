@@ -6,13 +6,14 @@ import React from 'react';
 import { Query } from 'react-apollo';
 
 import {
-  Avatar, Chip, createStyles, Theme, Typography, withStyles, WithStyles
+    Avatar, Chip, createStyles, Theme, Typography, withStyles, WithStyles
 } from '@material-ui/core';
 
 import { GetPostSummary, GetPostSummaryVariables } from '../common/apollo-types/GetPostSummary';
 import JottsEditor, { deserializeValue } from '../common/components/JottsEditor';
 import Layout from '../common/components/Layout';
 import { s3ImagePrefix } from '../common/vars';
+import { deepOrange } from '@material-ui/core/colors';
 
 const getPostSummary = gql`
 query GetPostSummary($postId: uuid!) {
@@ -37,8 +38,8 @@ query GetPostSummary($postId: uuid!) {
 
 const styles = (theme: Theme) => createStyles({
     root: {
-        minWidth: 900,
-        maxWidth: "70%",
+        minWidth: 600,
+        maxWidth: 900,
         display: "flex",
         flexDirection: "column",
     },
@@ -51,11 +52,11 @@ const styles = (theme: Theme) => createStyles({
         alignItems: 'center',
         margin: `${theme.spacing.unit}px 0px`
     },
-    authorName:{
+    authorName: {
         marginLeft: theme.spacing.unit
     },
-    profilePicture:{
-        
+    profilePicture: {
+
     },
     content: {
     },
@@ -101,7 +102,17 @@ class Post extends React.Component<Props> {
                                         <Head><title>{postData.title}</title></Head>
                                         <Typography variant='h3' component="h1" className={classes.title}>{postData.title}</Typography>
                                         <div className={classes.author}>
-                                            <Avatar src={`${s3ImagePrefix}/${postData.author.profile_picture}`} className={this.props.classes.profilePicture} />
+                                            {
+                                                postData.author.profile_picture ?
+                                                    (
+                                                        <Avatar src={s3ImagePrefix + "/" + postData.author.profile_picture} />
+                                                    ) :
+                                                    (
+                                                        <Avatar style={{ backgroundColor: deepOrange[500] }}>
+                                                            {postData.author.handle.charAt(0).toUpperCase()}
+                                                        </Avatar>
+                                                    )
+                                            }
                                             <div className={this.props.classes.authorName}>
                                                 <Typography color="secondary" >
                                                     {postData.author.handle}

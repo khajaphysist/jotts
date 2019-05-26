@@ -58,7 +58,6 @@ class EditImage extends React.Component<Props, State> {
                                         fullWidth
                                         onChange={event => {
                                             event.preventDefault();
-                                            console.log("CAD")
                                             editor.setNodeByKey(node.key, { data: { url: event.target.value, imgId: null }, type: node.type })
                                         }}
                                         label="Custom Url"
@@ -81,7 +80,10 @@ class EditImage extends React.Component<Props, State> {
                     }
                 >
                     <div
-                        onClick={editor.readOnly ? () => void 0 : () => this.setState({ ...this.state, popupOpen: !this.state.popupOpen })}
+                        onClick={editor.readOnly ? () => void 0 : () => {
+                            editor.blur()
+                            this.setState({ ...this.state, popupOpen: !this.state.popupOpen })
+                        }}
                     >
                         {
                             imgSrc ?
