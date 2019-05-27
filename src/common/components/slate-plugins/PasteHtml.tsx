@@ -48,17 +48,20 @@ const RULES: Rule[] = [
                     });
                 }
 
-                const childNodes =
-                    code && code.tagName.toLowerCase() === 'code'
-                        ? code.childNodes
-                        : el.childNodes
-
-                return {
-                    object: 'block',
-                    type: 'code-block',
-                    nodes: next(childNodes),
-                    data: {
-                        language
+                if (code && code.tagName && code.tagName.toLowerCase() === 'code') {
+                    return {
+                        object: 'block',
+                        type: 'code-block',
+                        nodes: next(code.childNodes),
+                        data: {
+                            language
+                        }
+                    }
+                } else {
+                    return {
+                        object: 'block',
+                        type: 'paragraph',
+                        nodes: next(el.childNodes),
                     }
                 }
             }
