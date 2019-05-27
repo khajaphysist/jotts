@@ -2,14 +2,15 @@ import Link from 'next/link';
 import React from 'react';
 
 import {
-  AppBar, Button, createStyles, NoSsr, Toolbar, Typography, WithStyles, withStyles, Avatar, Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem
+  AppBar, Avatar, Button, ClickAwayListener, createStyles, Grow, MenuItem, MenuList, NoSsr, Paper,
+  Popper, Toolbar, Typography, WithStyles, withStyles
 } from '@material-ui/core';
+import { deepOrange } from '@material-ui/core/colors';
 
 import { CookieUser } from '../types';
 import { User } from '../utils/agent';
 import { loggedInUser } from '../utils/loginStateProvider';
 import { s3ImagePrefix } from '../vars';
-import { deepOrange } from '@material-ui/core/colors';
 
 const getDashboardLink = (user: CookieUser | undefined) => {
   if (user) {
@@ -22,7 +23,6 @@ const getDashboardLink = (user: CookieUser | undefined) => {
 
 const styles = () => createStyles({
   loginButton: {
-    marginLeft: "auto",
     display: "flex"
   },
   toolbar: {
@@ -58,7 +58,7 @@ class Header extends React.Component<Props, State> {
               </Typography>
             </Link>
 
-            <div style={{ marginLeft: "50%" }}>
+            <div style={{ marginLeft: "auto" }}>
               {
                 user ? (
                   <Link {...getDashboardLink(user)} passHref>
@@ -66,21 +66,21 @@ class Header extends React.Component<Props, State> {
                   </Link>
                 ) : null
               }
-              <Link href="/explore" passHref>
+              {/* <Link href="/explore" passHref>
                 <Button color="inherit">
                   Explore
               </Button>
-              </Link>
+              </Link> */}
               <Link href="/try" passHref>
                 <Button color="inherit">
                   Try Editor
               </Button>
               </Link>
-              <Link href="/about" passHref>
+              {/* <Link href="/about" passHref>
                 <Button color="inherit">
                   About
               </Button>
-              </Link>
+              </Link> */}
             </div>
 
             <NoSsr>
