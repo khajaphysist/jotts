@@ -74,6 +74,7 @@ export enum jotts_post_update_column {
   created_at = "created_at",
   folder_id = "folder_id",
   id = "id",
+  is_public = "is_public",
   slug = "slug",
   summary = "summary",
   text = "text",
@@ -198,6 +199,7 @@ export interface jotts_post_insert_input {
   folder?: jotts_folder_obj_rel_insert_input | null;
   folder_id?: any | null;
   id?: any | null;
+  is_public?: boolean | null;
   post_tags?: jotts_post_tag_arr_rel_insert_input | null;
   slug?: string | null;
   summary?: string | null;

@@ -34,6 +34,7 @@ CREATE TABLE jotts.post (
     content text,
     author_id uuid NOT NULL REFERENCES jotts."user",
     folder_id uuid REFERENCES jotts.folder ON DELETE CASCADE,
+    is_public boolean NOT NULL DEFAULT FALSE,
     created_at timestamp DEFAULT now() NOT NULL,
     updated_at timestamp DEFAULT now() NOT NULL
 );

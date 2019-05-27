@@ -6,6 +6,8 @@
         }
     ],
     "remote_schemas": [],
+    "query_collections": [],
+    "allowlist": [],
     "tables": [
         {
             "table": {
@@ -147,6 +149,19 @@
         },
         {
             "table": {
+                "schema": "hdb_catalog",
+                "name": "hdb_allowlist"
+            },
+            "object_relationships": [],
+            "array_relationships": [],
+            "insert_permissions": [],
+            "select_permissions": [],
+            "update_permissions": [],
+            "delete_permissions": [],
+            "event_triggers": []
+        },
+        {
+            "table": {
                 "schema": "jotts",
                 "name": "post"
             },
@@ -197,6 +212,7 @@
                             "content",
                             "folder_id",
                             "id",
+                            "is_public",
                             "slug",
                             "summary",
                             "text",
@@ -223,7 +239,11 @@
                             "title",
                             "updated_at"
                         ],
-                        "filter": {}
+                        "filter": {
+                            "is_public": {
+                                "_eq": true
+                            }
+                        }
                     }
                 },
                 {
@@ -237,13 +257,27 @@
                             "created_at",
                             "folder_id",
                             "id",
+                            "is_public",
                             "slug",
                             "summary",
                             "text",
                             "title",
                             "updated_at"
                         ],
-                        "filter": {}
+                        "filter": {
+                            "_or": [
+                                {
+                                    "is_public": {
+                                        "_eq": true
+                                    }
+                                },
+                                {
+                                    "author_id": {
+                                        "_eq": "X-Hasura-User-Id"
+                                    }
+                                }
+                            ]
+                        }
                     }
                 }
             ],
@@ -258,6 +292,7 @@
                             "content",
                             "folder_id",
                             "id",
+                            "is_public",
                             "slug",
                             "summary",
                             "text",

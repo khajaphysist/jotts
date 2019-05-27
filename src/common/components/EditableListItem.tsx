@@ -100,6 +100,7 @@ export default class EditableListItem extends React.Component<EditableListItemPr
                         open={Boolean(this.state.anchorEl)}
                         onBackdropClick={this.handleClose}
                         anchorEl={this.state.anchorEl}
+                        onClick={this.handleClose}
                     >
                         <MenuItem onClick={this.handleEdit}>Edit</MenuItem>
                         {this.props.actions}

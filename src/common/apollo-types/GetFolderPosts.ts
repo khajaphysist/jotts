@@ -11,6 +11,7 @@ export interface GetFolderPosts_jotts_post {
   id: any;
   folder_id: any | null;
   title: string;
+  is_public: boolean;
 }
 
 export interface GetFolderPosts {

@@ -31,10 +31,14 @@ import {
   NewFolderMutation, NewFolderMutationVariables
 } from '../../apollo-types/NewFolderMutation';
 import { NewPost, NewPostVariables } from '../../apollo-types/NewPost';
+import {
+  TogglePostPublicStatus, TogglePostPublicStatusVariables
+} from '../../apollo-types/TogglePostPublicStatus';
 import { CookieUser } from '../../types';
 import { loggedInUser } from '../../utils/loginStateProvider';
 import EditableListItem from '../EditableListItem';
 import { serializeValue } from '../JottsEditor';
+import PostViewInFolder from '../PostViewInFolder';
 import { DEFAULT_VALUE, generateSlug } from './EditPost';
 
 const getEditPostUrl = (handle: string, folderId: string, postId: string | undefined) => {
@@ -77,6 +81,7 @@ query GetFolderPosts($folderId: uuid!){
         id
         folder_id
         title
+        is_public
     }
 }
 `
@@ -122,6 +127,18 @@ mutation DeletePost($postId: uuid!){
         affected_rows
         returning{
             id
+        }
+    }
+}
+`
+
+const togglePostPublicStatus = gql`
+mutation TogglePostPublicStatus($postId: uuid!, $isPublic: Boolean!){
+    update_jotts_post(where: {id: {_eq: $postId}}, _set:{is_public: $isPublic}) {
+        affected_rows
+        returning {
+            id
+            is_public
         }
     }
 }
@@ -227,23 +244,40 @@ class FolderList extends React.Component<FolderListProps> {
                                     return data ? (
                                         data.jotts_post.map(p => ({ ...p, author: { name: user.name, handle: user.handle } })).map(p => (
                                             <Link {...getEditPostUrl(user.handle, selectedFoldersJoined, p.id)} key={p.id} passHref replace>
-                                                <ListItem
-                                                    button
-                                                    component="a"
+                                                <PostViewInFolder
+                                                    postTitle={p.title}
+                                                    key={p.id}
+                                                    isPublic={p.is_public}
                                                     selected={this.props.postId && this.props.postId === p.id ? true : false}
-                                                >
-                                                    <ListItemIcon><Note /></ListItemIcon>
-                                                    <ListItemText inset primary={p.title} />
-                                                    <ListItemSecondaryAction>
-                                                        <IconButton onClick={(e) => {
-                                                            e.preventDefault();
-                                                            deletePost(p.id, folderId, client);
-                                                            this.forceUpdate()
-                                                        }}>
-                                                            <Delete />
-                                                        </IconButton>
-                                                    </ListItemSecondaryAction>
-                                                </ListItem>
+                                                    menuActions={[
+                                                        (
+                                                            <Mutation<TogglePostPublicStatus, TogglePostPublicStatusVariables> mutation={togglePostPublicStatus}>
+                                                                {(togglePostPublicStatus, { data }) => (
+                                                                    <MenuItem
+                                                                        onClick={(e) => {
+                                                                            e.preventDefault();
+                                                                            togglePostPublicStatus({ variables: { isPublic: !p.is_public, postId: p.id } })
+                                                                            this.forceUpdate()
+                                                                        }}
+                                                                        key={"delete"}>
+                                                                        {
+                                                                            p.is_public ? "Retract" : "Publish"
+                                                                        }
+                                                                    </MenuItem>
+                                                                )}
+                                                            </Mutation>
+                                                        ),
+                                                        (<MenuItem
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                deletePost(p.id, folderId, client);
+                                                                this.forceUpdate()
+                                                            }}
+                                                            key={"delete"}>
+                                                            Delete
+                                                        </MenuItem>),
+                                                    ]}
+                                                />
                                             </Link>
                                         ))
                                     ) : null
@@ -358,7 +392,7 @@ async function createNewPost(client: ApolloClient<any>, folderId: string) {
         variables
     }).then(res => {
         updateCachePostsOfFolder(folderId, client, (oldData) => {
-            const newPost: GetFolderPosts_jotts_post = { __typename: 'jotts_post', folder_id: folderId, id, title };
+            const newPost: GetFolderPosts_jotts_post = { __typename: 'jotts_post', folder_id: folderId, id, title, is_public: false };
             return { jotts_post: oldData ? [...oldData.jotts_post, newPost] : [newPost] }
         })
         updateCachePostsOfAll(user, client, (oldData) => {

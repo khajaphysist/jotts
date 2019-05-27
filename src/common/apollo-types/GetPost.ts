@@ -17,6 +17,7 @@ export interface GetPost_jotts_post_by_pk {
   title: string;
   slug: string;
   content: string | null;
+  is_public: boolean;
   /**
    * An array relationship
    */

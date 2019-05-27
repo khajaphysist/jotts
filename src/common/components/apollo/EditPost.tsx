@@ -6,7 +6,7 @@ import { ApolloConsumer } from 'react-apollo';
 import slugify from 'slug';
 
 import {
-  createStyles, TextField, Theme, withStyles, WithStyles, Typography
+  createStyles, TextField, Theme, Typography, withStyles, WithStyles
 } from '@material-ui/core';
 
 import {
