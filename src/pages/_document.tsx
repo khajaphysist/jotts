@@ -72,6 +72,8 @@ class MyDocument extends Document<{ pageContext: PageContext }> {
         return (
             <html lang="en" dir="ltr">
                 <Head>
+                    {/* Google webmaster verification tag */}
+                    <meta name="google-site-verification" content="4B5AlQIQchKte-kQjJ2rk50UAViZ_XDI8l-59zN82TM" />
                     <meta charSet="utf-8" />
                     {/* Use minimum-scale=1 to enable GPU rasterization */}
                     <meta

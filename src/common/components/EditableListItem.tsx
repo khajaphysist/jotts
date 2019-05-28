@@ -30,9 +30,6 @@ export default class EditableListItem extends React.Component<EditableListItemPr
     handleClose = () => {
         this.setState({ ...this.state, anchorEl: undefined })
     }
-    handleEdit = () => {
-        this.setState({ ...this.state, edit: true, anchorEl: undefined })
-    }
     handleFinishEdit = async () => {
         try {
             if (this.state.value !== this.props.initialValue) {
@@ -102,7 +99,11 @@ export default class EditableListItem extends React.Component<EditableListItemPr
                         anchorEl={this.state.anchorEl}
                         onClick={this.handleClose}
                     >
-                        <MenuItem onClick={this.handleEdit}>Edit</MenuItem>
+                        <MenuItem onClick={e => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            this.setState({ ...this.state, edit: true, anchorEl: undefined })
+                        }}>Edit</MenuItem>
                         {this.props.actions}
                     </Menu>
                 </ListItemSecondaryAction>
